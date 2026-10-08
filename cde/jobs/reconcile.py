@@ -16,7 +16,7 @@ happened to read. Copied from GDL and adapted.
   gold     gold_*           silver to facts, dimension links valid on the date
 
 Each check is MATCHED, EXPLAINED (the difference is fully accounted for, and the detail says by
-what) or MISMATCH. Results replace the date's rows in ref.recon_results; the mismatches are also
+what), LATE (stream rows still arriving, or past the watermark) or MISMATCH. Results replace the date's rows in ref.recon_results; the mismatches are also
 written as a CSV report under <reports>/recon/<date>/. --fail-on-mismatch makes a MISMATCH fail the
 job (a gate in the DAG).
 
@@ -183,6 +183,85 @@ def object_checks(r: Recon, manifests: dict, state, run_status: str) -> None:
                   f"{nd} resend(s) of bytes already received (same sha256): catalogued, stored once")
 
 
+# ---------------------------------------------------------------- stream
+
+
+STREAM_TABLES = {"ogx.sensor.telemetry": ("sensor_reading", "event_id"), "ogx.scada.alarm": ("scada_alarm", "alarm_id")}
+
+
+def stream_checks(r: Recon, _manifests: dict) -> None:
+    """Producer control counts (ogx.control, per event minute, topic and producer run) against the
+    rows bronze landed for the same minutes; then bronze against the 1-minute windows of silver."""
+    ctl_t = r.table("bronze", "stream_control")
+    if ctl_t is None:
+        return
+    day = F.lit(r.d.isoformat()).cast("date")
+    ctl = (ctl_t.where(F.to_date("minute") == day)
+           .dropDuplicates(["minute", "topic", "producer_run"]).select("minute", "topic", "producer_run", "total"))
+    if ctl.isEmpty():
+        return
+    q_t = r.table("bronze", "stream_quarantine")
+    newest = ctl.agg(F.max("minute")).collect()[0][0]
+    for topic, (table, key) in STREAM_TABLES.items():
+        t = r.table("bronze", table)
+        expected = ctl.where(F.col("topic") == topic)
+        n_expected = _sum(expected, "total")
+        if t is None:
+            r.add("stream", table, "stream_records", n_expected, 0, detail=f"bronze.{table} does not exist")
+            continue
+        rows = t.where(F.col("event_date") == day)
+        landed = (rows.groupBy(F.date_trunc("minute", "event_ts").alias("minute"), "producer_run")
+                  .agg(F.countDistinct(key).alias("landed"), F.count("*").alias("rows")))
+        if q_t is not None:
+            qd = (q_t.where((F.col("kafka_topic") == topic) & (F.col("event_date") == day))
+                  .select(F.date_trunc("minute", F.to_timestamp(F.get_json_object("record_value", "$.event_ts"))).alias("minute"),
+                          F.get_json_object("record_value", "$.producer_run").alias("producer_run"))
+                  .groupBy("minute", "producer_run").agg(F.count("*").alias("quarantined")))
+        else:
+            qd = None
+        per_min = expected.join(landed, ["minute", "producer_run"], "left")
+        if qd is not None:
+            per_min = per_min.join(qd, ["minute", "producer_run"], "left")
+        else:
+            per_min = per_min.withColumn("quarantined", F.lit(0))
+        per_min = per_min.fillna(0, ["landed", "rows", "quarantined"]).cache()
+        got = per_min.agg(F.sum("landed"), F.sum("quarantined"), F.sum("rows")).collect()[0]
+        n_landed, n_q, n_rows = int(got[0] or 0), int(got[1] or 0), int(got[2] or 0)
+        short = per_min.where(F.col("landed") + F.col("quarantined") < F.col("total"))
+        recent = short.where(F.col("minute") >= F.lit(newest) - F.expr("INTERVAL 10 MINUTES")).count()
+        n_short = short.count()
+        detail = (f"{n_landed} landed + {n_q} quarantined vs {int(n_expected)} in the producer's control messages "
+                  f"({expected.count()} minutes); {n_short} minute(s) short")
+        if n_short and n_short == recent:
+            r.add("stream", table, "stream_records", n_expected, n_landed + n_q, "LATE",
+                  detail + " (all within the last 10 minutes: still arriving)")
+        else:
+            r.add("stream", table, "stream_records", n_expected, n_landed + n_q, detail=detail)
+        r.add("stream", table, "stream_duplicates", 0, n_rows - n_landed,
+              detail=f"{n_rows - n_landed} row(s) with a repeated {key} (exactly-once across restarts)")
+        per_min.unpersist()
+    w = r.table("silver", "sensor_window")
+    rd = r.table("bronze", "sensor_reading")
+    if w is None or rd is None:
+        return
+    n_b = rd.where(F.col("event_date") == day).count()
+    n_w = int(w.where((F.col("window_size") == "1 minute") & (F.col("window_date") == day))
+              .agg(F.sum("n")).collect()[0][0] or 0)
+    very_late = rd.where((F.col("event_date") == day) & (F.col("lateness_s") > 600)).count()
+    dropped = n_b - n_w
+    if dropped and 0 < dropped <= very_late:
+        r.add("stream", "sensor_window", "window_records", n_b, n_w, "LATE",
+              f"bronze {n_b}, 1-minute windows {n_w}: {dropped} reading(s) arrived after the 10-minute watermark "
+              f"({very_late} sent more than 10 minutes late) and were not windowed")
+    else:
+        r.add("stream", "sensor_window", "window_records", n_b, n_w,
+              detail=f"bronze {n_b} readings, 1-minute windows hold {n_w} ({very_late} sent > 10 minutes late, "
+                     f"windowed while their window's state was open)")
+
+
+CHECKS.append(("stream", stream_checks))
+
+
 # ---------------------------------------------------------------- output
 
 
@@ -223,17 +302,17 @@ def run(spark, argv=None) -> dict:
             if layer in layers:
                 fn(r, manifests)
         bad = write(r, reports)
-        counts = {s: sum(1 for row in r.rows if row[9] == s) for s in ("MATCHED", "EXPLAINED", "MISMATCH")}
+        counts = {s: sum(1 for row in r.rows if row[9] == s) for s in ("MATCHED", "EXPLAINED", "LATE", "MISMATCH")}
         print(f"reconcile {r.bid}: " + ", ".join(f"{k} {v}" for k, v in counts.items()), flush=True)
         for row in bad:
             print(f"  MISMATCH {row[3]}.{row[4]} {row[5]}: {row[10]}", flush=True)
         for row in r.rows:
-            if row[9] == "EXPLAINED":
-                print(f"  EXPLAINED {row[3]}.{row[4]} {row[5]}: {row[10]}", flush=True)
+            if row[9] in ("EXPLAINED", "LATE"):
+                print(f"  {row[9]} {row[3]}.{row[4]} {row[5]}: {row[10]}", flush=True)
         audit.transform("reconcile", "validate", "ref.load_audit,bronze.*,silver.*,asset.*,gold.*",
                         names.t("ref", "recon_results"), len(r.rows), len(bad),
                         ", ".join(f"{k} {v}" for k, v in counts.items()))
-        audit.load("reconcile", "*", "COMPLETED", rows_in=len(r.rows), rows_out=counts["MATCHED"] + counts["EXPLAINED"],
+        audit.load("reconcile", "*", "COMPLETED", rows_in=len(r.rows), rows_out=counts["MATCHED"] + counts["EXPLAINED"] + counts["LATE"],
                    rows_rejected=counts["MISMATCH"], message=f"report {reports}/recon/{r.d.isoformat()}/")
         if bad and args.fail_on_mismatch:
             raise RuntimeError(f"{len(bad)} reconciliation mismatch(es) for {r.bid}")

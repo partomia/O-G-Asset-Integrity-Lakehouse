@@ -119,7 +119,9 @@ class Generator:
 
 
 class FileSink:
-    """JSON lines per topic per hour of send time: <out>/<topic>/part-<yyyymmddHH>.jsonl"""
+    """JSON lines per topic per hour of send time: <out>/<topic>/part-<yyyymmddHH>.jsonl, one Kafka
+    record per line ({"key", "timestamp" (send time, ms), "value" (the message as a JSON string)}),
+    so the streaming jobs read files and Kafka through the same parsing."""
 
     def __init__(self, out: str):
         self.out = Path(out)
@@ -135,7 +137,9 @@ class FileSink:
             d = self.out / topic
             d.mkdir(parents=True, exist_ok=True)
             self.handles[key] = open(d / f"part-{hour}.jsonl", "a")
-        self.handles[key].write(json.dumps(msg, separators=(",", ":")) + "\n")
+        rec = {"key": msg.get("sensor_tag") or msg.get("topic"), "timestamp": int(send_ts * 1000),
+               "value": json.dumps(msg, separators=(",", ":"))}
+        self.handles[key].write(json.dumps(rec, separators=(",", ":")) + "\n")
         self.sent += 1
 
     def close(self) -> None:

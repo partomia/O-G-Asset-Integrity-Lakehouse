@@ -81,7 +81,14 @@ def register_schemas() -> dict:
 
     base = os.environ["OGX_SCHEMA_REGISTRY_URL"].rstrip("/")
     auth = (os.environ["OGX_WORKLOAD_USER"], os.environ["OGX_WORKLOAD_PASSWORD"])
-    verify = ca_file() or True
+    verify = True
+    ca = ca_file()
+    if ca:   # Knox may present a public chain or the environment's own CA: trust both
+        import certifi
+
+        bundle = Path("/tmp/ogx-ca-bundle.pem")
+        bundle.write_text(Path(certifi.where()).read_text() + "\n" + Path(ca).read_text())
+        verify = str(bundle)
     out = {}
     for key, fname in SCHEMAS.items():
         topic = CFG["topics"][key]["name"]

@@ -10,7 +10,7 @@ from stream.producer.alarm_rules import AlarmState
 def _read(tmp_path, topic):
     out = []
     for f in sorted((tmp_path / topic).glob("*.jsonl")):
-        out += [json.loads(line) for line in f.read_text().splitlines()]
+        out += [json.loads(json.loads(line)["value"]) for line in f.read_text().splitlines()]
     return out
 
 

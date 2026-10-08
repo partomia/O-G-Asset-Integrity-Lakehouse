@@ -37,9 +37,15 @@ import ogx_common as C  # noqa: E402
 # and OGX_LOCAL_CATALOG=hadoop reproduces CDE's Spark and Iceberg for the jobs.
 ICEBERG_PACKAGE = os.environ.get("OGX_ICEBERG_PACKAGE", "org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.10.0")
 SQLITE_PACKAGE = "org.xerial:sqlite-jdbc:3.46.1.3"
+# OGX_LOCAL_KAFKA=1 adds the Kafka connector (a local broker: stream jobs with --source kafka)
+KAFKA_PACKAGE = "org.apache.spark:spark-sql-kafka-0-10_2.13:4.0.1"
 STAGES = {"bronze": "ingest_bronze.py", "extract": "extract_unstructured.py", "silver": "build_silver.py",
           "asset": "build_asset_master.py", "gold": "build_gold.py", "outcomes": "build_outcomes.py",
           "recon": "reconcile.py"}
+
+
+def _packages(*base: str) -> str:
+    return ",".join([*base, *([KAFKA_PACKAGE] if os.environ.get("OGX_LOCAL_KAFKA") == "1" else [])])
 
 
 def local_spark(warehouse: Path, driver_memory: str = "4g"):
@@ -54,11 +60,13 @@ def local_spark(warehouse: Path, driver_memory: str = "4g"):
          .config("spark.sql.catalog.local", "org.apache.iceberg.spark.SparkCatalog")
          .config("spark.sql.catalog.local.warehouse", str(warehouse)))
     if os.environ.get("OGX_LOCAL_CATALOG") == "hadoop":
-        b = b.config("spark.jars.packages", ICEBERG_PACKAGE).config("spark.sql.catalog.local.type", "hadoop")
+        b = b.config("spark.jars.packages", _packages(ICEBERG_PACKAGE)).config("spark.sql.catalog.local.type", "hadoop")
     else:
-        b = (b.config("spark.jars.packages", f"{ICEBERG_PACKAGE},{SQLITE_PACKAGE}")
+        b = (b.config("spark.jars.packages", _packages(ICEBERG_PACKAGE, SQLITE_PACKAGE))
              .config("spark.sql.catalog.local.type", "jdbc")
-             .config("spark.sql.catalog.local.uri", f"jdbc:sqlite:{warehouse.resolve() / 'catalog.db'}")
+             .config("spark.sql.catalog.local.uri",
+                     f"jdbc:sqlite:{warehouse.resolve() / 'catalog.db'}?journal_mode=WAL&busy_timeout=60000")
+             .config("spark.sql.catalog.local.clients", "1")   # SQLite: one writer; streaming batches run on their own thread
              .config("spark.sql.catalog.local.jdbc.schema-version", "V1"))
     spark = (b
              .config("spark.sql.defaultCatalog", "local")
@@ -146,10 +154,16 @@ def main() -> int:
                                                                    "time-travel", "search")]
     if unknown:
         p.error(f"unknown stages {unknown}")
+    if "stream" in stages and (per_date or once):
+        # its own process: the streaming threads' catalog connections must not hold the SQLite catalog
+        import subprocess
+
+        subprocess.run([sys.executable, __file__, "stream", "--dates", ",".join(dates), "--landing", args.landing,
+                        "--warehouse", args.warehouse, "--db-prefix", args.db_prefix], check=True)
     if not per_date and not once and "stream" not in stages:
         return 0
     spark = local_spark(Path(args.warehouse))
-    if "stream" in stages:
+    if "stream" in stages and not (per_date or once):
         run_stream(spark, args, dates)
     common = ["--landing", args.landing, "--db-prefix", args.db_prefix]
     engine = None
