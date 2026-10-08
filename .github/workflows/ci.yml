@@ -1,0 +1,40 @@
+name: CI
+
+# Every push to main, every pull request, or by hand from the Actions tab. Copied from GDL.
+# Unit tests, then the CDE jobs (batch and the stream leg on its file source) and the semantic
+# SQL on local Spark + Iceberg for all five business dates, the KPI consistency check, the
+# failed-batch drill, then the CAI ML chain offline on synthetic images with the stub embedder
+# and the gate failing on cue. Nothing here talks to Cloudera.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Unit tests + the pipeline on local Spark + Iceberg
+    runs-on: ubuntu-latest
+    env:
+      OGX_CONFIG_OVERLAY: config/ci.yaml
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Java (local Spark / Iceberg needs it)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Install dependencies
+        run: pip install -r requirements-ci.txt
+
+      - name: Unit tests
+        run: pytest -q

@@ -1,0 +1,47 @@
+# This repository is PUBLIC. Data, credentials and run outputs never enter Git.
+# In Cloudera AI, .gitignore also keeps files out of model builds, so large
+# folders must be listed here. models/champion/ is deliberately NOT ignored: it
+# is small and the model build needs it. Do not commit it.
+
+# Secrets & local config
+.env
+.env.*
+!.env.example
+*.jks
+*.keytab
+*.pem
+*.p12
+*.crt
+.ssh/
+certs/
+
+# Data, features, models, run outputs (live only in the CAI project / S3)
+data/
+feature_store/
+models/archive/
+outputs/
+checkpoints/
+mlruns/
+.hf_cache/
+spark-warehouse/
+metastore_db/
+derby.log
+logs/
+*.log
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.cursor/
+*.swp
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/

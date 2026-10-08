@@ -1,0 +1,36 @@
+{
+  "_comment": "Kafka topics, the producer and the two CDE streaming jobs (standard library json).",
+  "topics": {
+    "telemetry": {"name": "ogx.sensor.telemetry", "partitions": 6, "replication": 3, "retention_hours": 168},
+    "alarm": {"name": "ogx.scada.alarm", "partitions": 3, "replication": 3, "retention_hours": 168},
+    "control": {"name": "ogx.control", "partitions": 1, "replication": 3, "retention_hours": 168}
+  },
+  "producer": {
+    "tags": 200,
+    "interval_s": 5,
+    "live_rate_msgs_s": 40,
+    "late_fraction": 0.01,
+    "late_seconds": [120, 480],
+    "out_of_order_fraction": 0.02,
+    "stuck_tag": "VI-112B.PV",
+    "unit_change_tag": "PI-105A.PV",
+    "unit_change_after_minutes": 600
+  },
+  "spark": {
+    "kafka_package": "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.4",
+    "trigger_seconds": 60,
+    "watermark": "10 minutes",
+    "windows": ["1 minute", "15 minutes"],
+    "stuck_windows": 3,
+    "min_readings_per_window": {"1 minute": 6, "15 minutes": 90},
+    "starting_offsets": "earliest",
+    "max_offsets_per_trigger": 200000
+  },
+  "units": {"bar_to_psi": 14.5038},
+  "thresholds": {
+    "pressure_psi": {"high": 1450.0},
+    "temperature_c": {"high": 180.0},
+    "vibration_mm_s": {"high": 7.1},
+    "wall_loss_mm_y": {"high": 0.5}
+  }
+}

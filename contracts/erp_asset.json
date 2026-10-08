@@ -1,0 +1,122 @@
+{
+  "entity": "erp_asset",
+  "source": "erp",
+  "format": "mysqldump",
+  "table": "equi",
+  "file_glob": "asset_register_*.sql",
+  "description": "EAM equipment master (SAP PM table EQUI style), full dump on day 1",
+  "key": [
+    "equnr"
+  ],
+  "columns": [
+    {
+      "name": "equnr",
+      "type": "string",
+      "required": true,
+      "pattern": "^[0-9]{8}$",
+      "severity": "reject"
+    },
+    {
+      "name": "tplnr",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "eqktx",
+      "type": "string"
+    },
+    {
+      "name": "eqart",
+      "type": "string",
+      "required": true,
+      "allowed": [
+        "WELL",
+        "PIPE_SEGMENT",
+        "PUMP",
+        "COMPRESSOR",
+        "VESSEL",
+        "HEAT_EXCHANGER",
+        "TANK",
+        "COLUMN",
+        "FLARE_STACK",
+        "VALVE",
+        "RELIEF_VALVE"
+      ]
+    },
+    {
+      "name": "swerk",
+      "type": "string",
+      "required": true,
+      "allowed": [
+        "FLD1",
+        "PL03",
+        "REF1"
+      ]
+    },
+    {
+      "name": "abckz",
+      "type": "string",
+      "allowed": [
+        "A",
+        "B",
+        "C"
+      ],
+      "severity": "warn"
+    },
+    {
+      "name": "werks_mat",
+      "type": "string"
+    },
+    {
+      "name": "design_press_psi",
+      "type": "decimal",
+      "min": 0
+    },
+    {
+      "name": "inbdt",
+      "type": "date",
+      "formats": [
+        "yyyy-MM-dd",
+        "dd.MM.yyyy"
+      ]
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "allowed": [
+        "INST",
+        "DECOM"
+      ]
+    },
+    {
+      "name": "gps_lat",
+      "type": "double"
+    },
+    {
+      "name": "gps_lon",
+      "type": "double"
+    },
+    {
+      "name": "chain_from_km",
+      "type": "double"
+    },
+    {
+      "name": "chain_to_km",
+      "type": "double"
+    },
+    {
+      "name": "insp_interval_d",
+      "type": "int",
+      "min": 1
+    },
+    {
+      "name": "last_insp_date",
+      "type": "date",
+      "formats": [
+        "yyyy-MM-dd",
+        "dd.MM.yyyy"
+      ]
+    }
+  ]
+}

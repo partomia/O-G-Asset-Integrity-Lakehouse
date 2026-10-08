@@ -1,0 +1,54 @@
+{
+  "topic": "ogx.sensor.telemetry",
+  "table": "sensor_reading",
+  "fields": [
+    {
+      "name": "event_id",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "sensor_tag",
+      "type": "string",
+      "required": true,
+      "pattern": "^(PI|TI|VI|CP)-[A-Z0-9-]+\\.PV$"
+    },
+    {
+      "name": "event_ts",
+      "type": "timestamp",
+      "required": true
+    },
+    {
+      "name": "value",
+      "type": "double",
+      "required": true
+    },
+    {
+      "name": "unit",
+      "type": "string",
+      "required": true,
+      "allowed": [
+        "psi",
+        "bar",
+        "degC",
+        "mm/s",
+        "mm/y"
+      ]
+    },
+    {
+      "name": "quality",
+      "type": "string",
+      "required": true,
+      "allowed": [
+        "GOOD",
+        "UNCERTAIN",
+        "BAD"
+      ]
+    },
+    {
+      "name": "seq",
+      "type": "bigint",
+      "required": true
+    }
+  ]
+}

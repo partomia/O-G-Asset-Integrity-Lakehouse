@@ -1,0 +1,13 @@
+# GitHub Actions and local tests: no torch, no transformers, no mlflow. The CI run uses
+# synthetic images and the stub embedder (config/ci.yaml); Spark runs the CDE jobs locally.
+pyspark==4.0.1
+numpy
+pandas
+pyarrow
+pillow
+scikit-learn>=1.3
+joblib
+pyyaml
+requests
+kafka-python>=2.0.2
+pytest

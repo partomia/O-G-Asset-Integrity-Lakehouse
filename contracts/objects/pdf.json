@@ -1,0 +1,10 @@
+{
+  "format": "pdf",
+  "mime": "application/pdf",
+  "extensions": [
+    "pdf"
+  ],
+  "min_bytes": 200,
+  "min_pages": 1,
+  "description": "Opens (header, %%EOF, page tree, readable streams) and has at least one page"
+}

@@ -1,0 +1,31 @@
+{
+  "_comment": "Read by the generators and the CDE jobs (standard library json). Sources in landing order; entities in bronze ingest order.",
+  "db_prefix": "rsingh_ogx",
+  "seed": 20261004,
+  "operator": {"name": "OGX Energy (synthetic)", "field": "FLD-01", "pipeline": "PL-03", "refinery_unit": "REF-U1"},
+  "universe": {"wells": 12, "pipeline_km": 40, "pipeline_segments": 60, "equipment": 150, "sensor_tags": 200},
+  "daily": {"inspection_reports": 30, "scanned_fraction": 0.2, "videos": 4, "video_seconds": [20, 30],
+            "video_fps": 2, "work_orders": 40, "cdc_changes": 12, "drawing_revisions": 2},
+  "business_dates": ["2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08"],
+  "live_date": "2026-10-09",
+  "landing": "s3a://federal-buk-574bcea0/data/IB/rsingh_ogx/landing",
+  "raw": "s3a://federal-buk-574bcea0/data/IB/rsingh_ogx/raw",
+  "reports": "s3a://federal-buk-574bcea0/data/IB/rsingh_ogx/reports",
+  "checkpoints": "s3a://federal-buk-574bcea0/data/IB/rsingh_ogx/checkpoints",
+  "sources": ["erp", "inspection", "drone", "drawings", "seismic", "welllogs"],
+  "entities": ["erp_asset", "erp_asset_cdc", "erp_work_order"],
+  "object_formats": {
+    "inspection": ["pdf"],
+    "drone": ["avi", "json"],
+    "drawings": ["pdf", "png"],
+    "seismic": ["segy"],
+    "welllogs": ["las"]
+  },
+  "impala": {"host": "coordinator-federal-impala-1.dw-federal-cdp-env.dp5i-5vkq.cloudera.site", "port": 443,
+             "http_path": "cliservice", "auth_mechanism": "LDAP"},
+  "dataviz_url": "https://viz-indianbank-spend-analytics.dw-federal-cdp-env.dp5i-5vkq.cloudera.site",
+  "dataviz_connection": "federal-impala-1",
+  "dataviz_pk_base": 13000,
+  "datalake_api": "https://federal-aw-dl-gateway.federal.dp5i-5vkq.cloudera.site/federal-aw-dl/cdp-proxy-api",
+  "criticality_weight": {"A": 3.0, "B": 2.0, "C": 1.0}
+}

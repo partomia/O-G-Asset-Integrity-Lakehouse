@@ -1,0 +1,54 @@
+{
+  "entity": "erp_asset_cdc",
+  "source": "erp",
+  "format": "jsonl",
+  "file_glob": "asset_cdc_*.jsonl",
+  "description": "EAM change data capture on EQUI: U (changed fields), I (full after-image), D",
+  "key": [
+    "equnr",
+    "changed_at"
+  ],
+  "known_keys": [
+    "op",
+    "equnr",
+    "changed_at",
+    "changed_by",
+    "fields"
+  ],
+  "image_contract": "erp_asset",
+  "columns": [
+    {
+      "name": "op",
+      "type": "string",
+      "required": true,
+      "allowed": [
+        "I",
+        "U",
+        "D"
+      ],
+      "severity": "reject"
+    },
+    {
+      "name": "equnr",
+      "type": "string",
+      "required": true,
+      "pattern": "^[0-9]{8}$",
+      "severity": "reject"
+    },
+    {
+      "name": "changed_at",
+      "type": "timestamp",
+      "required": true,
+      "format": "yyyy-MM-dd'T'HH:mm:ss'Z'"
+    },
+    {
+      "name": "changed_by",
+      "type": "string"
+    },
+    {
+      "name": "fields",
+      "type": "string",
+      "required": true
+    }
+  ]
+}

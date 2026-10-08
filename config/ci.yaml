@@ -1,0 +1,41 @@
+# Overlay for GitHub Actions and laptop tests (OGX_CONFIG_OVERLAY=config/ci.yaml):
+# no torch, no network. The stub embedder has its own feature hash, so a stub-built
+# table or model can never be served against real ViT features.
+features:
+  backbone: stub:pixels
+  backbone_revision: none
+  store_dir: outputs/ci/feature_store/ogx_features
+data:
+  raw_dir: outputs/ci/raw/corrosion   # tests/conftest.py writes synthetic images + YOLO labels here
+gate:
+  min_auroc: 0.5
+  min_sensitivity: 0.5
+  min_specificity: 0.0
+  max_brier: 0.35
+serving:
+  champion_dir: outputs/ci/models/champion
+  trial_dir: outputs/ci/models/silent_trial
+  archive_dir: outputs/ci/models/archive
+  candidate_dir: outputs/ci/candidate
+registry:
+  enabled: false
+models:
+  frame_qc:
+    overrides:
+      features: {store_dir: outputs/ci/feature_store/qc_features}
+      gate: {min_auroc: 0.5, min_sensitivity: 0.5, min_specificity: 0.0, max_brier: 0.35}
+      serving:
+        champion_dir: outputs/ci/models/frame_qc/champion
+        trial_dir: outputs/ci/models/frame_qc/silent_trial
+        archive_dir: outputs/ci/models/archive/frame_qc
+        candidate_dir: outputs/ci/frame_qc/candidate
+  equipment_risk:
+    overrides:
+      data: {history_days: 120}
+      features: {store_dir: outputs/ci/feature_store/risk_features}
+      gate: {min_auroc: 0.5, min_sensitivity: 0.5, min_specificity: 0.0, max_brier: 0.35}
+      serving:
+        champion_dir: outputs/ci/models/equipment_risk/champion
+        trial_dir: outputs/ci/models/equipment_risk/silent_trial
+        archive_dir: outputs/ci/models/archive/equipment_risk
+        candidate_dir: outputs/ci/equipment_risk/candidate

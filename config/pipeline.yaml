@@ -1,0 +1,141 @@
+# ---------------------------------------------------------------------------
+# ogx: single source of configuration for the CAI side (features, training, gate,
+# serving, scoring). OGX_CONFIG_OVERLAY (comma-separated YAML files) is merged on
+# top, e.g. config/ci.yaml for the offline CI run. Copied from CXR's pipeline.yaml.
+# ---------------------------------------------------------------------------
+project:
+  name: ogx-integrity
+  mlflow_experiment: ogx-integrity
+
+data:
+  layout: bi3q3                       # bi3q3 | frame_qc | risk (features/build_feature_table.py)
+  raw_dir: data/raw/corrosion         # {train,valid,test}/{images,labels}/ (scripts/fetch_dataset.py)
+  frames_dir: assets/frames           # committed drone frame library (scripts/build_frame_library.py)
+  positive_label: severe              # the class the operating threshold and KPIs are about
+  split_seed: 42
+
+features:
+  version: "1.0.0"                    # BUMP when anything below (or feature_logic.py) changes
+  store_dir: feature_store/ogx_features
+  backbone: google/vit-base-patch16-224
+  backbone_revision: 3f49326eb077187dfe1c2a2bb15fbd74e6ab91e3   # pinned HF commit
+  image_size: 224
+  batch_size: 32
+  embedding_pooling: cls
+  model_inputs: [embedding]
+  # equipment_risk (tabular): the window lengths and unit rules are part of the hash
+  risk_windows_days: [1, 7]
+  units: {bar_to_psi: 14.5038}
+
+training:
+  estimator: logistic_regression
+  C: 0.01
+  class_weight: balanced
+  max_iter: 3000
+
+evaluation:
+  target_sensitivity: 0.90            # severe-vs-rest recall the operating threshold is set for on VAL
+  p1_probability: 0.80                # >= this -> P1
+
+gate:                                 # absolute KPIs, measured on the held-out TEST split
+  min_auroc: 0.80
+  min_sensitivity: 0.80
+  min_specificity: 0.40
+  max_brier: 0.20
+  max_auroc_regression: 0.02
+  require_feature_hash_match: true
+
+serving:
+  model_name: ogx-integrity           # the CAI Model (endpoint): serves every champion head
+  champion_dir: models/champion
+  trial_dir: models/silent_trial
+  archive_dir: models/archive
+  candidate_dir: outputs/candidate
+
+cai:
+  runtime_identifier: ""
+  model_cpu: 2
+  model_memory_gb: 4
+  git_branch: main
+
+registry:
+  enabled: true
+
+# ---------------------------------------------------------------------------
+# The three heads. Every job works on ONE model, OGX_MODEL (default corrosion), set on
+# the CAI job; load_config() merges models.<name>.overrides onto the sections above.
+#   stage_on_pass  champion     = served, ranks the worklist (job 04 rebuilds the endpoint)
+#                  silent_trial = scored daily, shown to nobody, until ogx-07 finds go_live met
+# ---------------------------------------------------------------------------
+models:
+  corrosion:
+    finding: severe
+    stage_on_pass: champion
+    registry_name: ogx-corrosion
+    classes: [none, surface, severe]
+    description: "Corrosion severity on drone keyframes (Corrosion Bi3Q3): ViT-B/16 features, 3-class logistic regression"
+
+  frame_qc:
+    finding: UNFIT
+    stage_on_pass: champion
+    registry_name: ogx-frame-qc
+    description: "Frame fitness for AI review: blur, low light, glare, occlusion, noise (ViT features + image statistics)"
+    overrides:
+      data:
+        layout: frame_qc
+        positive_label: UNFIT
+      features:
+        store_dir: feature_store/qc_features
+        model_inputs: [embedding, quality]
+      evaluation:
+        target_sensitivity: 0.95
+        p1_probability: 1.01          # no P1 band for QC
+      gate:
+        min_auroc: 0.95
+        min_sensitivity: 0.90
+        min_specificity: 0.85
+        max_brier: 0.10
+      serving:
+        champion_dir: models/frame_qc/champion
+        trial_dir: models/frame_qc/silent_trial
+        archive_dir: models/archive/frame_qc
+        candidate_dir: outputs/frame_qc/candidate
+
+  equipment_risk:
+    finding: EVENT_30D
+    stage_on_pass: silent_trial
+    registry_name: ogx-equipment-risk
+    description: "Probability of an integrity event within 30 days: sensor windows, alarms, work orders, PDF findings (logistic regression)"
+    go_live:
+      min_days: 3
+      min_positives: 5
+      min_sensitivity: 0.70
+      min_specificity: 0.50
+    overrides:
+      data:
+        layout: risk
+        positive_label: EVENT_30D
+        history_days: 365
+      features:
+        store_dir: feature_store/risk_features
+        model_inputs: [tabular]
+      training:
+        C: 0.5
+      evaluation:
+        target_sensitivity: 0.80
+        p1_probability: 0.60
+      gate:
+        min_auroc: 0.75
+        min_sensitivity: 0.70
+        min_specificity: 0.50
+        max_brier: 0.20
+      serving:
+        champion_dir: models/equipment_risk/champion
+        trial_dir: models/equipment_risk/silent_trial
+        archive_dir: models/archive/equipment_risk
+        candidate_dir: outputs/equipment_risk/candidate
+
+monitoring:
+  psi_warn: 0.10
+  psi_alert: 0.25
+  min_samples_for_drift: 30

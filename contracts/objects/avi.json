@@ -1,0 +1,10 @@
+{
+  "format": "avi",
+  "mime": "video/x-msvideo",
+  "extensions": [
+    "avi"
+  ],
+  "min_bytes": 1000,
+  "min_seconds": 10,
+  "description": "RIFF AVI with Motion-JPEG frames, decodes, at least 10 s long"
+}

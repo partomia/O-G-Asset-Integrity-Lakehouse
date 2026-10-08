@@ -1,0 +1,41 @@
+{
+  "_comment": "Atlas classifications, glossary and Ranger tag masking for the rsingh_ogx_* databases, applied by scripts/governance.py. Only OGX_* classifications and rsingh-ogx-* policies are created or changed; other projects' tags and policies are left alone.",
+  "atlas_cluster": "cm",
+  "databases": ["rsingh_ogx_bronze", "rsingh_ogx_silver", "rsingh_ogx_asset", "rsingh_ogx_gold", "rsingh_ogx_semantic"],
+  "classifications": {
+    "OGX_SENSITIVE_HASH":   {"description": "Person name (inspector, engineer, approver): masked users see a hash, so counts per inspector still work",
+                             "mask": {"dataMaskType": "hive:MASK_HASH"}},
+    "OGX_SENSITIVE_LOCATION": {"description": "Exact well or pipeline GPS coordinate: masked users see NULL (security of critical infrastructure)",
+                             "mask": {"dataMaskType": "hive:MASK_NULL"}},
+    "OGX_SENSITIVE_SUBSURFACE": {"description": "Subsurface data (seismic and well-log values, reservoir properties): commercially sensitive, masked users see NULL",
+                             "mask": {"dataMaskType": "hive:MASK_NULL"}},
+    "OGX_SENSITIVE_TEXT":   {"description": "Free text extracted from documents (may name people or sites): letters become x, digits n",
+                             "mask": {"dataMaskType": "hive:MASK"}}
+  },
+  "columns": {
+    "inspector": "OGX_SENSITIVE_HASH", "inspector_name": "OGX_SENSITIVE_HASH", "reviewed_by": "OGX_SENSITIVE_HASH",
+    "approved_by": "OGX_SENSITIVE_HASH", "engineer": "OGX_SENSITIVE_HASH", "requested_by": "OGX_SENSITIVE_HASH",
+    "latitude": "OGX_SENSITIVE_LOCATION", "longitude": "OGX_SENSITIVE_LOCATION",
+    "gps_lat": "OGX_SENSITIVE_LOCATION", "gps_lon": "OGX_SENSITIVE_LOCATION",
+    "surface_x": "OGX_SENSITIVE_LOCATION", "surface_y": "OGX_SENSITIVE_LOCATION",
+    "curve_value": "OGX_SENSITIVE_SUBSURFACE", "porosity_avg": "OGX_SENSITIVE_SUBSURFACE",
+    "gr_avg": "OGX_SENSITIVE_SUBSURFACE", "resistivity_avg": "OGX_SENSITIVE_SUBSURFACE",
+    "page_text": "OGX_SENSITIVE_TEXT", "chunk_text": "OGX_SENSITIVE_TEXT", "finding_text": "OGX_SENSITIVE_TEXT",
+    "textual_header": "OGX_SENSITIVE_TEXT"
+  },
+  "masking": {
+    "service": "cm_tag",
+    "policy_prefix": "rsingh-ogx-sensitive-",
+    "masked_users": ["federal01", "federal07"],
+    "_comment": "rsingh is in no masking policy and sees clear values"
+  },
+  "glossary": {
+    "name": "OGX Integrity KPIs",
+    "description": "Certified asset-integrity KPIs of the O&G Asset Integrity Lakehouse. Each term is defined once (config/kpi.json) and assigned to its certified semantic view and the dashboard views that read it.",
+    "assigned_to": {
+      "TTR": ["kpi_severe_time_to_review", "dash_worklist_gain"],
+      "IRE": ["kpi_integrity_risk_exposure", "dash_risk_by_facility"],
+      "UNC": ["kpi_unstructured_coverage", "dash_object_estate"]
+    }
+  }
+}

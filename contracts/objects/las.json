@@ -1,0 +1,15 @@
+{
+  "format": "las",
+  "mime": "text/x-las",
+  "extensions": [
+    "las"
+  ],
+  "min_bytes": 200,
+  "required_sections": [
+    "~V",
+    "~W",
+    "~C",
+    "~A"
+  ],
+  "description": "LAS 2.0 with ~V, ~W, ~C and ~A sections; one value per curve per row"
+}

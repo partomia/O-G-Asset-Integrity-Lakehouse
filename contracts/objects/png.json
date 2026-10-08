@@ -1,0 +1,9 @@
+{
+  "format": "png",
+  "mime": "image/png",
+  "extensions": [
+    "png"
+  ],
+  "min_bytes": 100,
+  "description": "PNG signature, IHDR, decodable IDAT"
+}

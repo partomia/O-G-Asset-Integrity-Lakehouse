@@ -1,0 +1,39 @@
+# Guardrails for ML (docs/GUARDRAILS.md). Every firing is written to ref.guardrail_event
+# (guardrail, layer, subject, reason, business date, model). Each has a test that makes it fire.
+input:
+  contracts: {enabled: true}               # contracts/ (objects, stream, entities): quarantine, never scored
+  frame_qc:
+    enabled: true
+    unfit_band: NA                          # an unfit frame is reviewed in calendar order, as without AI
+  ood:
+    enabled: true
+    # cosine distance of a keyframe embedding to its nearest training-centroid; above -> band NA, reason OOD
+    max_centroid_distance: 0.55
+  sensor_sanity:
+    enabled: true
+    stuck_windows: 3                        # zero variance in this many consecutive 15-minute windows
+    min_readings_15m: 90
+    units_expected: {PI: psi, TI: degC, VI: mm/s, CP: mm/y}
+  asset_resolution: {enabled: true}         # an object the asset master cannot resolve is not scored
+output:
+  abstain:
+    enabled: true
+    # severe probability between these -> "uncertain, engineer review" rather than a rank
+    low: 0.35
+    high: 0.55
+  no_automated_action: {enabled: true}      # the model ranks; only an engineer opens or closes a work order
+  criticality_floor:
+    enabled: true
+    critical_class: A                       # a criticality-A asset never ranks below its calendar due date
+process:
+  feature_hash_lock: {enabled: true}
+  kpi_gate: {enabled: true}
+  silent_trial_approver: {enabled: true}
+  drift:
+    enabled: true
+    psi_alert: 0.25
+    min_samples: 30
+llm:
+  enabled: false                            # optional report summaries on Cloudera AI Inference
+  require_page_citations: true
+  redact_classifications: [OGX_SENSITIVE_HASH, OGX_SENSITIVE_LOCATION]

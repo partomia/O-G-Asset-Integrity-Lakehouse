@@ -1,0 +1,60 @@
+{
+  "topic": "ogx.scada.alarm",
+  "table": "scada_alarm",
+  "fields": [
+    {
+      "name": "alarm_id",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "sensor_tag",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "event_ts",
+      "type": "timestamp",
+      "required": true
+    },
+    {
+      "name": "alarm_type",
+      "type": "string",
+      "required": true,
+      "allowed": [
+        "HI",
+        "HIHI",
+        "LO",
+        "STUCK",
+        "ROC"
+      ]
+    },
+    {
+      "name": "priority",
+      "type": "string",
+      "required": true,
+      "allowed": [
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "name": "value",
+      "type": "double"
+    },
+    {
+      "name": "limit",
+      "type": "double"
+    },
+    {
+      "name": "state",
+      "type": "string",
+      "required": true,
+      "allowed": [
+        "ACTIVE",
+        "CLEARED"
+      ]
+    }
+  ]
+}

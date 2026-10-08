@@ -1,0 +1,47 @@
+{
+  "_comment": "Certified KPI definitions and parameters. build_gold.py loads them into ref.kpi_definition and ref.kpi_parameter; the semantic views read only those tables, so a parameter changes here and nowhere else.",
+  "parameters": {
+    "criticality_weight": {"A": 3.0, "B": 2.0, "C": 1.0},
+    "review_hours_per_inspection": 0.5,
+    "review_shift_start_hour": 8,
+    "linked_statuses": ["EXTRACTED", "EXTRACTED_OCR"]
+  },
+  "kpis": [
+    {
+      "kpi_code": "TTR",
+      "name": "Severe-defect time to review",
+      "definition": "Hours from the capture of a keyframe with a confirmed severe defect to the moment an engineer reviews it, median and P90, for the risk-ranked worklist and for calendar (time-based) order on the same inspections.",
+      "formula": "hours = (reviewed_at - captured_at) / 3600 per severe defect; median and P90 by order (risk, calendar) and business date",
+      "grain": "severe defect x worklist order x business date",
+      "certified_view": "kpi_severe_time_to_review",
+      "owner": "Asset Integrity",
+      "version": "1.0",
+      "certified_on": "2026-10-08",
+      "glossary_term": "Severe-defect time to review"
+    },
+    {
+      "kpi_code": "IRE",
+      "name": "Integrity risk exposure",
+      "definition": "Sum over assets of the equipment_risk probability of an integrity event within 30 days times the asset's criticality weight (A=3, B=2, C=1), by facility and business date. Assets the model abstains on (stuck sensor, unit mismatch, too few readings) count zero and are reported separately.",
+      "formula": "exposure = SUM(p_event_30d * criticality_weight[criticality]) GROUP BY facility_id, business_date",
+      "grain": "asset x business date",
+      "certified_view": "kpi_integrity_risk_exposure",
+      "owner": "Asset Integrity",
+      "version": "1.0",
+      "certified_on": "2026-10-08",
+      "glossary_term": "Integrity risk exposure"
+    },
+    {
+      "kpi_code": "UNC",
+      "name": "Unstructured coverage",
+      "definition": "Share of unstructured objects received (PDF, drawing, SEG-Y, LAS, video) that are both extracted (EXTRACTED or EXTRACTED_OCR) and linked to an asset_id by the asset master, by format and business date. Quarantined objects count in the denominator.",
+      "formula": "coverage = COUNT(objects extracted AND linked) / COUNT(objects received) GROUP BY format, business_date",
+      "grain": "object x business date",
+      "certified_view": "kpi_unstructured_coverage",
+      "owner": "Data Office",
+      "version": "1.0",
+      "certified_on": "2026-10-08",
+      "glossary_term": "Unstructured coverage"
+    }
+  ]
+}

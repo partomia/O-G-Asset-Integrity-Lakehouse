@@ -1,0 +1,18 @@
+# CAI sessions, jobs, model builds (cdsw-build.sh) and the application.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch>=2.2
+torchvision                # transformers 5 image processors need it
+transformers>=4.40
+numpy
+pandas
+pyarrow
+pillow
+scikit-learn>=1.3
+joblib
+pyyaml
+# mlflow is pre-installed in Cloudera AI with mlflow-cml-plugin: do not add it here.
+streamlit>=1.32
+matplotlib
+requests
+impyla==0.21.0             # lakehouse: CDW Impala over HTTPS (lakehouse/store.py)
+kafka-python>=2.0.2        # ogx-stream-producer

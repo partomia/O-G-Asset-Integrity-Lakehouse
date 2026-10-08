@@ -1,0 +1,11 @@
+{
+  "format": "segy",
+  "mime": "application/x-segy",
+  "extensions": [
+    "sgy",
+    "segy"
+  ],
+  "min_bytes": 3600,
+  "min_traces": 1,
+  "description": "Readable 3200-byte textual and 400-byte binary header; whole number of traces"
+}

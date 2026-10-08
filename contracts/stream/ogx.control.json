@@ -1,0 +1,31 @@
+{
+  "topic": "ogx.control",
+  "table": "stream_control",
+  "fields": [
+    {
+      "name": "minute",
+      "type": "timestamp",
+      "required": true
+    },
+    {
+      "name": "topic",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "counts",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "total",
+      "type": "bigint",
+      "required": true
+    },
+    {
+      "name": "producer_run",
+      "type": "string",
+      "required": true
+    }
+  ]
+}

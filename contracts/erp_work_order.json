@@ -1,0 +1,79 @@
+{
+  "entity": "erp_work_order",
+  "source": "erp",
+  "format": "psv",
+  "file_glob": "work_orders_*.psv",
+  "description": "Maintenance work orders (SAP PM AUFK style), daily extract with trailer T|count|total cost",
+  "key": [
+    "aufnr"
+  ],
+  "control_field": "cost_usd",
+  "columns": [
+    {
+      "name": "aufnr",
+      "type": "string",
+      "required": true,
+      "pattern": "^4[0-9]{9}$",
+      "severity": "reject"
+    },
+    {
+      "name": "equnr",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "tplnr",
+      "type": "string"
+    },
+    {
+      "name": "auart",
+      "type": "string",
+      "required": true,
+      "allowed": [
+        "PM01",
+        "PM02",
+        "PM03"
+      ]
+    },
+    {
+      "name": "priority",
+      "type": "string",
+      "allowed": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "allowed": [
+        "CRTD",
+        "REL",
+        "TECO"
+      ]
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp",
+      "required": true,
+      "format": "yyyy-MM-dd HH:mm:ss"
+    },
+    {
+      "name": "closed_at",
+      "type": "timestamp",
+      "format": "yyyy-MM-dd HH:mm:ss"
+    },
+    {
+      "name": "cost_usd",
+      "type": "decimal",
+      "min": 0
+    },
+    {
+      "name": "short_text",
+      "type": "string"
+    }
+  ]
+}

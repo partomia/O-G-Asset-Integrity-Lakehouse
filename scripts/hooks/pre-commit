@@ -1,0 +1,7 @@
+#!/bin/sh
+# Secret scan of the staged changes (public repository). Install: scripts/install_hooks.sh
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: gitleaks not installed (brew install gitleaks); refusing to commit to a public repo" >&2
+  exit 1
+fi
+gitleaks git --staged --redact --no-banner -v || { echo "pre-commit: gitleaks found a secret; commit refused" >&2; exit 1; }

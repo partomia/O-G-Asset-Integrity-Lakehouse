@@ -1,0 +1,15 @@
+{
+  "format": "json",
+  "mime": "application/json",
+  "extensions": [
+    "json"
+  ],
+  "min_bytes": 2,
+  "required_keys": [
+    "video_id",
+    "asset_hint",
+    "captured_at",
+    "gps_track"
+  ],
+  "description": "Drone sidecar: valid JSON with video id, asset hint, capture time and GPS track"
+}
