@@ -351,7 +351,7 @@ Phases
 Thirteen phases, one commit each, pytest -q green before the next; Cloudera resources verified live one at a time and recorded in docs/PROJECT_LOG.md.
 	•	☒ 0. Scaffold: layout, config, contracts, requirement files, local Spark + Iceberg runner, CI skeleton; pick and pin the corrosion image set and check its licence.
 	•	☒ 1. Asset universe and batch generators: register, work orders, PDFs, drawings, SEG-Y, LAS, video, manifests, planted faults; tests.
-	•	☐ 2. Kafka producer: topics and schemas in Schema Registry, seeded producer, control messages, planted stream faults; run locally against a dev broker.
+	•	☒ 2. Kafka producer: topics and schemas in Schema Registry, seeded producer, control messages, planted stream faults; run locally against a dev broker.
 	•	☐ 3. Bronze and object catalog: contracts, doc_object, quarantine, load_audit, failed-batch flags; recon at bronze.
 	•	☐ 4. CDE streaming: bronze and aggregation streaming jobs, watermark and MERGE, stream recon, stop and restart drill.
 	•	☐ 5. Extraction and silver: the five extractors, OCR fallback, transform_log.

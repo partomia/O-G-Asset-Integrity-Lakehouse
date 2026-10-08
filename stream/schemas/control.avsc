@@ -1,0 +1,36 @@
+{
+  "type": "record",
+  "name": "StreamControl",
+  "namespace": "com.ogx.integrity",
+  "doc": "Producer's per-minute counts per tag (ogx.control): the stream reconciliation control",
+  "fields": [
+    {
+      "name": "minute",
+      "type": "string",
+      "doc": "event-time minute, ISO-8601 UTC"
+    },
+    {
+      "name": "topic",
+      "type": "string",
+      "doc": "topic the counts are for"
+    },
+    {
+      "name": "counts",
+      "type": {
+        "type": "map",
+        "values": "long"
+      },
+      "doc": "messages sent per sensor tag in that minute"
+    },
+    {
+      "name": "total",
+      "type": "long",
+      "doc": "sum of counts"
+    },
+    {
+      "name": "producer_run",
+      "type": "string",
+      "doc": "producer run id"
+    }
+  ]
+}

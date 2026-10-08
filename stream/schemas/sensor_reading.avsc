@@ -1,0 +1,56 @@
+{
+  "type": "record",
+  "name": "SensorReading",
+  "namespace": "com.ogx.integrity",
+  "doc": "One reading of one sensor tag (ogx.sensor.telemetry); JSON-encoded",
+  "fields": [
+    {
+      "name": "event_id",
+      "type": "string",
+      "doc": "sensor_tag:epoch millis"
+    },
+    {
+      "name": "sensor_tag",
+      "type": "string",
+      "doc": "ISA tag, e.g. PI-101A.PV"
+    },
+    {
+      "name": "event_ts",
+      "type": "string",
+      "doc": "event time, ISO-8601 UTC with millis"
+    },
+    {
+      "name": "value",
+      "type": "double",
+      "doc": "engineering value"
+    },
+    {
+      "name": "unit",
+      "type": "string",
+      "doc": "engineering unit as sent: psi, bar, degC, mm/s or mm/y"
+    },
+    {
+      "name": "quality",
+      "type": {
+        "type": "enum",
+        "name": "Quality",
+        "symbols": [
+          "GOOD",
+          "UNCERTAIN",
+          "BAD"
+        ]
+      },
+      "doc": "OPC quality"
+    },
+    {
+      "name": "seq",
+      "type": "long",
+      "doc": "per-tag sequence number"
+    },
+    {
+      "name": "producer_run",
+      "type": "string",
+      "doc": "producer run id"
+    }
+  ]
+}

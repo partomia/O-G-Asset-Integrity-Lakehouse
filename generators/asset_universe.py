@@ -251,6 +251,9 @@ def true_value(sensor_tag: str, ts: datetime, noise: random.Random | None = None
     a = sensor_index()[sensor_tag]
     kind = sensor_tag.split("-", 1)[0]
     base, sd = BASE.get((kind, a.asset_class), (100.0, 1.0))
+    if kind == "PI" and a.design_pressure_psi:
+        # operating pressure ~60 % of design, so HI (90 % of design) means something
+        base, sd = 0.6 * a.design_pressure_psi, 0.006 * a.design_pressure_psi
     day = days_since_epoch(ts)
     v = base * (1 + 0.01 * math.sin(2 * math.pi * (day % 1.0) + zlib.crc32(sensor_tag.encode()) % 7))
     deg = DEGRADATION.get(a.tag)

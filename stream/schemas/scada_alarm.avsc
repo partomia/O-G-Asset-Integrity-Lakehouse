@@ -1,0 +1,54 @@
+{
+  "type": "record",
+  "name": "ScadaAlarm",
+  "namespace": "com.ogx.integrity",
+  "doc": "A DCS alarm transition (ogx.scada.alarm); JSON-encoded",
+  "fields": [
+    {
+      "name": "alarm_id",
+      "type": "string",
+      "doc": "alarm event id"
+    },
+    {
+      "name": "sensor_tag",
+      "type": "string",
+      "doc": "tag in alarm"
+    },
+    {
+      "name": "event_ts",
+      "type": "string",
+      "doc": "event time, ISO-8601 UTC"
+    },
+    {
+      "name": "alarm_type",
+      "type": "string",
+      "doc": "HI, HIHI, LO, STUCK, ROC"
+    },
+    {
+      "name": "priority",
+      "type": "string",
+      "doc": "1 (highest) to 3"
+    },
+    {
+      "name": "value",
+      "type": [
+        "null",
+        "double"
+      ],
+      "doc": "value at transition"
+    },
+    {
+      "name": "limit",
+      "type": [
+        "null",
+        "double"
+      ],
+      "doc": "limit crossed"
+    },
+    {
+      "name": "state",
+      "type": "string",
+      "doc": "ACTIVE or CLEARED"
+    }
+  ]
+}
