@@ -154,7 +154,7 @@ def files(business_date: date, first_day: bool) -> list[tuple[str, bytes, dict]]
     else:
         out.append((f"asset_cdc_{d}.jsonl", asset_cdc(business_date),
                     {"entity": "erp_asset_cdc", "records": len(cdc_events(business_date))}))
-    rows, _ = work_orders(business_date)
+    rows, total = work_orders(business_date)
     out.append((f"work_orders_{d}.psv", work_orders_psv(business_date),
-                {"entity": "erp_work_order", "records": len(rows)}))
+                {"entity": "erp_work_order", "records": len(rows), "control_total": total}))
     return out
