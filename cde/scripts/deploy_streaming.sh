@@ -2,6 +2,8 @@
 # The two long-running CDE Spark Structured Streaming jobs:
 #   rsingh-ogx-stream-bronze  Kafka ogx.* -> bronze.sensor_reading / scada_alarm / stream_control
 #   rsingh-ogx-stream-agg     bronze.sensor_reading -> silver.sensor_window (watermark, MERGE)
+# and the producer as a CDE job, rsingh-ogx-stream-produce (create only; run it with
+#   cde job run --name rsingh-ogx-stream-produce --arg=--setup --arg=--mode --arg=backfill)
 #
 #   set -a; source .env; set +a
 #   ./cde/scripts/deploy_streaming.sh create     # create or update both jobs (no run)
@@ -78,6 +80,8 @@ case "${ACTION}" in
       --arg=--starting-offsets --arg="${STARTING_OFFSETS}"
     upsert "${JOBS[1]}" cde/jobs/stream_telemetry_agg.py \
       --arg=--db-prefix --arg="${DB_PREFIX}" --arg=--checkpoints --arg="${CHECKPOINTS}"
+    # the producer as a CDE job (run-time args pick the mode): --setup --mode backfill | --mode live
+    upsert "${JOB_PREFIX}-stream-produce" cde/jobs/stream_produce.py "${KCONF[@]}" --arg=--setup
     ;;
   start)
     for j in "${JOBS[@]}"; do
