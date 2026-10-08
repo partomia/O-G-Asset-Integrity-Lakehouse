@@ -268,6 +268,14 @@ def main(argv=None) -> int:
     if unknown:
         print(f"(ignoring arguments: {unknown})", flush=True)
     run_id = f"{args.mode}-{uuid.uuid4().hex[:8]}"
+    if args.sink == "kafka" and os.environ.get("OGX_PRODUCER_SETUP") == "1":
+        from stream.producer import topics
+
+        print("topics:", topics.create_topics(), flush=True)
+        try:
+            print("schemas:", topics.register_schemas(), flush=True)
+        except Exception as e:  # the stream does not depend on the registry; report and go on
+            print(f"schemas: not registered ({type(e).__name__}: {str(e)[:200]})", flush=True)
     sink = FileSink(args.out) if args.sink == "files" else KafkaSink()
     t0 = time.time()
     try:

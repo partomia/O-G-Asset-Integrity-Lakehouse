@@ -31,10 +31,23 @@ def kafka_config() -> dict:
                    sasl_plain_username=os.environ["OGX_KAFKA_USER"],
                    sasl_plain_password=os.environ["OGX_KAFKA_PASSWORD"])
     if "SSL" in proto:
-        ca = os.environ.get("OGX_KAFKA_CA_PEM") or str(ROOT / "certs" / "ca.pem")
-        cfg["ssl_cafile"] = os.path.expanduser(ca) if os.path.exists(os.path.expanduser(ca)) else None
+        cfg["ssl_cafile"] = ca_file()
         cfg["ssl_check_hostname"] = True
     return cfg
+
+
+def ca_file() -> str | None:
+    """The environment's CA certificate: OGX_KAFKA_CA_PEM (a path, on a laptop) or
+    OGX_KAFKA_CA_PEM_TEXT (the PEM itself, in the CAI project environment)."""
+    path = os.path.expanduser(os.environ.get("OGX_KAFKA_CA_PEM", ""))
+    if path and os.path.exists(path):
+        return path
+    text = os.environ.get("OGX_KAFKA_CA_PEM_TEXT")
+    if text:
+        out = Path("/tmp/ogx-ca.pem")
+        out.write_text(text)
+        return str(out)
+    return None
 
 
 def create_topics(check_only: bool = False) -> dict:
@@ -68,9 +81,7 @@ def register_schemas() -> dict:
 
     base = os.environ["OGX_SCHEMA_REGISTRY_URL"].rstrip("/")
     auth = (os.environ["OGX_WORKLOAD_USER"], os.environ["OGX_WORKLOAD_PASSWORD"])
-    verify = os.path.expanduser(os.environ.get("OGX_KAFKA_CA_PEM", "")) or True
-    if verify is not True and not os.path.exists(verify):
-        verify = True
+    verify = ca_file() or True
     out = {}
     for key, fname in SCHEMAS.items():
         topic = CFG["topics"][key]["name"]
