@@ -262,6 +262,52 @@ def stream_checks(r: Recon, _manifests: dict) -> None:
 CHECKS.append(("stream", stream_checks))
 
 
+# ---------------------------------------------------------------- silver
+
+EXTRACT_OUTPUTS = {"pdf:inspection": ["inspection_finding"], "pdf:drawings": ["drawing_tag"], "png:drawings": ["drawing_tag"],
+                   "segy:seismic": ["seismic_survey"], "las:welllogs": ["well_log_header"], "avi:drone": ["video_keyframe"]}
+
+
+def silver_checks(r: Recon, _manifests: dict) -> None:
+    b, s = r.table("bronze", "erp_work_order"), r.table("silver", "erp_work_order")
+    if b is not None and s is not None:
+        b, s = r.on_date(b), r.on_date(s, "business_date")
+        n_b, n_s = b.count(), s.count()
+        dupes = n_b - b.dropDuplicates(["aufnr"]).count()
+        r.add("silver", "erp_work_order", "silver_records", n_b, n_s, explained_by=-dupes,
+              detail=f"bronze {n_b} accepted, {dupes} duplicate aufnr, silver {n_s}")
+        r.add("silver", "erp_work_order", "silver_total", _sum(b, "cost_usd"), _sum(s, "cost_usd"),
+              detail="work order cost, bronze vs silver (USD)")
+    objs = r.table("bronze", "doc_object")
+    if objs is None:
+        return
+    valid = r.on_date(objs).where("ingest_status = 'VALID' AND format <> 'json'").select("doc_id", "format", "source")
+    errors = r.table("silver", "extract_error")
+    err_ids = {x["doc_id"] for x in r.on_date(errors, "business_date").select("doc_id").collect()} if errors is not None else set()
+    by_kind = {}
+    for x in valid.collect():
+        by_kind.setdefault(f"{x['format']}:{x['source']}", set()).add(x["doc_id"])
+    for kind, ids in sorted(by_kind.items()):
+        found = set()
+        for table in EXTRACT_OUTPUTS.get(kind, []):
+            t = r.table("silver", table)
+            if t is not None:
+                found |= {x["doc_id"] for x in r.on_date(t, "business_date").select("doc_id").distinct().collect()}
+        hit, err = len(ids & found), len(ids & err_ids)
+        r.add("silver", f"extract:{kind}", "extracted_objects", len(ids), hit, explained_by=-err if err else None,
+              detail=f"{len(ids)} valid object(s), {hit} with extracted rows, {err} in silver.extract_error")
+    f = r.table("silver", "inspection_finding")
+    if f is not None:
+        f = r.on_date(f, "business_date")
+        missing = f.where("report_no IS NULL OR equipment IS NULL OR wall_loss_pct IS NULL").count()
+        r.add("silver", "inspection_finding", "fields_extracted", 0, missing,
+              detail=f"{missing} report(s) without report number, equipment or wall loss "
+                     f"({f.where(F.col('extract_method') == 'OCR').count()} read by OCR)")
+
+
+CHECKS.append(("silver", silver_checks))
+
+
 # ---------------------------------------------------------------- output
 
 

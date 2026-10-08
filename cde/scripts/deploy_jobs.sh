@@ -36,6 +36,7 @@ cde repository sync --name "${REPO_NAME}"
 
 create_job() {
   local name=$1 file=$2
+  if [[ ! -f "${file}" ]]; then echo "==> Skipping ${name}: ${file} not in this checkout"; return; fi
   if cde job describe --name "${name}" &>/dev/null; then
     echo "==> Updating job ${name} (${file})"
     cde job update --name "${name}" --application-file "${file}" "${RESOURCES[@]}" >/dev/null
