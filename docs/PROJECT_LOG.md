@@ -141,3 +141,11 @@ Live, in order:
   process with the same champion files.
 - Not built before the demo: frame_qc and equipment_risk heads, guardrails, lakehouse scoring
   and outcomes. IRE uses the gold rule score until model scores exist (`p_source`).
+
+## 2026-10-09 09:05 - CAI app and model restart (approved)
+- Workbench app `nk5h-c7u1-c0sr-w54t` restarted: it had started before the Impala env vars were set, so it showed the
+  "OGX Integrity Workbench" fallback page. After restart: APPLICATION_RUNNING; a local render against live Impala reaches
+  all four tabs (Worklist, Asset 360, Sensors, Data quality).
+- Model deployment `ae268c14` restarted: no longer "model busy", but every call (sha256 or image_b64) returns 400 from
+  replica `ogx-integrity-14-32`, i.e. `predict` raises inside the build. Open item: inspect the model build/replica logs
+  in the CAI UI. The app scores keyframes in-process with `serve.predict`, so the demo does not depend on the endpoint.
