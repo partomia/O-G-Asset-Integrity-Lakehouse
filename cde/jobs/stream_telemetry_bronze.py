@@ -48,7 +48,7 @@ def parser():
     p.add_argument("--source", default="kafka", choices=["kafka", "files"])
     p.add_argument("--input", default=None, help="--source files: the producer's --out folder")
     p.add_argument("--checkpoints", default=C.sibling(C.DEFAULT_LANDING, "checkpoints"))
-    p.add_argument("--trigger", default=f"{STREAM['spark']['trigger_seconds']}s")
+    p.add_argument("--trigger", default=f"{STREAM['spark']['trigger_seconds']} seconds")
     p.add_argument("--starting-offsets", default=STREAM["spark"]["starting_offsets"])
     p.add_argument("--max-offsets", type=int, default=STREAM["spark"]["max_offsets_per_trigger"])
     p.add_argument("--await-seconds", type=int, default=0, help="stop after N seconds (0: run until stopped)")

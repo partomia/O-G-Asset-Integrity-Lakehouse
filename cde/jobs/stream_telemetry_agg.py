@@ -45,7 +45,7 @@ def parser():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--db-prefix", default=C.DEFAULT_PREFIX)
     p.add_argument("--checkpoints", default=C.sibling(C.DEFAULT_LANDING, "checkpoints"))
-    p.add_argument("--trigger", default=f"{SPARK_CFG['trigger_seconds']}s")
+    p.add_argument("--trigger", default=f"{SPARK_CFG['trigger_seconds']} seconds")
     p.add_argument("--await-seconds", type=int, default=0)
     p.add_argument("--source", default=None, help="ignored (the source is the bronze table)")
     p.add_argument("--input", default=None, help="ignored")
