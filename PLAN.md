@@ -353,14 +353,14 @@ Thirteen phases, one commit each, pytest -q green before the next; Cloudera reso
 	•	☒ 1. Asset universe and batch generators: register, work orders, PDFs, drawings, SEG-Y, LAS, video, manifests, planted faults; tests.
 	•	☒ 2. Kafka producer: topics and schemas in Schema Registry, seeded producer, control messages, planted stream faults; run locally against a dev broker.
 	•	☒ 3. Bronze and object catalog: contracts, doc_object, quarantine, load_audit, failed-batch flags; recon at bronze.
-	•	☐ 4. CDE streaming: bronze and aggregation streaming jobs, watermark and MERGE, stream recon, stop and restart drill.
+	•	☒ 4. CDE streaming: bronze and aggregation streaming jobs, watermark and MERGE, stream recon, stop and restart drill.
 	•	☒ 5. Extraction and silver: the five extractors, OCR fallback, transform_log.
 	•	☒ 6. Asset master: candidates, match rules, asset_xref, golden_asset, review queue.
 	•	☒ 7. Gold: integrity model, SCD2, source mapping check.
 	•	☐ 8. CAI ML chain: features and hash, three heads, gate, deploy, AI Registry, jobs ogx-00 to ogx-05, ci.yml and cai-mlops.yml.
 	•	☐ 9. Guardrails: input, output and process guardrails with tests that make each fire; ref.guardrail_event.
 	•	☐ 10. Lakehouse scoring and outcomes: DAG calls ogx-06, fact_review_outcome, silent trial, ogx-07 promotion.
-	•	☐ 11. CDW, CDV and governance: semantic views, KPI consistency check, four dashboards, Atlas and Ranger as code.
+	•	☒ 11. CDW, CDV and governance: semantic views, KPI consistency check, four dashboards, Atlas and Ranger as code.
 	•	☐ 12. Application and docs: Integrity Workbench, README, runbooks, capabilities, thermography as the worked extension.
 How we work
 The repo is public, so nothing secret or customer-specific ever enters Git, and every Cloudera action is approved once, up front, as a list.
