@@ -100,6 +100,10 @@ def windowed(df: DataFrame) -> DataFrame:
 def finish(df: DataFrame, batch_key: str) -> DataFrame:
     th = STREAM["thresholds"]
     high = F.create_map(*[x for k, v in th.items() for x in (F.lit(k), F.lit(float(v["high"])))])[F.col("measurement")]
+    over = STREAM.get("threshold_overrides", {})
+    if over:
+        high = F.coalesce(F.create_map(*[x for k, v in over.items() for x in (F.lit(k), F.lit(float(v)))])[
+            F.substring("sensor_tag", 1, 4)], high)
     mins = SPARK_CFG["min_readings_per_window"]
     enough = F.col("n") >= F.create_map(*[x for k, v in mins.items() for x in (F.lit(k), F.lit(v))])[F.col("window_size")]
     flat = enough & (F.coalesce(F.col("std_value"), F.lit(1.0)) < 1e-9)

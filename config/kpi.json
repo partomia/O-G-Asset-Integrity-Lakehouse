@@ -4,6 +4,7 @@
     "criticality_weight": {"A": 3.0, "B": 2.0, "C": 1.0},
     "review_hours_per_inspection": 0.5,
     "review_shift_start_hour": 8,
+    "severe_wall_loss_pct": 20.0,
     "linked_statuses": ["EXTRACTED", "EXTRACTED_OCR"]
   },
   "kpis": [

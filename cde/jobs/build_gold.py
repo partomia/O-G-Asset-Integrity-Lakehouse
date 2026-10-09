@@ -34,6 +34,8 @@ from pyspark.sql import functions as F  # noqa: E402
 STAGE = "gold"
 TRACKED = ["criticality", "status", "design_pressure_psi", "inspection_interval_days", "last_inspection_date", "is_active"]
 CRIT_WEIGHT = {"A": 1.0, "B": 0.6, "C": 0.3}
+THRESHOLD_OVERRIDES = C.load_json("config/streaming.json").get("threshold_overrides", {"-": 0.0})
+STUCK_MIN_READINGS = C.load_json("config/streaming.json")["spark"]["min_readings_per_window"]["15 minutes"]
 
 
 def parser():
@@ -127,9 +129,13 @@ def run(spark, argv=None) -> dict:
         dt = spark.table(t("silver", "drawing_tag")).where("format = 'pdf'") if C.table_exists(spark, t("silver", "drawing_tag")) else None
         if dt is not None:
             tag_map = xref_for(spark, names, d, ["drawing"]).select(F.col("src_name").alias("tag"), "asset_id").dropDuplicates(["tag"])
+            # tags are read from the vector PDF; its raster PNG (same sheet stem) links to the same assets
+            stem = F.regexp_extract(F.col("file_name"), r"^(.*)\.[^.]+$", 1)
+            drawings = objs.where("source = 'drawings'").withColumn("_stem", stem)
             sheets = (dt.where(F.col("business_date") == day_lit(d)).join(tag_map, "tag", "inner")
-                      .select("doc_id", "asset_id").distinct())
-            drw = objs.where("source = 'drawings'").join(sheets, "doc_id", "inner").select(
+                      .select("doc_id", "asset_id").distinct()
+                      .join(drawings.select("doc_id", "_stem"), "doc_id", "inner").select("_stem", "asset_id").distinct())
+            drw = drawings.join(sheets, "_stem", "inner").select(
                 "doc_id", "asset_id", "source", "format", "file_name", "mime_type", "size_bytes", "raw_path",
                 "captured_at", "ingest_status", "asset_hint", F.lit("DRAWING_TAG").alias("resolved_by"))
             fd = fd.where("source <> 'drawings'").unionByName(drw)
@@ -144,8 +150,10 @@ def run(spark, argv=None) -> dict:
             fs = (sw.groupBy("sensor_tag", "measurement")
                   .agg(F.sum("n").alias("readings"), F.avg("mean_value").alias("mean_value"),
                        F.max("max_value").alias("max_value"), F.avg("slope_per_h").alias("mean_slope_per_h"),
-                       F.sum(F.col("is_stuck").cast("int")).alias("stuck_windows"),
-                       F.sum(F.col("is_breach").cast("int")).alias("breach_windows"),
+                       F.sum((F.col("is_stuck") | ((F.col("std_value") < 1e-9) & (F.col("n") >= STUCK_MIN_READINGS)))
+                             .cast("int")).alias("stuck_windows"),
+                       F.sum((F.col("max_value") > F.coalesce(F.create_map(*[x for k, v in THRESHOLD_OVERRIDES.items() for x in (F.lit(k), F.lit(float(v)))])[F.substring("sensor_tag", 1, 4)],
+                                                             F.col("high_threshold"))).cast("int")).alias("breach_windows"),
                        F.sum("n_late").alias("late_readings"), F.sum("n_bar").alias("bar_readings"),
                        F.count("*").alias("windows"))
                   .join(smap, "sensor_tag", "left"))
@@ -159,6 +167,8 @@ def run(spark, argv=None) -> dict:
         # risk
         out["fact_asset_risk_daily"] = write_fact(spark, names, "fact_asset_risk_daily", risk_frame(spark, names, d, golden), d)
 
+        load_kpis(spark, names, d)
+
         for k, v in out.items():
             audit.load(STAGE, k, "COMMITTED", rows_out=v)
             audit.transform(f"build {k}", "historise" if k == "dim_asset" else "enrich", "silver.*,asset.*", t("gold", k), 0, v, "")
@@ -170,6 +180,28 @@ def run(spark, argv=None) -> dict:
     finally:
         audit.flush()
     return out
+
+
+def load_kpis(spark, names, d) -> None:
+    """config/kpi.json -> ref.kpi_definition and ref.kpi_parameter for the business date, so the
+    semantic views read a parameter from one place and a change is dated."""
+    cfg = C.load_json("config/kpi.json")
+    defs = [(k["kpi_code"], k["name"], k["definition"], k["formula"], k["grain"], k["certified_view"], k["owner"],
+             k["version"], k["certified_on"], k["glossary_term"], d) for k in cfg["kpis"]]
+    C.write_partitions(C.rows_df(spark, defs, "kpi_code string, name string, definition string, formula string, "
+                                 "grain string, certified_view string, owner string, version string, "
+                                 "certified_on string, glossary_term string, business_date date"),
+                       names.t("ref", "kpi_definition"), ["business_date"])
+    params = []
+    for name, v in cfg["parameters"].items():
+        if isinstance(v, dict):
+            params += [(f"{name}.{k}", float(x), None, d) for k, x in v.items()]
+        elif isinstance(v, list):
+            params.append((name, None, ",".join(v), d))
+        else:
+            params.append((name, float(v), None, d))
+    C.write_partitions(C.rows_df(spark, params, "parameter string, value double, text_value string, business_date date"),
+                       names.t("ref", "kpi_parameter"), ["business_date"])
 
 
 def risk_frame(spark, names, d, golden):

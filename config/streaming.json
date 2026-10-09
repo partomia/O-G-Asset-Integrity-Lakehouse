@@ -22,7 +22,7 @@
     "watermark": "10 minutes",
     "windows": ["1 minute", "15 minutes"],
     "stuck_windows": 3,
-    "min_readings_per_window": {"1 minute": 6, "15 minutes": 90},
+    "min_readings_per_window": {"1 minute": 2, "15 minutes": 24},
     "starting_offsets": "earliest",
     "max_offsets_per_trigger": 200000
   },
@@ -32,5 +32,6 @@
     "temperature_c": {"high": 180.0},
     "vibration_mm_s": {"high": 7.1},
     "wall_loss_mm_y": {"high": 0.5}
-  }
+  },
+  "threshold_overrides": {"PI-W": 2500.0}
 }
