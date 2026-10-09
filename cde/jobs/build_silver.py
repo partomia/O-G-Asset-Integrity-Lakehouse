@@ -123,6 +123,7 @@ def build_assets(spark, names, audit, d: date) -> int:
             MERGE INTO {target} t USING ogx_asset_state s ON t.equnr = s.equnr
             WHEN MATCHED AND ({differs}) THEN UPDATE SET *
             WHEN NOT MATCHED THEN INSERT *""")
+    C.write_partitions(df, names.t("silver", "erp_asset_daily"), ["as_of_date"])   # the register as of each date
     ch_t = names.t("silver", "erp_asset_change")
     C.ensure_table(spark, ch_t, CHANGE_SCHEMA, ["business_date"])
     spark.sql(f"DELETE FROM {ch_t} WHERE business_date = DATE '{d.isoformat()}'")

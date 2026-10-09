@@ -182,7 +182,8 @@ def run(spark, argv=None) -> dict:
     audit = C.Audit(spark, names, "build_asset_master", d, args.pipeline_run)
     audit.load(STAGE, "*", "STARTED")
     try:
-        reg = spark.table(names.t("silver", "erp_asset")).collect()
+        reg = spark.table(names.t("silver", "erp_asset_daily")).where(
+            F.col("as_of_date") == F.lit(d.isoformat()).cast("date")).collect()
         hist = {}   # the register as of d from the snapshot history when re-run for a past date
         register = []
         for r in reg:
