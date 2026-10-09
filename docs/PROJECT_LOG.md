@@ -121,3 +121,11 @@ Live, in order:
 - **SDX**: `scripts/governance.py apply`: 4 `OGX_SENSITIVE_*` classifications on 26 columns,
   glossary "OGX Integrity KPIs" with 3 terms on 7 views, Ranger tag masking policies
   `rsingh-ogx-sensitive-{hash,location,subsurface,text}` for federal01 / federal07. `verify: OK`.
+- 10-08: extract run 589 and stages run 590 succeeded. KPI consistency 9 of 9 MATCHED, IRE
+  23.30 over 223 assets, 1 abstained, coverage 100 %: identical to the local run. All five
+  business dates are loaded end to end on CDE, CDW, Data Visualization and the app.
+- Live stream for the demo date: `rsingh-ogx-stream-produce --mode live --duration 10800`
+  (run 591, 3 hours, stops by itself) feeds `ogx.sensor.telemetry` for the running bronze and
+  aggregation streams.
+- Not built before the demo: phases 8 to 10 (CAI ML chain, guardrails, model scoring and
+  outcomes). IRE uses the gold rule score until model scores exist (`p_source`).
