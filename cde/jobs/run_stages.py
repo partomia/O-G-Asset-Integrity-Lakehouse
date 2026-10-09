@@ -27,7 +27,10 @@ def load_job(filename: str):
     spec = importlib.util.spec_from_file_location(filename[:-3], JOBS_DIR / filename)
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
+    try:
+        spec.loader.exec_module(module)
+    finally:
+        del sys.modules[spec.name]   # unregistered, so executors get its closures by value
     return module
 
 
