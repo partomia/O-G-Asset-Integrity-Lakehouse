@@ -127,5 +127,17 @@ Live, in order:
 - Live stream for the demo date: `rsingh-ogx-stream-produce --mode live --duration 10800`
   (run 591, 3 hours, stops by itself) feeds `ogx.sensor.telemetry` for the running bronze and
   aggregation streams.
-- Not built before the demo: phases 8 to 10 (CAI ML chain, guardrails, model scoring and
-  outcomes). IRE uses the gold rule score until model scores exist (`p_source`).
+- **CAI corrosion chain** (08:35 to 08:40): `ogx-01-build-features` → `ogx-02-train-validate`
+  → `ogx-03-kpi-gate` → `ogx-04-deploy-champion`, all ENGINE_SUCCEEDED at 1 vCPU / 4 GB.
+  **Plan change:** colour/texture features (`features/feature_logic.py`, numpy + Pillow) instead
+  of ViT-B/16 embeddings, so the chain fits 1 vCPU and the model build is slim
+  (`requirements-model.txt`, pinned by the deploy job to the training scikit-learn). Three tree
+  ensembles chosen by 5-fold out-of-fold AUROC on train + valid; the threshold comes from the
+  out-of-fold scores (VALID alone set it at 0.002 and failed specificity). Champion: gradient
+  boosting, TEST severe AUROC 0.862, sensitivity 0.931, specificity 0.513, Brier 0.124; gate
+  PASSED. CAI Model `ogx-integrity` (`786c915b-…`), build "built", deployment "deployed"
+  at 1 vCPU / 2 GB. The endpoint answers "model busy" (context deadline exceeded) on every
+  call; a restart or redeploy awaits approval. The Workbench scores drone keyframes in
+  process with the same champion files.
+- Not built before the demo: frame_qc and equipment_risk heads, guardrails, lakehouse scoring
+  and outcomes. IRE uses the gold rule score until model scores exist (`p_source`).
