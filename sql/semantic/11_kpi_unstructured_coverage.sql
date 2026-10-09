@@ -15,16 +15,16 @@ SELECT
     o.doc_id,
     o.file_name,
     o.source,
-    CASE WHEN o.source = 'drawings' THEN 'drawing' ELSE o.format END     AS format,
+    CASE WHEN o.source = 'drawings' THEN 'drawing' ELSE o.`format` END   AS object_format,
     o.ingest_status,
     o.reject_reason,
     d.asset_id,
     1                                                                    AS is_received,
     CASE WHEN o.ingest_status = 'VALID' THEN 1 ELSE 0 END                AS is_extracted,
-    CASE WHEN o.ingest_status = 'VALID' AND (d.asset_id IS NOT NULL OR o.format = 'segy')
+    CASE WHEN o.ingest_status = 'VALID' AND (d.asset_id IS NOT NULL OR o.`format` = 'segy')
          THEN 1 ELSE 0 END                                               AS is_covered
 FROM rsingh_ogx_bronze.doc_object o
 LEFT JOIN (SELECT doc_id, business_date, MIN(asset_id) AS asset_id
            FROM rsingh_ogx_gold.fact_document GROUP BY doc_id, business_date) d
        ON d.doc_id = o.doc_id AND d.business_date = o._business_date
-WHERE o.format <> 'json' AND o.ingest_status <> 'DUPLICATE';
+WHERE o.`format` <> 'json' AND o.ingest_status <> 'DUPLICATE';

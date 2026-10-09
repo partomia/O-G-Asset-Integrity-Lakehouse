@@ -223,7 +223,7 @@ class Semantic:
             f"SELECT risk_rank, tag, asset_class, facility_id, criticality, wall_loss_pct, rule_score, risk_band, "
             f"exposure, abstain_reason FROM {sem('mis_risk_worklist')} {on} AND risk_rank <= 10 ORDER BY risk_rank"))
         show("coverage by format", *self.e.query(
-            f"SELECT format, received, extracted, covered, coverage FROM {sem('mis_coverage_by_format')} {on} ORDER BY format"))
+            f"SELECT object_format, received, extracted, covered, coverage FROM {sem('mis_coverage_by_format')} {on} ORDER BY object_format"))
         show("severe-defect time to review", *self.e.query(
             f"SELECT worklist_order, severe_defects, avg_hours, max_hours FROM {sem('mis_time_to_review')} {on} "
             f"ORDER BY worklist_order"))

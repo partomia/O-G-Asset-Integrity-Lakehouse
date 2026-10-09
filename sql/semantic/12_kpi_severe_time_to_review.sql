@@ -18,7 +18,7 @@ WITH p AS (
     FROM rsingh_ogx_ref.kpi_parameter GROUP BY business_date
 ),
 i AS (
-    SELECT f.business_date, f.inspection_id, f.doc_id, f.asset_id, f.equipment AS tag, f.method,
+    SELECT f.business_date, f.inspection_id, f.doc_id, f.asset_id, f.equipment AS tag, f.`method`,
            f.wall_loss_pct, f.inspected_at, COALESCE(r.rule_score, 0) AS rule_score,
            p.hours_each, p.severe_pct,
            unix_timestamp(CAST(concat(CAST(date_add(f.business_date, 1) AS STRING), ' 00:00:00') AS TIMESTAMP))
@@ -37,7 +37,7 @@ q AS (
            ROW_NUMBER() OVER (PARTITION BY business_date ORDER BY inspected_at, inspection_id) AS pos
     FROM i
 )
-SELECT business_date, worklist_order, inspection_id, doc_id, asset_id, tag, method, wall_loss_pct,
+SELECT business_date, worklist_order, inspection_id, doc_id, asset_id, tag, `method`, wall_loss_pct,
        rule_score, inspected_at, pos AS worklist_position,
        CAST((shift_start_s + pos * hours_each * 3600 - unix_timestamp(inspected_at)) / 3600.0 AS DOUBLE)
            AS hours_to_review

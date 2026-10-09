@@ -1,0 +1,1059 @@
+{
+ "segments": [],
+ "staticasset": [],
+ "dashboards": [
+  {
+   "model": "reports.report",
+   "pk": 13000,
+   "fields": {
+    "report_name": "OGX Integrity KPIs",
+    "report_description": "docs/DATAVIZ.md",
+    "dataset": 13100,
+    "workspace": 1,
+    "report_type": "dashboard",
+    "report_mode": null,
+    "dashboard_url_name": "",
+    "report_data": "{\"report_title\": \"OGX Integrity KPIs\", \"numColumns\": 64, \"report_subtitle\": \"Integrity risk exposure, risk-ranked worklist, unstructured coverage and severe-defect time to review\", \"dashboard_widgets\": [{\"col\": 1, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-1-widget-13201\"}, {\"col\": 17, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-2-widget-13202\"}, {\"col\": 33, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-3-widget-13203\"}, {\"col\": 49, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-4-widget-13204\"}, {\"col\": 1, \"row\": 11, \"size_x\": 32, \"size_y\": 22, \"id\": \"uri-5-widget-13205\"}, {\"col\": 33, \"row\": 11, \"size_x\": 32, \"size_y\": 22, \"id\": \"uri-6-widget-13206\"}, {\"col\": 1, \"row\": 33, \"size_x\": 64, \"size_y\": 30, \"id\": \"uri-7-widget-13207\"}], \"dashboard_sheets\": [{\"sheet_id\": 1, \"order\": 1, \"sheet_handle_title\": \"Integrity risk\", \"behaviors\": {}, \"visual_widgets\": [{\"col\": 1, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-1-widget-13201\"}, {\"col\": 17, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-2-widget-13202\"}, {\"col\": 33, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-3-widget-13203\"}, {\"col\": 49, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-4-widget-13204\"}, {\"col\": 1, \"row\": 11, \"size_x\": 32, \"size_y\": 22, \"id\": \"uri-5-widget-13205\"}, {\"col\": 33, \"row\": 11, \"size_x\": 32, \"size_y\": 22, \"id\": \"uri-6-widget-13206\"}, {\"col\": 1, \"row\": 33, \"size_x\": 64, \"size_y\": 30, \"id\": \"uri-7-widget-13207\"}], \"control_widgets\": []}, {\"sheet_id\": 2, \"order\": 2, \"sheet_handle_title\": \"Coverage and review time\", \"behaviors\": {}, \"visual_widgets\": [{\"col\": 1, \"row\": 1, \"size_x\": 32, \"size_y\": 22, \"id\": \"uri-1-widget-13208\"}, {\"col\": 33, \"row\": 1, \"size_x\": 32, \"size_y\": 22, \"id\": \"uri-2-widget-13209\"}, {\"col\": 1, \"row\": 23, \"size_x\": 64, \"size_y\": 22, \"id\": \"uri-3-widget-13210\"}, {\"col\": 1, \"row\": 45, \"size_x\": 64, \"size_y\": 20, \"id\": \"uri-4-widget-13211\"}], \"control_widgets\": []}], \"user_settings\": {\"dashboard_width\": \"1280\", \"display_filters\": \"true\", \"permit_csv_download_dashboard\": \"true\"}, \"global_control_widgets\": [], \"control_widgets\": [], \"click_behavior\": {}}",
+    "shared_visual_dashboards": "[]",
+    "parent_report": null,
+    "uuid": "a660fa91-2ac3-55b5-8df5-8eb9c9a1ab28",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": null
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13001,
+   "fields": {
+    "report_name": "OGX Reconciliation & Data Quality",
+    "report_description": "docs/DATAVIZ.md",
+    "dataset": 13104,
+    "workspace": 1,
+    "report_type": "dashboard",
+    "report_mode": null,
+    "dashboard_url_name": "",
+    "report_data": "{\"report_title\": \"OGX Reconciliation & Data Quality\", \"numColumns\": 64, \"report_subtitle\": \"Reconciliation per layer and batch, KPI consistency, load audit\", \"dashboard_widgets\": [{\"col\": 1, \"row\": 1, \"size_x\": 13, \"size_y\": 10, \"id\": \"uri-1-widget-13301\"}, {\"col\": 14, \"row\": 1, \"size_x\": 13, \"size_y\": 10, \"id\": \"uri-2-widget-13302\"}, {\"col\": 27, \"row\": 1, \"size_x\": 13, \"size_y\": 10, \"id\": \"uri-3-widget-13303\"}, {\"col\": 40, \"row\": 1, \"size_x\": 13, \"size_y\": 10, \"id\": \"uri-4-widget-13304\"}, {\"col\": 53, \"row\": 1, \"size_x\": 12, \"size_y\": 10, \"id\": \"uri-5-widget-13305\"}, {\"col\": 1, \"row\": 11, \"size_x\": 24, \"size_y\": 22, \"id\": \"uri-6-widget-13306\"}, {\"col\": 25, \"row\": 11, \"size_x\": 40, \"size_y\": 22, \"id\": \"uri-7-widget-13307\"}], \"dashboard_sheets\": [{\"sheet_id\": 1, \"order\": 1, \"sheet_handle_title\": \"Latest batch\", \"behaviors\": {}, \"visual_widgets\": [{\"col\": 1, \"row\": 1, \"size_x\": 13, \"size_y\": 10, \"id\": \"uri-1-widget-13301\"}, {\"col\": 14, \"row\": 1, \"size_x\": 13, \"size_y\": 10, \"id\": \"uri-2-widget-13302\"}, {\"col\": 27, \"row\": 1, \"size_x\": 13, \"size_y\": 10, \"id\": \"uri-3-widget-13303\"}, {\"col\": 40, \"row\": 1, \"size_x\": 13, \"size_y\": 10, \"id\": \"uri-4-widget-13304\"}, {\"col\": 53, \"row\": 1, \"size_x\": 12, \"size_y\": 10, \"id\": \"uri-5-widget-13305\"}, {\"col\": 1, \"row\": 11, \"size_x\": 24, \"size_y\": 22, \"id\": \"uri-6-widget-13306\"}, {\"col\": 25, \"row\": 11, \"size_x\": 40, \"size_y\": 22, \"id\": \"uri-7-widget-13307\"}], \"control_widgets\": []}, {\"sheet_id\": 2, \"order\": 2, \"sheet_handle_title\": \"By business date\", \"behaviors\": {}, \"visual_widgets\": [{\"col\": 1, \"row\": 1, \"size_x\": 64, \"size_y\": 22, \"id\": \"uri-1-widget-13308\"}, {\"col\": 1, \"row\": 23, \"size_x\": 64, \"size_y\": 22, \"id\": \"uri-2-widget-13309\"}], \"control_widgets\": []}, {\"sheet_id\": 3, \"order\": 3, \"sheet_handle_title\": \"Load audit\", \"behaviors\": {}, \"visual_widgets\": [{\"col\": 1, \"row\": 1, \"size_x\": 32, \"size_y\": 10, \"id\": \"uri-1-widget-13310\"}, {\"col\": 33, \"row\": 1, \"size_x\": 32, \"size_y\": 10, \"id\": \"uri-2-widget-13311\"}, {\"col\": 1, \"row\": 11, \"size_x\": 64, \"size_y\": 22, \"id\": \"uri-3-widget-13312\"}, {\"col\": 1, \"row\": 33, \"size_x\": 64, \"size_y\": 26, \"id\": \"uri-4-widget-13313\"}], \"control_widgets\": []}], \"user_settings\": {\"dashboard_width\": \"1280\", \"display_filters\": \"true\", \"permit_csv_download_dashboard\": \"true\"}, \"global_control_widgets\": [], \"control_widgets\": [], \"click_behavior\": {}}",
+    "shared_visual_dashboards": "[]",
+    "parent_report": null,
+    "uuid": "3763e07f-6d64-5475-8c4e-cac133770ac5",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": null
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13002,
+   "fields": {
+    "report_name": "OGX Asset Master",
+    "report_description": "docs/DATAVIZ.md",
+    "dataset": 13106,
+    "workspace": 1,
+    "report_type": "dashboard",
+    "report_mode": null,
+    "dashboard_url_name": "",
+    "report_data": "{\"report_title\": \"OGX Asset Master\", \"numColumns\": 64, \"report_subtitle\": \"ERP, inspection, drawing, sensor and drone names resolved to one golden asset\", \"dashboard_widgets\": [{\"col\": 1, \"row\": 1, \"size_x\": 21, \"size_y\": 10, \"id\": \"uri-1-widget-13401\"}, {\"col\": 22, \"row\": 1, \"size_x\": 21, \"size_y\": 10, \"id\": \"uri-2-widget-13402\"}, {\"col\": 43, \"row\": 1, \"size_x\": 22, \"size_y\": 10, \"id\": \"uri-3-widget-13403\"}, {\"col\": 1, \"row\": 11, \"size_x\": 64, \"size_y\": 22, \"id\": \"uri-4-widget-13404\"}, {\"col\": 1, \"row\": 33, \"size_x\": 64, \"size_y\": 22, \"id\": \"uri-5-widget-13405\"}], \"dashboard_sheets\": [{\"sheet_id\": 1, \"order\": 1, \"sheet_handle_title\": \"Resolution\", \"behaviors\": {}, \"visual_widgets\": [{\"col\": 1, \"row\": 1, \"size_x\": 21, \"size_y\": 10, \"id\": \"uri-1-widget-13401\"}, {\"col\": 22, \"row\": 1, \"size_x\": 21, \"size_y\": 10, \"id\": \"uri-2-widget-13402\"}, {\"col\": 43, \"row\": 1, \"size_x\": 22, \"size_y\": 10, \"id\": \"uri-3-widget-13403\"}, {\"col\": 1, \"row\": 11, \"size_x\": 64, \"size_y\": 22, \"id\": \"uri-4-widget-13404\"}, {\"col\": 1, \"row\": 33, \"size_x\": 64, \"size_y\": 22, \"id\": \"uri-5-widget-13405\"}], \"control_widgets\": []}], \"user_settings\": {\"dashboard_width\": \"1280\", \"display_filters\": \"true\", \"permit_csv_download_dashboard\": \"true\"}, \"global_control_widgets\": [], \"control_widgets\": [], \"click_behavior\": {}}",
+    "shared_visual_dashboards": "[]",
+    "parent_report": null,
+    "uuid": "5cd28ef5-7bf8-575d-970c-7f5d9aa56e57",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": null
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13003,
+   "fields": {
+    "report_name": "OGX Sensor Health",
+    "report_description": "docs/DATAVIZ.md",
+    "dataset": 13108,
+    "workspace": 1,
+    "report_type": "dashboard",
+    "report_mode": null,
+    "dashboard_url_name": "",
+    "report_data": "{\"report_title\": \"OGX Sensor Health\", \"numColumns\": 64, \"report_subtitle\": \"Streaming telemetry per sensor and day: breaches, stuck sensors, unit changes, late readings\", \"dashboard_widgets\": [{\"col\": 1, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-1-widget-13501\"}, {\"col\": 17, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-2-widget-13502\"}, {\"col\": 33, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-3-widget-13503\"}, {\"col\": 49, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-4-widget-13504\"}, {\"col\": 1, \"row\": 11, \"size_x\": 32, \"size_y\": 22, \"id\": \"uri-5-widget-13505\"}, {\"col\": 33, \"row\": 11, \"size_x\": 32, \"size_y\": 22, \"id\": \"uri-6-widget-13506\"}, {\"col\": 1, \"row\": 33, \"size_x\": 64, \"size_y\": 26, \"id\": \"uri-7-widget-13507\"}], \"dashboard_sheets\": [{\"sheet_id\": 1, \"order\": 1, \"sheet_handle_title\": \"Sensors\", \"behaviors\": {}, \"visual_widgets\": [{\"col\": 1, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-1-widget-13501\"}, {\"col\": 17, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-2-widget-13502\"}, {\"col\": 33, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-3-widget-13503\"}, {\"col\": 49, \"row\": 1, \"size_x\": 16, \"size_y\": 10, \"id\": \"uri-4-widget-13504\"}, {\"col\": 1, \"row\": 11, \"size_x\": 32, \"size_y\": 22, \"id\": \"uri-5-widget-13505\"}, {\"col\": 33, \"row\": 11, \"size_x\": 32, \"size_y\": 22, \"id\": \"uri-6-widget-13506\"}, {\"col\": 1, \"row\": 33, \"size_x\": 64, \"size_y\": 26, \"id\": \"uri-7-widget-13507\"}], \"control_widgets\": []}], \"user_settings\": {\"dashboard_width\": \"1280\", \"display_filters\": \"true\", \"permit_csv_download_dashboard\": \"true\"}, \"global_control_widgets\": [], \"control_widgets\": [], \"click_behavior\": {}}",
+    "shared_visual_dashboards": "[]",
+    "parent_report": null,
+    "uuid": "c7b191b6-d12f-5464-a4fe-68decb102fd9",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": null
+   }
+  }
+ ],
+ "appgroupmembership": [],
+ "reportannotation": [],
+ "events": [],
+ "customcss": [],
+ "reportimage": [],
+ "dateranges": [],
+ "visuals": [
+  {
+   "model": "reports.report",
+   "pk": 13201,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Integrity KPIs / Integrity risk",
+    "dataset": 13100,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Integrity risk exposure\", \"report_subtitle\": \"\", \"dashboard_id\": 13000, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"round(sum([exposure]), 2)\", \"expression_for_trigger\": \"round(sum([exposure]), 2)\", \"expr_hasagg\": true, \"col_alias\": \"Exposure\", \"dataset_colname\": \"Exposure\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"round(sum([exposure]), 2) as 'sub:Exposure'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "81b8ed50-601f-5909-a005-7531f24df831",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13202,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Integrity KPIs / Integrity risk",
+    "dataset": 13100,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"High-risk assets\", \"report_subtitle\": \"\", \"dashboard_id\": 13000, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum([high_risk_assets])\", \"expression_for_trigger\": \"sum([high_risk_assets])\", \"expr_hasagg\": true, \"col_alias\": \"High\", \"dataset_colname\": \"High\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum([high_risk_assets]) as 'sub:High'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "e3a2051b-a4c6-5164-ae45-42e963bd9726",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13203,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Integrity KPIs / Integrity risk",
+    "dataset": 13100,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Assets abstained (stuck sensor)\", \"report_subtitle\": \"\", \"dashboard_id\": 13000, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum([abstained_assets])\", \"expression_for_trigger\": \"sum([abstained_assets])\", \"expr_hasagg\": true, \"col_alias\": \"Abstained\", \"dataset_colname\": \"Abstained\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum([abstained_assets]) as 'sub:Abstained'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "da271081-02aa-58f8-b7a8-c72599740a7d",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13204,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Integrity KPIs / Integrity risk",
+    "dataset": 13102,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Unstructured coverage %\", \"report_subtitle\": \"\", \"dashboard_id\": 13000, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"round(100 * sum([covered]) / sum([received]), 1)\", \"expression_for_trigger\": \"round(100 * sum([covered]) / sum([received]), 1)\", \"expr_hasagg\": true, \"col_alias\": \"Coverage %\", \"dataset_colname\": \"Coverage %\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"round(100 * sum([covered]) / sum([received]), 1) as 'sub:Coverage %'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "3059ce86-6b16-5d13-bea8-d6b95aa50dc5",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13205,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Integrity KPIs / Integrity risk",
+    "dataset": 13100,
+    "workspace": 1,
+    "report_type": "trellis-bars",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Integrity risk exposure per business date and facility\", \"report_subtitle\": \"\", \"dashboard_id\": 13000, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"x_shelf\": [{\"dataset_colname\": \"business_date\", \"dataset_coltype\": \"DATE\", \"expression_for_trigger\": \"[business_date]\", \"col_alias\": \"Business date\"}], \"y_shelf\": [{\"custom_expr\": \"sum([exposure])\", \"expression_for_trigger\": \"sum([exposure])\", \"expr_hasagg\": true, \"col_alias\": \"Exposure\", \"dataset_colname\": \"Exposure\", \"dataset_coltype\": \"DOUBLE\"}], \"color_shelf\": [{\"dataset_colname\": \"facility_id\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[facility_id]\", \"col_alias\": \"Facility\"}], \"tooltip_shelf\": [], \"drill_shelf\": [], \"label_shelf\": [], \"filters_shelf\": [], \"core\": {\"viz_type\": \"trellis-bars\", \"saved_shelf_sources\": {\"[business_date] as 'sub:Business date'\": \"x_shelf\", \"sum([exposure]) as 'sub:Exposure'\": \"y_shelf\", \"[facility_id] as 'sub:Facility'\": \"color_shelf\"}, \"shelves\": [{\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"color_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"drill_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"trellis-bars\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "d8696574-ae2f-5b07-8ce1-f74afa3d1d89",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13206,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Integrity KPIs / Integrity risk",
+    "dataset": 13101,
+    "workspace": 1,
+    "report_type": "trellis-bars",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Assets by risk band (latest date)\", \"report_subtitle\": \"\", \"dashboard_id\": 13000, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"x_shelf\": [{\"dataset_colname\": \"risk_band\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[risk_band]\", \"col_alias\": \"Risk band\"}], \"y_shelf\": [{\"custom_expr\": \"sum(1)\", \"expression_for_trigger\": \"sum(1)\", \"expr_hasagg\": true, \"col_alias\": \"Assets\", \"dataset_colname\": \"Assets\", \"dataset_coltype\": \"DOUBLE\"}], \"color_shelf\": [{\"dataset_colname\": \"asset_class\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[asset_class]\", \"col_alias\": \"Class\"}], \"tooltip_shelf\": [], \"drill_shelf\": [], \"label_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"trellis-bars\", \"saved_shelf_sources\": {\"[risk_band] as 'sub:Risk band'\": \"x_shelf\", \"sum(1) as 'sub:Assets'\": \"y_shelf\", \"[asset_class] as 'sub:Class'\": \"color_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"color_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"drill_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"trellis-bars\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "b2371308-dcfe-595f-9451-5fd04e80ea6e",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13207,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Integrity KPIs / Integrity risk",
+    "dataset": 13101,
+    "workspace": 1,
+    "report_type": "table",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Risk-ranked worklist (latest date, top 25)\", \"report_subtitle\": \"\", \"dashboard_id\": 13000, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [{\"dataset_colname\": \"risk_rank\", \"dataset_coltype\": \"BIGINT\", \"expression_for_trigger\": \"[risk_rank]\", \"col_alias\": \"Rank\", \"order\": {\"priority\": 1, \"ascending\": true}}, {\"dataset_colname\": \"tag\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[tag]\", \"col_alias\": \"Tag\"}, {\"dataset_colname\": \"asset_class\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[asset_class]\", \"col_alias\": \"Class\"}, {\"dataset_colname\": \"facility_id\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[facility_id]\", \"col_alias\": \"Facility\"}, {\"dataset_colname\": \"criticality\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[criticality]\", \"col_alias\": \"Criticality\"}, {\"dataset_colname\": \"risk_band\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[risk_band]\", \"col_alias\": \"Band\"}, {\"dataset_colname\": \"abstain_reason\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[abstain_reason]\", \"col_alias\": \"Abstained\"}], \"aggregates_shelf\": [{\"custom_expr\": \"max([wall_loss_pct])\", \"expression_for_trigger\": \"max([wall_loss_pct])\", \"expr_hasagg\": true, \"col_alias\": \"Wall loss %\", \"dataset_colname\": \"Wall loss %\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"max([breach_windows_3d])\", \"expression_for_trigger\": \"max([breach_windows_3d])\", \"expr_hasagg\": true, \"col_alias\": \"Breach windows 3d\", \"dataset_colname\": \"Breach windows 3d\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"max([corrective_wo_30d])\", \"expression_for_trigger\": \"max([corrective_wo_30d])\", \"expr_hasagg\": true, \"col_alias\": \"Corrective WOs 30d\", \"dataset_colname\": \"Corrective WOs 30d\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"max([rule_score])\", \"expression_for_trigger\": \"max([rule_score])\", \"expr_hasagg\": true, \"col_alias\": \"Score\", \"dataset_colname\": \"Score\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"max([exposure])\", \"expression_for_trigger\": \"max([exposure])\", \"expr_hasagg\": true, \"col_alias\": \"Exposure\", \"dataset_colname\": \"Exposure\", \"dataset_coltype\": \"DOUBLE\"}], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}, {\"custom_expr\": \"[risk_rank] <= 25\", \"expression_for_trigger\": \"[risk_rank] <= 25\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"table\", \"saved_shelf_sources\": {\"[risk_rank] as 'sub:Rank'\": \"dimensions_shelf\", \"[tag] as 'sub:Tag'\": \"dimensions_shelf\", \"[asset_class] as 'sub:Class'\": \"dimensions_shelf\", \"[facility_id] as 'sub:Facility'\": \"dimensions_shelf\", \"[criticality] as 'sub:Criticality'\": \"dimensions_shelf\", \"[risk_band] as 'sub:Band'\": \"dimensions_shelf\", \"[abstain_reason] as 'sub:Abstained'\": \"dimensions_shelf\", \"max([wall_loss_pct]) as 'sub:Wall loss %'\": \"aggregates_shelf\", \"max([breach_windows_3d]) as 'sub:Breach windows 3d'\": \"aggregates_shelf\", \"max([corrective_wo_30d]) as 'sub:Corrective WOs 30d'\": \"aggregates_shelf\", \"max([rule_score]) as 'sub:Score'\": \"aggregates_shelf\", \"max([exposure]) as 'sub:Exposure'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\", \"[risk_rank] <= 25\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"table\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "3abc4585-a902-5cfc-a0b6-60453af06a95",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13208,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Integrity KPIs / Coverage and review time",
+    "dataset": 13102,
+    "workspace": 1,
+    "report_type": "trellis-bars",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Objects received and covered by format (all dates)\", \"report_subtitle\": \"\", \"dashboard_id\": 13000, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"x_shelf\": [{\"dataset_colname\": \"object_format\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[object_format]\", \"col_alias\": \"Format\"}], \"y_shelf\": [{\"custom_expr\": \"sum([received])\", \"expression_for_trigger\": \"sum([received])\", \"expr_hasagg\": true, \"col_alias\": \"Received\", \"dataset_colname\": \"Received\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"sum([covered])\", \"expression_for_trigger\": \"sum([covered])\", \"expr_hasagg\": true, \"col_alias\": \"Covered\", \"dataset_colname\": \"Covered\", \"dataset_coltype\": \"DOUBLE\"}], \"color_shelf\": [], \"tooltip_shelf\": [], \"drill_shelf\": [], \"label_shelf\": [], \"filters_shelf\": [], \"core\": {\"viz_type\": \"trellis-bars\", \"saved_shelf_sources\": {\"[object_format] as 'sub:Format'\": \"x_shelf\", \"sum([received]) as 'sub:Received'\": \"y_shelf\", \"sum([covered]) as 'sub:Covered'\": \"y_shelf\"}, \"shelves\": [{\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"color_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"drill_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"trellis-bars\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "db8b3122-74dd-5c73-9dc6-c978d4d6c951",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13209,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Integrity KPIs / Coverage and review time",
+    "dataset": 13102,
+    "workspace": 1,
+    "report_type": "trellis-lines",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Coverage % per business date\", \"report_subtitle\": \"\", \"dashboard_id\": 13000, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"x_shelf\": [{\"dataset_colname\": \"business_date\", \"dataset_coltype\": \"DATE\", \"expression_for_trigger\": \"[business_date]\", \"col_alias\": \"Business date\"}], \"y_shelf\": [{\"custom_expr\": \"round(100 * sum([covered]) / sum([received]), 1)\", \"expression_for_trigger\": \"round(100 * sum([covered]) / sum([received]), 1)\", \"expr_hasagg\": true, \"col_alias\": \"Coverage %\", \"dataset_colname\": \"Coverage %\", \"dataset_coltype\": \"DOUBLE\"}], \"color_shelf\": [], \"tooltip_shelf\": [], \"filters_shelf\": [], \"core\": {\"viz_type\": \"trellis-lines\", \"saved_shelf_sources\": {\"[business_date] as 'sub:Business date'\": \"x_shelf\", \"round(100 * sum([covered]) / sum([received]), 1) as 'sub:Coverage %'\": \"y_shelf\"}, \"shelves\": [{\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"color_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"trellis-lines\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "11c6bb73-91ff-51e5-afaf-a1e0c15291de",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13210,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Integrity KPIs / Coverage and review time",
+    "dataset": 13103,
+    "workspace": 1,
+    "report_type": "trellis-bars",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Severe-defect hours to review: risk order vs calendar order\", \"report_subtitle\": \"\", \"dashboard_id\": 13000, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"x_shelf\": [{\"dataset_colname\": \"business_date\", \"dataset_coltype\": \"DATE\", \"expression_for_trigger\": \"[business_date]\", \"col_alias\": \"Business date\"}], \"y_shelf\": [{\"custom_expr\": \"avg([avg_hours])\", \"expression_for_trigger\": \"avg([avg_hours])\", \"expr_hasagg\": true, \"col_alias\": \"Avg hours\", \"dataset_colname\": \"Avg hours\", \"dataset_coltype\": \"DOUBLE\"}], \"color_shelf\": [{\"dataset_colname\": \"worklist_order\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[worklist_order]\", \"col_alias\": \"Worklist order\"}], \"tooltip_shelf\": [], \"drill_shelf\": [], \"label_shelf\": [], \"filters_shelf\": [], \"core\": {\"viz_type\": \"trellis-bars\", \"saved_shelf_sources\": {\"[business_date] as 'sub:Business date'\": \"x_shelf\", \"avg([avg_hours]) as 'sub:Avg hours'\": \"y_shelf\", \"[worklist_order] as 'sub:Worklist order'\": \"color_shelf\"}, \"shelves\": [{\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"color_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"drill_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"trellis-bars\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "7db6b81b-6eff-5f25-b854-40ffc905b8a4",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13211,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Integrity KPIs / Coverage and review time",
+    "dataset": 13103,
+    "workspace": 1,
+    "report_type": "table",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Time to review per date and order\", \"report_subtitle\": \"\", \"dashboard_id\": 13000, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [{\"dataset_colname\": \"business_date\", \"dataset_coltype\": \"DATE\", \"expression_for_trigger\": \"[business_date]\", \"col_alias\": \"Business date\", \"order\": {\"priority\": 1, \"ascending\": true}}, {\"dataset_colname\": \"worklist_order\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[worklist_order]\", \"col_alias\": \"Order\"}], \"aggregates_shelf\": [{\"custom_expr\": \"sum([severe_defects])\", \"expression_for_trigger\": \"sum([severe_defects])\", \"expr_hasagg\": true, \"col_alias\": \"Severe defects\", \"dataset_colname\": \"Severe defects\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"avg([avg_hours])\", \"expression_for_trigger\": \"avg([avg_hours])\", \"expr_hasagg\": true, \"col_alias\": \"Avg hours\", \"dataset_colname\": \"Avg hours\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"max([max_hours])\", \"expression_for_trigger\": \"max([max_hours])\", \"expr_hasagg\": true, \"col_alias\": \"Max hours\", \"dataset_colname\": \"Max hours\", \"dataset_coltype\": \"DOUBLE\"}], \"filters_shelf\": [], \"core\": {\"viz_type\": \"table\", \"saved_shelf_sources\": {\"[business_date] as 'sub:Business date'\": \"dimensions_shelf\", \"[worklist_order] as 'sub:Order'\": \"dimensions_shelf\", \"sum([severe_defects]) as 'sub:Severe defects'\": \"aggregates_shelf\", \"avg([avg_hours]) as 'sub:Avg hours'\": \"aggregates_shelf\", \"max([max_hours]) as 'sub:Max hours'\": \"aggregates_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"table\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "2be3e129-1b01-58f3-9fe7-443172047edd",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13301,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Reconciliation & Data Quality / Latest batch",
+    "dataset": 13104,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Checks on the latest batch\", \"report_subtitle\": \"\", \"dashboard_id\": 13001, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum(1)\", \"expression_for_trigger\": \"sum(1)\", \"expr_hasagg\": true, \"col_alias\": \"Checks\", \"dataset_colname\": \"Checks\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum(1) as 'sub:Checks'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "95f095a1-c8dd-5b3f-b98a-5a0bad0b5da3",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13302,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Reconciliation & Data Quality / Latest batch",
+    "dataset": 13104,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Matched\", \"report_subtitle\": \"\", \"dashboard_id\": 13001, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum([is_ok])\", \"expression_for_trigger\": \"sum([is_ok])\", \"expr_hasagg\": true, \"col_alias\": \"Matched\", \"dataset_colname\": \"Matched\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum([is_ok]) as 'sub:Matched'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "37307772-f7c5-53cf-a933-04ca2a86a82b",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13303,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Reconciliation & Data Quality / Latest batch",
+    "dataset": 13104,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Explained\", \"report_subtitle\": \"\", \"dashboard_id\": 13001, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum([is_explained])\", \"expression_for_trigger\": \"sum([is_explained])\", \"expr_hasagg\": true, \"col_alias\": \"Explained\", \"dataset_colname\": \"Explained\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum([is_explained]) as 'sub:Explained'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "41405624-77de-588d-a3eb-3280a9940f70",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13304,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Reconciliation & Data Quality / Latest batch",
+    "dataset": 13104,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Late (stream, past watermark)\", \"report_subtitle\": \"\", \"dashboard_id\": 13001, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum([is_late])\", \"expression_for_trigger\": \"sum([is_late])\", \"expr_hasagg\": true, \"col_alias\": \"Late\", \"dataset_colname\": \"Late\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum([is_late]) as 'sub:Late'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "b4d33761-f91b-5d78-a425-71dae0542f24",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13305,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Reconciliation & Data Quality / Latest batch",
+    "dataset": 13104,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Mismatches\", \"report_subtitle\": \"\", \"dashboard_id\": 13001, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum([is_mismatch])\", \"expression_for_trigger\": \"sum([is_mismatch])\", \"expr_hasagg\": true, \"col_alias\": \"Mismatches\", \"dataset_colname\": \"Mismatches\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum([is_mismatch]) as 'sub:Mismatches'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "b34bdf9d-f0d0-54d1-a0d1-24e8a1bee174",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13306,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Reconciliation & Data Quality / Latest batch",
+    "dataset": 13104,
+    "workspace": 1,
+    "report_type": "trellis-bars",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Checks by layer (latest batch)\", \"report_subtitle\": \"\", \"dashboard_id\": 13001, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"x_shelf\": [{\"dataset_colname\": \"layer_label\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[layer_label]\", \"col_alias\": \"Layer\"}], \"y_shelf\": [{\"custom_expr\": \"sum([is_ok])\", \"expression_for_trigger\": \"sum([is_ok])\", \"expr_hasagg\": true, \"col_alias\": \"Matched\", \"dataset_colname\": \"Matched\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"sum([is_explained])\", \"expression_for_trigger\": \"sum([is_explained])\", \"expr_hasagg\": true, \"col_alias\": \"Explained\", \"dataset_colname\": \"Explained\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"sum([is_late])\", \"expression_for_trigger\": \"sum([is_late])\", \"expr_hasagg\": true, \"col_alias\": \"Late\", \"dataset_colname\": \"Late\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"sum([is_mismatch])\", \"expression_for_trigger\": \"sum([is_mismatch])\", \"expr_hasagg\": true, \"col_alias\": \"Mismatch\", \"dataset_colname\": \"Mismatch\", \"dataset_coltype\": \"DOUBLE\"}], \"color_shelf\": [], \"tooltip_shelf\": [], \"drill_shelf\": [], \"label_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"trellis-bars\", \"saved_shelf_sources\": {\"[layer_label] as 'sub:Layer'\": \"x_shelf\", \"sum([is_ok]) as 'sub:Matched'\": \"y_shelf\", \"sum([is_explained]) as 'sub:Explained'\": \"y_shelf\", \"sum([is_late]) as 'sub:Late'\": \"y_shelf\", \"sum([is_mismatch]) as 'sub:Mismatch'\": \"y_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"color_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"drill_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"trellis-bars\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "6294c1b0-2dc6-5d31-8249-559b2c373c95",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13307,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Reconciliation & Data Quality / Latest batch",
+    "dataset": 13104,
+    "workspace": 1,
+    "report_type": "table",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Explained, late and mismatched checks, with the reason\", \"report_subtitle\": \"\", \"dashboard_id\": 13001, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [{\"dataset_colname\": \"layer_label\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[layer_label]\", \"col_alias\": \"Layer\", \"order\": {\"priority\": 1, \"ascending\": true}}, {\"dataset_colname\": \"entity\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[entity]\", \"col_alias\": \"Entity\"}, {\"dataset_colname\": \"check_name\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[check_name]\", \"col_alias\": \"Check\"}, {\"dataset_colname\": \"status\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[status]\", \"col_alias\": \"Status\"}, {\"dataset_colname\": \"detail\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[detail]\", \"col_alias\": \"Detail\"}], \"aggregates_shelf\": [{\"custom_expr\": \"sum([expected])\", \"expression_for_trigger\": \"sum([expected])\", \"expr_hasagg\": true, \"col_alias\": \"Expected\", \"dataset_colname\": \"Expected\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"sum([actual])\", \"expression_for_trigger\": \"sum([actual])\", \"expr_hasagg\": true, \"col_alias\": \"Actual\", \"dataset_colname\": \"Actual\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"sum([difference])\", \"expression_for_trigger\": \"sum([difference])\", \"expr_hasagg\": true, \"col_alias\": \"Difference\", \"dataset_colname\": \"Difference\", \"dataset_coltype\": \"DOUBLE\"}], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}, {\"custom_expr\": \"[status] <> 'MATCHED'\", \"expression_for_trigger\": \"[status] <> 'MATCHED'\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"table\", \"saved_shelf_sources\": {\"[layer_label] as 'sub:Layer'\": \"dimensions_shelf\", \"[entity] as 'sub:Entity'\": \"dimensions_shelf\", \"[check_name] as 'sub:Check'\": \"dimensions_shelf\", \"[status] as 'sub:Status'\": \"dimensions_shelf\", \"[detail] as 'sub:Detail'\": \"dimensions_shelf\", \"sum([expected]) as 'sub:Expected'\": \"aggregates_shelf\", \"sum([actual]) as 'sub:Actual'\": \"aggregates_shelf\", \"sum([difference]) as 'sub:Difference'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\", \"[status] <> 'MATCHED'\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"table\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "c65fe3b5-5273-592a-9e59-636d06755538",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13308,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Reconciliation & Data Quality / By business date",
+    "dataset": 13104,
+    "workspace": 1,
+    "report_type": "trellis-bars",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Checks per business date\", \"report_subtitle\": \"\", \"dashboard_id\": 13001, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"x_shelf\": [{\"dataset_colname\": \"business_date\", \"dataset_coltype\": \"DATE\", \"expression_for_trigger\": \"[business_date]\", \"col_alias\": \"Business date\"}], \"y_shelf\": [{\"custom_expr\": \"sum([is_ok])\", \"expression_for_trigger\": \"sum([is_ok])\", \"expr_hasagg\": true, \"col_alias\": \"Matched\", \"dataset_colname\": \"Matched\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"sum([is_explained])\", \"expression_for_trigger\": \"sum([is_explained])\", \"expr_hasagg\": true, \"col_alias\": \"Explained\", \"dataset_colname\": \"Explained\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"sum([is_mismatch])\", \"expression_for_trigger\": \"sum([is_mismatch])\", \"expr_hasagg\": true, \"col_alias\": \"Mismatch\", \"dataset_colname\": \"Mismatch\", \"dataset_coltype\": \"DOUBLE\"}], \"color_shelf\": [], \"tooltip_shelf\": [], \"drill_shelf\": [], \"label_shelf\": [], \"filters_shelf\": [], \"core\": {\"viz_type\": \"trellis-bars\", \"saved_shelf_sources\": {\"[business_date] as 'sub:Business date'\": \"x_shelf\", \"sum([is_ok]) as 'sub:Matched'\": \"y_shelf\", \"sum([is_explained]) as 'sub:Explained'\": \"y_shelf\", \"sum([is_mismatch]) as 'sub:Mismatch'\": \"y_shelf\"}, \"shelves\": [{\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"color_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"drill_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"trellis-bars\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "fc7c3136-269f-5c2a-b068-c947226dbfd8",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13309,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Reconciliation & Data Quality / By business date",
+    "dataset": 13104,
+    "workspace": 1,
+    "report_type": "table",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Every mismatch (the planted corrupt PDF and trailer error)\", \"report_subtitle\": \"\", \"dashboard_id\": 13001, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [{\"dataset_colname\": \"business_date\", \"dataset_coltype\": \"DATE\", \"expression_for_trigger\": \"[business_date]\", \"col_alias\": \"Business date\", \"order\": {\"priority\": 1, \"ascending\": false}}, {\"dataset_colname\": \"layer_label\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[layer_label]\", \"col_alias\": \"Layer\"}, {\"dataset_colname\": \"entity\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[entity]\", \"col_alias\": \"Entity\"}, {\"dataset_colname\": \"check_name\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[check_name]\", \"col_alias\": \"Check\"}, {\"dataset_colname\": \"detail\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[detail]\", \"col_alias\": \"Detail\"}], \"aggregates_shelf\": [{\"custom_expr\": \"sum([expected])\", \"expression_for_trigger\": \"sum([expected])\", \"expr_hasagg\": true, \"col_alias\": \"Expected\", \"dataset_colname\": \"Expected\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"sum([actual])\", \"expression_for_trigger\": \"sum([actual])\", \"expr_hasagg\": true, \"col_alias\": \"Actual\", \"dataset_colname\": \"Actual\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"sum([difference])\", \"expression_for_trigger\": \"sum([difference])\", \"expr_hasagg\": true, \"col_alias\": \"Difference\", \"dataset_colname\": \"Difference\", \"dataset_coltype\": \"DOUBLE\"}], \"filters_shelf\": [{\"custom_expr\": \"[status] = 'MISMATCH'\", \"expression_for_trigger\": \"[status] = 'MISMATCH'\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"table\", \"saved_shelf_sources\": {\"[business_date] as 'sub:Business date'\": \"dimensions_shelf\", \"[layer_label] as 'sub:Layer'\": \"dimensions_shelf\", \"[entity] as 'sub:Entity'\": \"dimensions_shelf\", \"[check_name] as 'sub:Check'\": \"dimensions_shelf\", \"[detail] as 'sub:Detail'\": \"dimensions_shelf\", \"sum([expected]) as 'sub:Expected'\": \"aggregates_shelf\", \"sum([actual]) as 'sub:Actual'\": \"aggregates_shelf\", \"sum([difference]) as 'sub:Difference'\": \"aggregates_shelf\", \"[status] = 'MISMATCH'\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"table\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "ae0a0093-d3e5-517e-9764-b85f5628650f",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13310,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Reconciliation & Data Quality / Load audit",
+    "dataset": 13105,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Failed attempts (all batches)\", \"report_subtitle\": \"\", \"dashboard_id\": 13001, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum([is_failed])\", \"expression_for_trigger\": \"sum([is_failed])\", \"expr_hasagg\": true, \"col_alias\": \"Failed\", \"dataset_colname\": \"Failed\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum([is_failed]) as 'sub:Failed'\": \"aggregates_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "bc73340c-762d-5e6d-bde1-8e5cb72160d0",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13311,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Reconciliation & Data Quality / Load audit",
+    "dataset": 13105,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Rows rejected (latest batch)\", \"report_subtitle\": \"\", \"dashboard_id\": 13001, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum([rows_rejected])\", \"expression_for_trigger\": \"sum([rows_rejected])\", \"expr_hasagg\": true, \"col_alias\": \"Rejected\", \"dataset_colname\": \"Rejected\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}, {\"custom_expr\": \"[entity] <> '*'\", \"expression_for_trigger\": \"[entity] <> '*'\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum([rows_rejected]) as 'sub:Rejected'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\", \"[entity] <> '*'\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "1afe1606-5b72-5d6a-97e1-8dac640f40e5",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13312,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Reconciliation & Data Quality / Load audit",
+    "dataset": 13105,
+    "workspace": 1,
+    "report_type": "trellis-bars",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Rows written per business date and stage\", \"report_subtitle\": \"\", \"dashboard_id\": 13001, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"x_shelf\": [{\"dataset_colname\": \"business_date\", \"dataset_coltype\": \"DATE\", \"expression_for_trigger\": \"[business_date]\", \"col_alias\": \"Business date\"}], \"y_shelf\": [{\"custom_expr\": \"sum([rows_out])\", \"expression_for_trigger\": \"sum([rows_out])\", \"expr_hasagg\": true, \"col_alias\": \"Rows\", \"dataset_colname\": \"Rows\", \"dataset_coltype\": \"DOUBLE\"}], \"color_shelf\": [{\"dataset_colname\": \"stage\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[stage]\", \"col_alias\": \"Stage\"}], \"tooltip_shelf\": [], \"drill_shelf\": [], \"label_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[status] = 'COMMITTED'\", \"expression_for_trigger\": \"[status] = 'COMMITTED'\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"trellis-bars\", \"saved_shelf_sources\": {\"[business_date] as 'sub:Business date'\": \"x_shelf\", \"sum([rows_out]) as 'sub:Rows'\": \"y_shelf\", \"[stage] as 'sub:Stage'\": \"color_shelf\", \"[status] = 'COMMITTED'\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"color_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"drill_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"trellis-bars\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "575883ce-56bb-5c3c-afb2-0c23fa5102b6",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13313,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Reconciliation & Data Quality / Load audit",
+    "dataset": 13105,
+    "workspace": 1,
+    "report_type": "table",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Stage results of the latest batch\", \"report_subtitle\": \"\", \"dashboard_id\": 13001, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [{\"dataset_colname\": \"stage\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[stage]\", \"col_alias\": \"Stage\", \"order\": {\"priority\": 1, \"ascending\": true}}, {\"dataset_colname\": \"entity\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[entity]\", \"col_alias\": \"Entity\"}, {\"dataset_colname\": \"status\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[status]\", \"col_alias\": \"Status\"}], \"aggregates_shelf\": [{\"custom_expr\": \"sum([rows_in])\", \"expression_for_trigger\": \"sum([rows_in])\", \"expr_hasagg\": true, \"col_alias\": \"Rows in\", \"dataset_colname\": \"Rows in\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"sum([rows_out])\", \"expression_for_trigger\": \"sum([rows_out])\", \"expr_hasagg\": true, \"col_alias\": \"Rows out\", \"dataset_colname\": \"Rows out\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"sum([rows_rejected])\", \"expression_for_trigger\": \"sum([rows_rejected])\", \"expr_hasagg\": true, \"col_alias\": \"Rejected\", \"dataset_colname\": \"Rejected\", \"dataset_coltype\": \"DOUBLE\"}], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"table\", \"saved_shelf_sources\": {\"[stage] as 'sub:Stage'\": \"dimensions_shelf\", \"[entity] as 'sub:Entity'\": \"dimensions_shelf\", \"[status] as 'sub:Status'\": \"dimensions_shelf\", \"sum([rows_in]) as 'sub:Rows in'\": \"aggregates_shelf\", \"sum([rows_out]) as 'sub:Rows out'\": \"aggregates_shelf\", \"sum([rows_rejected]) as 'sub:Rejected'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"table\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "e0ea915c-898a-5766-9249-9991245d7d35",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13401,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Asset Master / Resolution",
+    "dataset": 13106,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Source names resolved (latest)\", \"report_subtitle\": \"\", \"dashboard_id\": 13002, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum(1)\", \"expression_for_trigger\": \"sum(1)\", \"expr_hasagg\": true, \"col_alias\": \"Resolved\", \"dataset_colname\": \"Resolved\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum(1) as 'sub:Resolved'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "f883f84f-3c5c-5bc0-abe7-b5dcb1004c72",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13402,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Asset Master / Resolution",
+    "dataset": 13107,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Conflicts auto-resolved (latest)\", \"report_subtitle\": \"\", \"dashboard_id\": 13002, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum(1)\", \"expression_for_trigger\": \"sum(1)\", \"expr_hasagg\": true, \"col_alias\": \"Conflicts\", \"dataset_colname\": \"Conflicts\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum(1) as 'sub:Conflicts'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "8663e9da-b5d5-5359-932c-54769419e740",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13403,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Asset Master / Resolution",
+    "dataset": 13107,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Open in the review queue\", \"report_subtitle\": \"\", \"dashboard_id\": 13002, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum([is_open])\", \"expression_for_trigger\": \"sum([is_open])\", \"expr_hasagg\": true, \"col_alias\": \"Open\", \"dataset_colname\": \"Open\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum([is_open]) as 'sub:Open'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "40c4e034-3cf1-5a6c-8bf2-e4df57ba5199",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13404,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Asset Master / Resolution",
+    "dataset": 13106,
+    "workspace": 1,
+    "report_type": "trellis-bars",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Source names by resolving rule and system (latest)\", \"report_subtitle\": \"\", \"dashboard_id\": 13002, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"x_shelf\": [{\"dataset_colname\": \"rule_label\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[rule_label]\", \"col_alias\": \"Rule\"}], \"y_shelf\": [{\"custom_expr\": \"sum(1)\", \"expression_for_trigger\": \"sum(1)\", \"expr_hasagg\": true, \"col_alias\": \"Names\", \"dataset_colname\": \"Names\", \"dataset_coltype\": \"DOUBLE\"}], \"color_shelf\": [{\"dataset_colname\": \"src_system\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[src_system]\", \"col_alias\": \"Source\"}], \"tooltip_shelf\": [], \"drill_shelf\": [], \"label_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"trellis-bars\", \"saved_shelf_sources\": {\"[rule_label] as 'sub:Rule'\": \"x_shelf\", \"sum(1) as 'sub:Names'\": \"y_shelf\", \"[src_system] as 'sub:Source'\": \"color_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"color_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"drill_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"trellis-bars\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "03b733a8-a928-51f2-ab30-962a6bb6d94c",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13405,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Asset Master / Resolution",
+    "dataset": 13107,
+    "workspace": 1,
+    "report_type": "table",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Review queue: conflicts and how they resolved\", \"report_subtitle\": \"\", \"dashboard_id\": 13002, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [{\"dataset_colname\": \"business_date\", \"dataset_coltype\": \"DATE\", \"expression_for_trigger\": \"[business_date]\", \"col_alias\": \"Business date\", \"order\": {\"priority\": 1, \"ascending\": true}}, {\"dataset_colname\": \"src_system\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[src_system]\", \"col_alias\": \"Source\"}, {\"dataset_colname\": \"src_name\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[src_name]\", \"col_alias\": \"Name\"}, {\"dataset_colname\": \"reason\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[reason]\", \"col_alias\": \"Reason\"}, {\"dataset_colname\": \"suggested_asset_id\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[suggested_asset_id]\", \"col_alias\": \"Asset\"}, {\"dataset_colname\": \"status\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[status]\", \"col_alias\": \"Status\"}, {\"dataset_colname\": \"detail\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[detail]\", \"col_alias\": \"Detail\"}], \"aggregates_shelf\": [{\"custom_expr\": \"sum(1)\", \"expression_for_trigger\": \"sum(1)\", \"expr_hasagg\": true, \"col_alias\": \"Rows\", \"dataset_colname\": \"Rows\", \"dataset_coltype\": \"DOUBLE\"}], \"filters_shelf\": [], \"core\": {\"viz_type\": \"table\", \"saved_shelf_sources\": {\"[business_date] as 'sub:Business date'\": \"dimensions_shelf\", \"[src_system] as 'sub:Source'\": \"dimensions_shelf\", \"[src_name] as 'sub:Name'\": \"dimensions_shelf\", \"[reason] as 'sub:Reason'\": \"dimensions_shelf\", \"[suggested_asset_id] as 'sub:Asset'\": \"dimensions_shelf\", \"[status] as 'sub:Status'\": \"dimensions_shelf\", \"[detail] as 'sub:Detail'\": \"dimensions_shelf\", \"sum(1) as 'sub:Rows'\": \"aggregates_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"table\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "8b5ce9f4-2634-5012-913c-1f11daa80d74",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13501,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Sensor Health / Sensors",
+    "dataset": 13108,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Sensors reporting (latest)\", \"report_subtitle\": \"\", \"dashboard_id\": 13003, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum(1)\", \"expression_for_trigger\": \"sum(1)\", \"expr_hasagg\": true, \"col_alias\": \"Sensors\", \"dataset_colname\": \"Sensors\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum(1) as 'sub:Sensors'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "ce849254-6b01-5821-89d3-02b6a6aa8786",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13502,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Sensor Health / Sensors",
+    "dataset": 13108,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Readings (latest)\", \"report_subtitle\": \"\", \"dashboard_id\": 13003, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum([readings])\", \"expression_for_trigger\": \"sum([readings])\", \"expr_hasagg\": true, \"col_alias\": \"Readings\", \"dataset_colname\": \"Readings\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum([readings]) as 'sub:Readings'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "8efb1730-a8e3-5c06-9459-58a2eb51f877",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13503,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Sensor Health / Sensors",
+    "dataset": 13108,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Stuck sensors (latest)\", \"report_subtitle\": \"\", \"dashboard_id\": 13003, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum([is_stuck])\", \"expression_for_trigger\": \"sum([is_stuck])\", \"expr_hasagg\": true, \"col_alias\": \"Stuck\", \"dataset_colname\": \"Stuck\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum([is_stuck]) as 'sub:Stuck'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "5049fdf5-b1db-502d-9f02-1263676c7205",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13504,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Sensor Health / Sensors",
+    "dataset": 13108,
+    "workspace": 1,
+    "report_type": "kpi",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Sensors reporting in bar (unit change)\", \"report_subtitle\": \"\", \"dashboard_id\": 13003, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [], \"aggregates_shelf\": [{\"custom_expr\": \"sum([has_unit_change])\", \"expression_for_trigger\": \"sum([has_unit_change])\", \"expr_hasagg\": true, \"col_alias\": \"Unit change\", \"dataset_colname\": \"Unit change\", \"dataset_coltype\": \"DOUBLE\"}], \"compare_shelf\": [], \"label_shelf\": [], \"tooltip_shelf\": [], \"x_shelf\": [], \"y_shelf\": [], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"kpi\", \"saved_shelf_sources\": {\"sum([has_unit_change]) as 'sub:Unit change'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"compare_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"kpi\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "b68f8351-095a-5e19-ac1f-e11392d090b3",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13505,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Sensor Health / Sensors",
+    "dataset": 13108,
+    "workspace": 1,
+    "report_type": "trellis-bars",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Breach windows per business date and measurement\", \"report_subtitle\": \"\", \"dashboard_id\": 13003, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"x_shelf\": [{\"dataset_colname\": \"business_date\", \"dataset_coltype\": \"DATE\", \"expression_for_trigger\": \"[business_date]\", \"col_alias\": \"Business date\"}], \"y_shelf\": [{\"custom_expr\": \"sum([breach_windows])\", \"expression_for_trigger\": \"sum([breach_windows])\", \"expr_hasagg\": true, \"col_alias\": \"Breach windows\", \"dataset_colname\": \"Breach windows\", \"dataset_coltype\": \"DOUBLE\"}], \"color_shelf\": [{\"dataset_colname\": \"measurement\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[measurement]\", \"col_alias\": \"Measurement\"}], \"tooltip_shelf\": [], \"drill_shelf\": [], \"label_shelf\": [], \"filters_shelf\": [], \"core\": {\"viz_type\": \"trellis-bars\", \"saved_shelf_sources\": {\"[business_date] as 'sub:Business date'\": \"x_shelf\", \"sum([breach_windows]) as 'sub:Breach windows'\": \"y_shelf\", \"[measurement] as 'sub:Measurement'\": \"color_shelf\"}, \"shelves\": [{\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"color_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"drill_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"trellis-bars\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "660ca75c-85ad-5e2b-9541-f8caae871dee",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13506,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Sensor Health / Sensors",
+    "dataset": 13108,
+    "workspace": 1,
+    "report_type": "trellis-bars",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Late readings per business date\", \"report_subtitle\": \"\", \"dashboard_id\": 13003, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"x_shelf\": [{\"dataset_colname\": \"business_date\", \"dataset_coltype\": \"DATE\", \"expression_for_trigger\": \"[business_date]\", \"col_alias\": \"Business date\"}], \"y_shelf\": [{\"custom_expr\": \"sum([late_readings])\", \"expression_for_trigger\": \"sum([late_readings])\", \"expr_hasagg\": true, \"col_alias\": \"Late readings\", \"dataset_colname\": \"Late readings\", \"dataset_coltype\": \"DOUBLE\"}], \"color_shelf\": [], \"tooltip_shelf\": [], \"drill_shelf\": [], \"label_shelf\": [], \"filters_shelf\": [], \"core\": {\"viz_type\": \"trellis-bars\", \"saved_shelf_sources\": {\"[business_date] as 'sub:Business date'\": \"x_shelf\", \"sum([late_readings]) as 'sub:Late readings'\": \"y_shelf\"}, \"shelves\": [{\"name\": \"x_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"y_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"color_shelf\", \"shelf_type\": 1, \"column_type\": 3}, {\"name\": \"tooltip_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"drill_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"label_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"trellis-bars\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "41430600-6cc6-51dc-8f15-55c0b240e9ee",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  },
+  {
+   "model": "reports.report",
+   "pk": 13507,
+   "fields": {
+    "report_name": "",
+    "report_description": "OGX Sensor Health / Sensors",
+    "dataset": 13108,
+    "workspace": 1,
+    "report_type": "table",
+    "report_mode": "",
+    "dashboard_url_name": "",
+    "report_data": "{\"report_data\": {\"report_title\": \"Sensors needing attention (latest): stuck, unit change or breaching\", \"report_subtitle\": \"\", \"dashboard_id\": 13003, \"limit\": 1000, \"sample_pct\": \"Off\", \"selected_segments\": [], \"report_derived_data\": [], \"click_behaviors\": {}, \"sort_orders_asc\": {}, \"user_settings\": {}, \"dimensions_shelf\": [{\"dataset_colname\": \"sensor_tag\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[sensor_tag]\", \"col_alias\": \"Sensor\", \"order\": {\"priority\": 1, \"ascending\": true}}, {\"dataset_colname\": \"measurement\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[measurement]\", \"col_alias\": \"Measurement\"}, {\"dataset_colname\": \"tag\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[tag]\", \"col_alias\": \"Asset\"}, {\"dataset_colname\": \"asset_class\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[asset_class]\", \"col_alias\": \"Class\"}, {\"dataset_colname\": \"facility_id\", \"dataset_coltype\": \"STRING\", \"expression_for_trigger\": \"[facility_id]\", \"col_alias\": \"Facility\"}], \"aggregates_shelf\": [{\"custom_expr\": \"sum([stuck_windows])\", \"expression_for_trigger\": \"sum([stuck_windows])\", \"expr_hasagg\": true, \"col_alias\": \"Stuck windows\", \"dataset_colname\": \"Stuck windows\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"sum([bar_readings])\", \"expression_for_trigger\": \"sum([bar_readings])\", \"expr_hasagg\": true, \"col_alias\": \"Bar readings\", \"dataset_colname\": \"Bar readings\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"sum([breach_windows])\", \"expression_for_trigger\": \"sum([breach_windows])\", \"expr_hasagg\": true, \"col_alias\": \"Breach windows\", \"dataset_colname\": \"Breach windows\", \"dataset_coltype\": \"DOUBLE\"}, {\"custom_expr\": \"max([max_value])\", \"expression_for_trigger\": \"max([max_value])\", \"expr_hasagg\": true, \"col_alias\": \"Max\", \"dataset_colname\": \"Max\", \"dataset_coltype\": \"DOUBLE\"}], \"filters_shelf\": [{\"custom_expr\": \"[is_latest] = 1\", \"expression_for_trigger\": \"[is_latest] = 1\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}, {\"custom_expr\": \"([stuck_windows] > 0 or [bar_readings] > 0 or [breach_windows] > 0)\", \"expression_for_trigger\": \"([stuck_windows] > 0 or [bar_readings] > 0 or [breach_windows] > 0)\", \"filter_input\": {}, \"filter_data\": [], \"dataset_colname\": \"\", \"dataset_coltype\": \"STRING\", \"filter_column\": \"\"}], \"core\": {\"viz_type\": \"table\", \"saved_shelf_sources\": {\"[sensor_tag] as 'sub:Sensor'\": \"dimensions_shelf\", \"[measurement] as 'sub:Measurement'\": \"dimensions_shelf\", \"[tag] as 'sub:Asset'\": \"dimensions_shelf\", \"[asset_class] as 'sub:Class'\": \"dimensions_shelf\", \"[facility_id] as 'sub:Facility'\": \"dimensions_shelf\", \"sum([stuck_windows]) as 'sub:Stuck windows'\": \"aggregates_shelf\", \"sum([bar_readings]) as 'sub:Bar readings'\": \"aggregates_shelf\", \"sum([breach_windows]) as 'sub:Breach windows'\": \"aggregates_shelf\", \"max([max_value]) as 'sub:Max'\": \"aggregates_shelf\", \"[is_latest] = 1\": \"filters_shelf\", \"([stuck_windows] > 0 or [bar_readings] > 0 or [breach_windows] > 0)\": \"filters_shelf\"}, \"shelves\": [{\"name\": \"dimensions_shelf\", \"shelf_type\": 1, \"column_type\": 1}, {\"name\": \"aggregates_shelf\", \"shelf_type\": 1, \"column_type\": 2}, {\"name\": \"filters_shelf\", \"shelf_type\": 2, \"column_type\": 3}]}}, \"report_type\": \"table\"}",
+    "shared_visual_dashboards": null,
+    "parent_report": null,
+    "uuid": "2ef07b95-f3c5-557d-b236-45a0e00002b4",
+    "imported_uuid": null,
+    "has_css_styles": false,
+    "report_search_text": ""
+   }
+  }
+ ],
+ "colorpalette": [],
+ "appgroups": [],
+ "datasets": [
+  {
+   "model": "datasets.dataset",
+   "pk": 13100,
+   "fields": {
+    "dataconnection": 2,
+    "dataset_name": "OGX - Risk by facility",
+    "dataset_type": "singletable",
+    "dataset_detail": "rsingh_ogx_semantic.mis_risk_by_facility",
+    "dataset_description": "rsingh_ogx_semantic.mis_risk_by_facility (sql/semantic)",
+    "dataset_info": "[{\"tablename\": \"rsingh_ogx_semantic.mis_risk_by_facility\", \"columns\": [{\"alias\": \"business_date\", \"type\": \"DATE\", \"name\": \"business_date\", \"isdim\": true}, {\"alias\": \"facility_id\", \"type\": \"STRING\", \"name\": \"facility_id\", \"isdim\": true}, {\"alias\": \"assets\", \"type\": \"BIGINT\", \"name\": \"assets\", \"isdim\": false}, {\"alias\": \"exposure\", \"type\": \"DOUBLE\", \"name\": \"exposure\", \"isdim\": false}, {\"alias\": \"high_risk_assets\", \"type\": \"BIGINT\", \"name\": \"high_risk_assets\", \"isdim\": false}, {\"alias\": \"medium_risk_assets\", \"type\": \"BIGINT\", \"name\": \"medium_risk_assets\", \"isdim\": false}, {\"alias\": \"abstained_assets\", \"type\": \"BIGINT\", \"name\": \"abstained_assets\", \"isdim\": false}, {\"alias\": \"is_latest\", \"type\": \"TINYINT\", \"name\": \"is_latest\", \"isdim\": true}]}]",
+    "dataset_tablenames": "[\"rsingh_ogx_semantic.mis_risk_by_facility\"]",
+    "uuid": "6ddc2bdf-be30-5a1f-9e85-f8a95b4253db",
+    "imported_uuid": null,
+    "cache_sequence": 0,
+    "dataset_settings": "{}",
+    "search_enabled": false,
+    "dashboards": [
+     13000
+    ],
+    "version_id": 13100,
+    "version_group_id": 13100,
+    "is_active_version": true,
+    "version_name": "general-datalakehouse",
+    "is_named_version": false
+   }
+  },
+  {
+   "model": "datasets.dataset",
+   "pk": 13101,
+   "fields": {
+    "dataconnection": 2,
+    "dataset_name": "OGX - Risk worklist",
+    "dataset_type": "singletable",
+    "dataset_detail": "rsingh_ogx_semantic.mis_risk_worklist",
+    "dataset_description": "rsingh_ogx_semantic.mis_risk_worklist (sql/semantic)",
+    "dataset_info": "[{\"tablename\": \"rsingh_ogx_semantic.mis_risk_worklist\", \"columns\": [{\"alias\": \"business_date\", \"type\": \"DATE\", \"name\": \"business_date\", \"isdim\": true}, {\"alias\": \"asset_id\", \"type\": \"STRING\", \"name\": \"asset_id\", \"isdim\": true}, {\"alias\": \"tag\", \"type\": \"STRING\", \"name\": \"tag\", \"isdim\": true}, {\"alias\": \"asset_class\", \"type\": \"STRING\", \"name\": \"asset_class\", \"isdim\": true}, {\"alias\": \"facility_id\", \"type\": \"STRING\", \"name\": \"facility_id\", \"isdim\": true}, {\"alias\": \"criticality\", \"type\": \"STRING\", \"name\": \"criticality\", \"isdim\": true}, {\"alias\": \"wall_loss_pct\", \"type\": \"DOUBLE\", \"name\": \"wall_loss_pct\", \"isdim\": false}, {\"alias\": \"breach_windows_3d\", \"type\": \"BIGINT\", \"name\": \"breach_windows_3d\", \"isdim\": false}, {\"alias\": \"corrective_wo_30d\", \"type\": \"BIGINT\", \"name\": \"corrective_wo_30d\", \"isdim\": false}, {\"alias\": \"days_overdue\", \"type\": \"INT\", \"name\": \"days_overdue\", \"isdim\": false}, {\"alias\": \"rule_score\", \"type\": \"DOUBLE\", \"name\": \"rule_score\", \"isdim\": false}, {\"alias\": \"risk_band\", \"type\": \"STRING\", \"name\": \"risk_band\", \"isdim\": true}, {\"alias\": \"p_event_30d\", \"type\": \"DOUBLE\", \"name\": \"p_event_30d\", \"isdim\": false}, {\"alias\": \"exposure\", \"type\": \"DOUBLE\", \"name\": \"exposure\", \"isdim\": false}, {\"alias\": \"is_abstained\", \"type\": \"TINYINT\", \"name\": \"is_abstained\", \"isdim\": true}, {\"alias\": \"abstain_reason\", \"type\": \"STRING\", \"name\": \"abstain_reason\", \"isdim\": true}, {\"alias\": \"risk_rank\", \"type\": \"BIGINT\", \"name\": \"risk_rank\", \"isdim\": true}, {\"alias\": \"is_latest\", \"type\": \"TINYINT\", \"name\": \"is_latest\", \"isdim\": true}]}]",
+    "dataset_tablenames": "[\"rsingh_ogx_semantic.mis_risk_worklist\"]",
+    "uuid": "ad50bae5-7415-5149-97cf-6664b4058fa5",
+    "imported_uuid": null,
+    "cache_sequence": 0,
+    "dataset_settings": "{}",
+    "search_enabled": false,
+    "dashboards": [
+     13000
+    ],
+    "version_id": 13101,
+    "version_group_id": 13101,
+    "is_active_version": true,
+    "version_name": "general-datalakehouse",
+    "is_named_version": false
+   }
+  },
+  {
+   "model": "datasets.dataset",
+   "pk": 13102,
+   "fields": {
+    "dataconnection": 2,
+    "dataset_name": "OGX - Unstructured coverage",
+    "dataset_type": "singletable",
+    "dataset_detail": "rsingh_ogx_semantic.mis_coverage_by_format",
+    "dataset_description": "rsingh_ogx_semantic.mis_coverage_by_format (sql/semantic)",
+    "dataset_info": "[{\"tablename\": \"rsingh_ogx_semantic.mis_coverage_by_format\", \"columns\": [{\"alias\": \"business_date\", \"type\": \"DATE\", \"name\": \"business_date\", \"isdim\": true}, {\"alias\": \"object_format\", \"type\": \"STRING\", \"name\": \"object_format\", \"isdim\": true}, {\"alias\": \"received\", \"type\": \"BIGINT\", \"name\": \"received\", \"isdim\": false}, {\"alias\": \"extracted\", \"type\": \"BIGINT\", \"name\": \"extracted\", \"isdim\": false}, {\"alias\": \"covered\", \"type\": \"BIGINT\", \"name\": \"covered\", \"isdim\": false}, {\"alias\": \"coverage\", \"type\": \"DOUBLE\", \"name\": \"coverage\", \"isdim\": false}, {\"alias\": \"is_latest\", \"type\": \"TINYINT\", \"name\": \"is_latest\", \"isdim\": true}]}]",
+    "dataset_tablenames": "[\"rsingh_ogx_semantic.mis_coverage_by_format\"]",
+    "uuid": "d3160749-84d2-50d8-909e-26fe438342b4",
+    "imported_uuid": null,
+    "cache_sequence": 0,
+    "dataset_settings": "{}",
+    "search_enabled": false,
+    "dashboards": [
+     13000
+    ],
+    "version_id": 13102,
+    "version_group_id": 13102,
+    "is_active_version": true,
+    "version_name": "general-datalakehouse",
+    "is_named_version": false
+   }
+  },
+  {
+   "model": "datasets.dataset",
+   "pk": 13103,
+   "fields": {
+    "dataconnection": 2,
+    "dataset_name": "OGX - Time to review",
+    "dataset_type": "singletable",
+    "dataset_detail": "rsingh_ogx_semantic.mis_time_to_review",
+    "dataset_description": "rsingh_ogx_semantic.mis_time_to_review (sql/semantic)",
+    "dataset_info": "[{\"tablename\": \"rsingh_ogx_semantic.mis_time_to_review\", \"columns\": [{\"alias\": \"business_date\", \"type\": \"DATE\", \"name\": \"business_date\", \"isdim\": true}, {\"alias\": \"worklist_order\", \"type\": \"STRING\", \"name\": \"worklist_order\", \"isdim\": true}, {\"alias\": \"severe_defects\", \"type\": \"BIGINT\", \"name\": \"severe_defects\", \"isdim\": false}, {\"alias\": \"avg_hours\", \"type\": \"DOUBLE\", \"name\": \"avg_hours\", \"isdim\": false}, {\"alias\": \"min_hours\", \"type\": \"DOUBLE\", \"name\": \"min_hours\", \"isdim\": false}, {\"alias\": \"max_hours\", \"type\": \"DOUBLE\", \"name\": \"max_hours\", \"isdim\": false}, {\"alias\": \"is_latest\", \"type\": \"TINYINT\", \"name\": \"is_latest\", \"isdim\": true}]}]",
+    "dataset_tablenames": "[\"rsingh_ogx_semantic.mis_time_to_review\"]",
+    "uuid": "165fc0e1-e4fe-5a88-9eba-ca5103411410",
+    "imported_uuid": null,
+    "cache_sequence": 0,
+    "dataset_settings": "{}",
+    "search_enabled": false,
+    "dashboards": [
+     13000
+    ],
+    "version_id": 13103,
+    "version_group_id": 13103,
+    "is_active_version": true,
+    "version_name": "general-datalakehouse",
+    "is_named_version": false
+   }
+  },
+  {
+   "model": "datasets.dataset",
+   "pk": 13104,
+   "fields": {
+    "dataconnection": 2,
+    "dataset_name": "OGX - Reconciliation",
+    "dataset_type": "singletable",
+    "dataset_detail": "rsingh_ogx_semantic.dash_recon",
+    "dataset_description": "rsingh_ogx_semantic.dash_recon (sql/semantic)",
+    "dataset_info": "[{\"tablename\": \"rsingh_ogx_semantic.dash_recon\", \"columns\": [{\"alias\": \"business_date\", \"type\": \"DATE\", \"name\": \"business_date\", \"isdim\": true}, {\"alias\": \"batch_id\", \"type\": \"STRING\", \"name\": \"batch_id\", \"isdim\": true}, {\"alias\": \"layer\", \"type\": \"STRING\", \"name\": \"layer\", \"isdim\": true}, {\"alias\": \"layer_label\", \"type\": \"STRING\", \"name\": \"layer_label\", \"isdim\": true}, {\"alias\": \"entity\", \"type\": \"STRING\", \"name\": \"entity\", \"isdim\": true}, {\"alias\": \"check_name\", \"type\": \"STRING\", \"name\": \"check_name\", \"isdim\": true}, {\"alias\": \"expected\", \"type\": \"DOUBLE\", \"name\": \"expected\", \"isdim\": false}, {\"alias\": \"actual\", \"type\": \"DOUBLE\", \"name\": \"actual\", \"isdim\": false}, {\"alias\": \"difference\", \"type\": \"DOUBLE\", \"name\": \"difference\", \"isdim\": false}, {\"alias\": \"status\", \"type\": \"STRING\", \"name\": \"status\", \"isdim\": true}, {\"alias\": \"detail\", \"type\": \"STRING\", \"name\": \"detail\", \"isdim\": true}, {\"alias\": \"is_ok\", \"type\": \"TINYINT\", \"name\": \"is_ok\", \"isdim\": false}, {\"alias\": \"is_explained\", \"type\": \"TINYINT\", \"name\": \"is_explained\", \"isdim\": false}, {\"alias\": \"is_late\", \"type\": \"TINYINT\", \"name\": \"is_late\", \"isdim\": false}, {\"alias\": \"is_mismatch\", \"type\": \"TINYINT\", \"name\": \"is_mismatch\", \"isdim\": false}, {\"alias\": \"is_latest\", \"type\": \"TINYINT\", \"name\": \"is_latest\", \"isdim\": true}]}]",
+    "dataset_tablenames": "[\"rsingh_ogx_semantic.dash_recon\"]",
+    "uuid": "443570ae-6455-59c9-aead-598626e8f295",
+    "imported_uuid": null,
+    "cache_sequence": 0,
+    "dataset_settings": "{}",
+    "search_enabled": false,
+    "dashboards": [
+     13001
+    ],
+    "version_id": 13104,
+    "version_group_id": 13104,
+    "is_active_version": true,
+    "version_name": "general-datalakehouse",
+    "is_named_version": false
+   }
+  },
+  {
+   "model": "datasets.dataset",
+   "pk": 13105,
+   "fields": {
+    "dataconnection": 2,
+    "dataset_name": "OGX - Load audit",
+    "dataset_type": "singletable",
+    "dataset_detail": "rsingh_ogx_semantic.dash_load_audit",
+    "dataset_description": "rsingh_ogx_semantic.dash_load_audit (sql/semantic)",
+    "dataset_info": "[{\"tablename\": \"rsingh_ogx_semantic.dash_load_audit\", \"columns\": [{\"alias\": \"business_date\", \"type\": \"DATE\", \"name\": \"business_date\", \"isdim\": true}, {\"alias\": \"batch_id\", \"type\": \"STRING\", \"name\": \"batch_id\", \"isdim\": true}, {\"alias\": \"pipeline_run\", \"type\": \"STRING\", \"name\": \"pipeline_run\", \"isdim\": true}, {\"alias\": \"stage\", \"type\": \"STRING\", \"name\": \"stage\", \"isdim\": true}, {\"alias\": \"entity\", \"type\": \"STRING\", \"name\": \"entity\", \"isdim\": true}, {\"alias\": \"status\", \"type\": \"STRING\", \"name\": \"status\", \"isdim\": true}, {\"alias\": \"rows_in\", \"type\": \"BIGINT\", \"name\": \"rows_in\", \"isdim\": false}, {\"alias\": \"rows_out\", \"type\": \"BIGINT\", \"name\": \"rows_out\", \"isdim\": false}, {\"alias\": \"rows_rejected\", \"type\": \"BIGINT\", \"name\": \"rows_rejected\", \"isdim\": false}, {\"alias\": \"snapshot_after\", \"type\": \"BIGINT\", \"name\": \"snapshot_after\", \"isdim\": false}, {\"alias\": \"started_at\", \"type\": \"TIMESTAMP\", \"name\": \"started_at\", \"isdim\": true}, {\"alias\": \"ended_at\", \"type\": \"TIMESTAMP\", \"name\": \"ended_at\", \"isdim\": true}, {\"alias\": \"message\", \"type\": \"STRING\", \"name\": \"message\", \"isdim\": true}, {\"alias\": \"is_failed\", \"type\": \"TINYINT\", \"name\": \"is_failed\", \"isdim\": false}, {\"alias\": \"is_latest\", \"type\": \"TINYINT\", \"name\": \"is_latest\", \"isdim\": true}]}]",
+    "dataset_tablenames": "[\"rsingh_ogx_semantic.dash_load_audit\"]",
+    "uuid": "6637d456-1b58-5737-bfbc-0d596ea6c1e1",
+    "imported_uuid": null,
+    "cache_sequence": 0,
+    "dataset_settings": "{}",
+    "search_enabled": false,
+    "dashboards": [
+     13001
+    ],
+    "version_id": 13105,
+    "version_group_id": 13105,
+    "is_active_version": true,
+    "version_name": "general-datalakehouse",
+    "is_named_version": false
+   }
+  },
+  {
+   "model": "datasets.dataset",
+   "pk": 13106,
+   "fields": {
+    "dataconnection": 2,
+    "dataset_name": "OGX - Asset cross-reference",
+    "dataset_type": "singletable",
+    "dataset_detail": "rsingh_ogx_semantic.dash_asset_master",
+    "dataset_description": "rsingh_ogx_semantic.dash_asset_master (sql/semantic)",
+    "dataset_info": "[{\"tablename\": \"rsingh_ogx_semantic.dash_asset_master\", \"columns\": [{\"alias\": \"business_date\", \"type\": \"DATE\", \"name\": \"business_date\", \"isdim\": true}, {\"alias\": \"src_system\", \"type\": \"STRING\", \"name\": \"src_system\", \"isdim\": true}, {\"alias\": \"src_name\", \"type\": \"STRING\", \"name\": \"src_name\", \"isdim\": true}, {\"alias\": \"asset_id\", \"type\": \"STRING\", \"name\": \"asset_id\", \"isdim\": true}, {\"alias\": \"rule\", \"type\": \"STRING\", \"name\": \"rule\", \"isdim\": true}, {\"alias\": \"score\", \"type\": \"DOUBLE\", \"name\": \"score\", \"isdim\": false}, {\"alias\": \"rule_label\", \"type\": \"STRING\", \"name\": \"rule_label\", \"isdim\": true}, {\"alias\": \"is_latest\", \"type\": \"TINYINT\", \"name\": \"is_latest\", \"isdim\": true}]}]",
+    "dataset_tablenames": "[\"rsingh_ogx_semantic.dash_asset_master\"]",
+    "uuid": "442b5018-7a05-5790-8e7d-f26a681a6310",
+    "imported_uuid": null,
+    "cache_sequence": 0,
+    "dataset_settings": "{}",
+    "search_enabled": false,
+    "dashboards": [
+     13002
+    ],
+    "version_id": 13106,
+    "version_group_id": 13106,
+    "is_active_version": true,
+    "version_name": "general-datalakehouse",
+    "is_named_version": false
+   }
+  },
+  {
+   "model": "datasets.dataset",
+   "pk": 13107,
+   "fields": {
+    "dataconnection": 2,
+    "dataset_name": "OGX - Asset review queue",
+    "dataset_type": "singletable",
+    "dataset_detail": "rsingh_ogx_semantic.dash_review_queue",
+    "dataset_description": "rsingh_ogx_semantic.dash_review_queue (sql/semantic)",
+    "dataset_info": "[{\"tablename\": \"rsingh_ogx_semantic.dash_review_queue\", \"columns\": [{\"alias\": \"business_date\", \"type\": \"DATE\", \"name\": \"business_date\", \"isdim\": true}, {\"alias\": \"src_system\", \"type\": \"STRING\", \"name\": \"src_system\", \"isdim\": true}, {\"alias\": \"src_key\", \"type\": \"STRING\", \"name\": \"src_key\", \"isdim\": true}, {\"alias\": \"src_name\", \"type\": \"STRING\", \"name\": \"src_name\", \"isdim\": true}, {\"alias\": \"reason\", \"type\": \"STRING\", \"name\": \"reason\", \"isdim\": true}, {\"alias\": \"suggested_asset_id\", \"type\": \"STRING\", \"name\": \"suggested_asset_id\", \"isdim\": true}, {\"alias\": \"status\", \"type\": \"STRING\", \"name\": \"status\", \"isdim\": true}, {\"alias\": \"detail\", \"type\": \"STRING\", \"name\": \"detail\", \"isdim\": true}, {\"alias\": \"is_open\", \"type\": \"TINYINT\", \"name\": \"is_open\", \"isdim\": false}, {\"alias\": \"is_latest\", \"type\": \"TINYINT\", \"name\": \"is_latest\", \"isdim\": true}]}]",
+    "dataset_tablenames": "[\"rsingh_ogx_semantic.dash_review_queue\"]",
+    "uuid": "673c4ee5-e480-5931-a89b-7df34142074f",
+    "imported_uuid": null,
+    "cache_sequence": 0,
+    "dataset_settings": "{}",
+    "search_enabled": false,
+    "dashboards": [
+     13002
+    ],
+    "version_id": 13107,
+    "version_group_id": 13107,
+    "is_active_version": true,
+    "version_name": "general-datalakehouse",
+    "is_named_version": false
+   }
+  },
+  {
+   "model": "datasets.dataset",
+   "pk": 13108,
+   "fields": {
+    "dataconnection": 2,
+    "dataset_name": "OGX - Sensor daily",
+    "dataset_type": "singletable",
+    "dataset_detail": "rsingh_ogx_semantic.dash_sensor_daily",
+    "dataset_description": "rsingh_ogx_semantic.dash_sensor_daily (sql/semantic)",
+    "dataset_info": "[{\"tablename\": \"rsingh_ogx_semantic.dash_sensor_daily\", \"columns\": [{\"alias\": \"business_date\", \"type\": \"DATE\", \"name\": \"business_date\", \"isdim\": true}, {\"alias\": \"sensor_tag\", \"type\": \"STRING\", \"name\": \"sensor_tag\", \"isdim\": true}, {\"alias\": \"measurement\", \"type\": \"STRING\", \"name\": \"measurement\", \"isdim\": true}, {\"alias\": \"asset_id\", \"type\": \"STRING\", \"name\": \"asset_id\", \"isdim\": true}, {\"alias\": \"tag\", \"type\": \"STRING\", \"name\": \"tag\", \"isdim\": true}, {\"alias\": \"asset_class\", \"type\": \"STRING\", \"name\": \"asset_class\", \"isdim\": true}, {\"alias\": \"facility_id\", \"type\": \"STRING\", \"name\": \"facility_id\", \"isdim\": true}, {\"alias\": \"readings\", \"type\": \"BIGINT\", \"name\": \"readings\", \"isdim\": false}, {\"alias\": \"mean_value\", \"type\": \"DOUBLE\", \"name\": \"mean_value\", \"isdim\": false}, {\"alias\": \"max_value\", \"type\": \"DOUBLE\", \"name\": \"max_value\", \"isdim\": false}, {\"alias\": \"mean_slope_per_h\", \"type\": \"DOUBLE\", \"name\": \"mean_slope_per_h\", \"isdim\": false}, {\"alias\": \"windows\", \"type\": \"BIGINT\", \"name\": \"windows\", \"isdim\": false}, {\"alias\": \"breach_windows\", \"type\": \"BIGINT\", \"name\": \"breach_windows\", \"isdim\": false}, {\"alias\": \"stuck_windows\", \"type\": \"BIGINT\", \"name\": \"stuck_windows\", \"isdim\": false}, {\"alias\": \"late_readings\", \"type\": \"BIGINT\", \"name\": \"late_readings\", \"isdim\": false}, {\"alias\": \"bar_readings\", \"type\": \"BIGINT\", \"name\": \"bar_readings\", \"isdim\": false}, {\"alias\": \"is_stuck\", \"type\": \"TINYINT\", \"name\": \"is_stuck\", \"isdim\": false}, {\"alias\": \"has_unit_change\", \"type\": \"TINYINT\", \"name\": \"has_unit_change\", \"isdim\": false}, {\"alias\": \"is_latest\", \"type\": \"TINYINT\", \"name\": \"is_latest\", \"isdim\": true}]}]",
+    "dataset_tablenames": "[\"rsingh_ogx_semantic.dash_sensor_daily\"]",
+    "uuid": "8dcb7e44-08be-50f5-bf09-dd16b63c1ba2",
+    "imported_uuid": null,
+    "cache_sequence": 0,
+    "dataset_settings": "{}",
+    "search_enabled": false,
+    "dashboards": [
+     13003
+    ],
+    "version_id": 13108,
+    "version_group_id": 13108,
+    "is_active_version": true,
+    "version_name": "general-datalakehouse",
+    "is_named_version": false
+   }
+  }
+ ],
+ "version": {
+  "Arcviz Version": "8.1.4.1000",
+  "Raw Timestamp of last commit": "1789380895",
+  "Timestamp of last commit": "Mon Sep 14 12:14:55 2026 +0200",
+  "SHA of last commit": "f57d558a7dcd7cda432e8fffd9d3c1fc60cdfad9",
+  "Description": "8.1.4.1000-4"
+ }
+}

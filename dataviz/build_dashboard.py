@@ -83,7 +83,7 @@ KPI_SHEETS = [
     ]),
     ("Coverage and review time", [
         dict(type="trellis-bars", ds="coverage", title="Objects received and covered by format (all dates)",
-             x=[("format", "Format")], measures=[("sum([received])", "Received"), ("sum([covered])", "Covered")],
+             x=[("object_format", "Format")], measures=[("sum([received])", "Received"), ("sum([covered])", "Covered")],
              pos=(1, 1, 32, 22)),
         dict(type="trellis-lines", ds="coverage", title="Coverage % per business date",
              x=[("business_date", "Business date")],

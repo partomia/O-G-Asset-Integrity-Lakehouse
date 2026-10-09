@@ -41,13 +41,13 @@ COMMENT 'MIS: unstructured coverage by format and business date (kpi_unstructure
 AS
 SELECT m.*, CASE WHEN m.business_date = l.latest_date THEN 1 ELSE 0 END AS is_latest
 FROM (
-SELECT business_date, format,
+SELECT business_date, object_format,
        SUM(is_received)                                     AS received,
        SUM(is_extracted)                                    AS extracted,
        SUM(is_covered)                                      AS covered,
        CAST(SUM(is_covered) AS DOUBLE) / SUM(is_received)   AS coverage
 FROM rsingh_ogx_semantic.kpi_unstructured_coverage
-GROUP BY business_date, format
+GROUP BY business_date, object_format
 ) m
 CROSS JOIN (SELECT MAX(business_date) AS latest_date FROM rsingh_ogx_semantic.kpi_unstructured_coverage) l;
 

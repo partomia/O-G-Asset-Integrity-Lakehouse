@@ -144,7 +144,7 @@ with tab_360:
                        f"AND as_of_date = DATE {lit(d)} ORDER BY src_system, src_name"),
                      hide_index=True, use_container_width=True, height=260)
         st.markdown("**Inspections**")
-        st.dataframe(q(f"SELECT business_date, report_no, method, wall_loss_pct, min_measured_mm, corrosion_type, cui, "
+        st.dataframe(q(f"SELECT business_date, report_no, `method`, wall_loss_pct, min_measured_mm, corrosion_type, cui, "
                        f"recommended_action, extract_method FROM {GOLD}.fact_inspection WHERE asset_id = {lit(aid)} "
                        f"AND business_date <= DATE {lit(d)} ORDER BY business_date DESC"),
                      hide_index=True, use_container_width=True)
