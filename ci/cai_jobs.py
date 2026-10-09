@@ -24,8 +24,8 @@ RUNTIME = "docker.repository.cloudera.com/cloudera/cdsw/ml-runtime-pbj-jupyterla
 
 def _chain(prefix: str, model: str, parent: str | None) -> list[dict]:
     env = {"OGX_MODEL": model}
-    steps = [("01-build-features", "features/build_feature_table.py", 2, 8, 7200),
-             ("02-train-validate", "train/train_validate.py", 2, 8, 3600),
+    steps = [("01-build-features", "features/build_feature_table.py", 1, 4, 7200),
+             ("02-train-validate", "train/train_validate.py", 1, 4, 3600),
              ("03-kpi-gate", "gate/kpi_gate.py", 1, 2, 600),
              ("04-deploy", "serve/deploy_champion.py", 1, 2, 5400)]
     out = []
@@ -46,8 +46,8 @@ JOBS = [
     {"name": "ogx-00-sync-code", "script": "ci/sync_code.py", "parent": None,
      "cpu": 1, "memory": 4, "timeout": 3600, "schedule": None},
     *_chain("ogx", "corrosion", "ogx-00-sync-code"),
-    *_chain("ogx-qc", "frame_qc", None),
-    *_chain("ogx-risk", "equipment_risk", None),
+    # ogx-qc-* (frame_qc) and ogx-risk-* (equipment_risk) join once their feature layouts exist:
+    # *_chain("ogx-qc", "frame_qc", None), *_chain("ogx-risk", "equipment_risk", None),
     {"name": "ogx-05-nightly-drift", "script": "monitor/drift.py", "parent": None,
      "cpu": 1, "memory": 4, "timeout": 3600, "schedule": "0 2 * * *"},
     {"name": "ogx-06-score-inspections", "script": "lakehouse/score_inspections.py", "parent": None,

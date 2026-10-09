@@ -54,8 +54,8 @@ serving:
 
 cai:
   runtime_identifier: ""
-  model_cpu: 2
-  model_memory_gb: 4
+  model_cpu: 1
+  model_memory_gb: 2
   git_branch: main
 
 registry:
