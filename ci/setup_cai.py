@@ -39,7 +39,7 @@ PROJECT_ENV_FROM_CALLER = ("OGX_IMPALA_USER", "OGX_IMPALA_PASSWORD", "OGX_WORKLO
                            "OGX_KAFKA_BOOTSTRAP", "OGX_KAFKA_SECURITY_PROTOCOL", "OGX_KAFKA_SASL_MECHANISM",
                            "OGX_KAFKA_USER", "OGX_KAFKA_PASSWORD", "OGX_SCHEMA_REGISTRY_URL", "OGX_HF_TOKEN")
 APP = {"name": "OGX Integrity Workbench", "subdomain": "rsingh-ogx-workbench", "script": "app/launch_app.py",
-       "cpu": 2, "memory": 8, "description": "Integrity engineer's worklist, Asset 360, document search, feedback"}
+       "cpu": 1, "memory": 4, "description": "Integrity engineer's worklist, Asset 360, document search, feedback"}
 
 
 class Workbench:

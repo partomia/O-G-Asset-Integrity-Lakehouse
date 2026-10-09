@@ -48,3 +48,47 @@ Newest last. Times are IST unless marked UTC. No secret values are ever written 
 - **Plan change: OCR is template matching** against the synthetic scanner's 5x7 font
   (`extract/ocr.py`), not a general OCR engine; it reads every scanned report field exactly.
   A production pipeline would put Tesseract or a document AI service in the same slot.
+
+## 2026-10-08 / 09: phases 1 to 7 (local), first live runs
+
+Local (Spark 4.0.1 + Iceberg 1.10, JDBC SQLite catalog, Kafka 3.9.1 on localhost) for the five
+business dates 2026-10-04 to 10-08: land, bronze, stream (2.88M readings), extract, silver,
+asset master, gold, semantic and recon all pass. Recon flags only the planted faults: corrupt
+PDF on 10-05 (MISMATCH), seismic resend (EXPLAINED), work-order trailer on 10-06 (MISMATCH).
+The stop/restart drill writes no duplicate (each foreachBatch commit carries
+`ogx.stream-batch = <query id>:<batch id>`; a replayed batch is skipped). KPI consistency: 9 of
+9 MATCHED on every date.
+
+Live, in order:
+
+- **CAI** project `rsingh-og-asset-integrity` (id `2le3-eze7-5ih7-fj5k`) created from the
+  public URL; jobs `ogx-setup-data`, `ogx-stream-producer`, `ogx-00-sync-code`.
+  `ogx-setup-data` at 2 vCPU / 8 GB stayed in scheduling for 37 minutes (cluster capacity);
+  resized to **1 vCPU / 4 GB** it ran at once and succeeded in 923 s (dataset downloaded,
+  requirements installed). The application is also sized 1 vCPU / 4 GB for that reason.
+- **Kafka** topics `ogx.sensor.telemetry`, `ogx.scada.alarm`, `ogx.control` created from CDE
+  (run 533, Java AdminClient over SASL_SSL PLAIN), which proves the network path, TLS and
+  SASL from the CDE vcluster (9093 is closed from the laptop). Schemas registered in Schema
+  Registry through Knox, version 1 each.
+- **Plan change: the producer runs as a CDE job** (`rsingh-ogx-stream-produce`) as well as a CAI
+  job, because CDE reaches the brokers and its Spark Kafka writer is fast: 5-day backfill
+  (2.88M readings plus alarms and per-minute control counts) in run 534, about 3.5 minutes.
+- **CDE** resource `rsingh-ogx-pipeline` (Git repository on the public URL); jobs
+  `rsingh-ogx-{land,bronze,extract,silver,asset,gold,recon,stages}` at driver 2 cores / 4 GB,
+  executors 4 cores / 8 GB, 1 to 4 executors. Land and bronze succeeded for all five dates
+  (runs 535 to 545).
+- **Streaming**: `rsingh-ogx-stream-bronze` run 541 failed at start (`Error parsing '60s' to
+  interval`: Spark 3.5 wants "60 seconds"); fixed and restarted as **run 569**, which reads
+  Kafka at about 200k readings per micro-batch with nothing quarantined.
+  `rsingh-ogx-stream-agg` started as run 573.
+- **Plan change: stuck-sensor rule.** The producer samples every 30 s (30 readings per
+  15-minute window) but the rule required 90, so no window was ever flagged. The minimum is
+  now 24 per 15 minutes (2 per minute); gold also derives stuck windows from the window
+  statistics, so the running aggregation job needs no restart to pick it up.
+- **Plan change: per-tag breach thresholds.** Wellhead pressure runs about 1,800 psi, above the
+  single 1,450 psi limit, so every well window breached. `threshold_overrides` in
+  `config/streaming.json` sets PI-W* to 2,500 psi.
+- **Plan change: TTR before the model.** Until the equipment_risk scores land, IRE uses the gold
+  rule score / 100 as `p_event_30d` (`p_source = 'rule_score'`), and TTR compares the
+  risk-ranked worklist against calendar order on the same inspections (severe = wall loss
+  >= 20 %). Locally risk order cuts severe-defect review time from about 28 h to 24 h.
