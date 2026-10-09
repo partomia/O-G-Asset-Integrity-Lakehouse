@@ -53,6 +53,16 @@ def q(sql: str) -> pd.DataFrame:
         cur.close()
 
 
+@st.cache_resource
+def corrosion_model():
+    """The champion the endpoint serves (models/champion, installed by job ogx-04), loaded in process."""
+    if not (ROOT / "models" / "champion" / "model.joblib").exists():
+        return None
+    import serve.predict as p
+
+    return p
+
+
 def lit(s) -> str:
     return "'" + str(s).replace("'", "") + "'"
 
@@ -157,6 +167,25 @@ with tab_360:
         st.dataframe(q(f"SELECT business_date, aufnr, auart, priority, status, short_text, cost_usd "
                        f"FROM {GOLD}.fact_work_order WHERE asset_id = {lit(aid)} AND business_date <= DATE {lit(d)} "
                        f"ORDER BY business_date DESC"), hide_index=True, use_container_width=True)
+    kf = q(f"SELECT k.business_date, k.video_id, k.frame_index, k.t_seconds, k.frame_sha256 "
+           f"FROM {P}_silver.video_keyframe k WHERE k.asset_hint = {lit(tag)} AND k.business_date <= DATE {lit(d)} "
+           f"ORDER BY k.business_date DESC, k.video_id, k.frame_index LIMIT 12")
+    if not kf.empty:
+        st.markdown("**Drone keyframes, scored by the corrosion champion (CAI model ogx-integrity)**")
+        eng = corrosion_model()
+        if eng is None:
+            st.info("No corrosion champion yet: run the CAI chain ogx-01 to ogx-04.")
+        cols = st.columns(4)
+        for i, r in enumerate(kf.itertuples()):
+            res = eng.predict({"sha256": r.frame_sha256}) if eng else {}
+            path = ROOT / "assets" / "frames" / f"{r.frame_sha256[:16]}.jpg"
+            with cols[i % 4]:
+                if path.exists():
+                    st.image(str(path), use_container_width=True)
+                band = res.get("band", "")
+                sev = res.get("probabilities", {}).get("severe")
+                st.caption(f"{r.video_id} t={r.t_seconds:.0f}s · **{band}** {res.get('severity', '')}"
+                           + (f" (severe {sev:.2f})" if sev is not None else ""))
     s = q(f"SELECT business_date, sensor_tag, measurement, mean_value, max_value, breach_windows, stuck_windows, "
           f"bar_readings FROM {GOLD}.fact_sensor_daily WHERE asset_id = {lit(aid)} ORDER BY business_date")
     if not s.empty:
