@@ -150,7 +150,7 @@ with tab_360:
                      hide_index=True, use_container_width=True)
     with c2:
         st.markdown("**Documents, drawings and drone video**")
-        st.dataframe(q(f"SELECT business_date, source, format, file_name, resolved_by FROM {GOLD}.fact_document "
+        st.dataframe(q(f"SELECT business_date, source, `format`, file_name, resolved_by FROM {GOLD}.fact_document "
                        f"WHERE asset_id = {lit(aid)} AND business_date <= DATE {lit(d)} ORDER BY business_date DESC"),
                      hide_index=True, use_container_width=True, height=260)
         st.markdown("**Work orders**")

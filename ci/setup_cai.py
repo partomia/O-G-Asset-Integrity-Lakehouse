@@ -138,6 +138,9 @@ def ensure_jobs(wb: Workbench, project: dict, dry_run: bool) -> dict:
                 wb("PATCH", f"/projects/{pid}/jobs/{have['id']}", body=patch)
                 print(f"job {job['name']}: updated {sorted(patch)}")
             continue
+        if not (Path(__file__).resolve().parents[1] / job["script"]).exists():
+            print(f"job {job['name']}: skipped ({job['script']} not in this checkout)")
+            continue
         if dry_run:
             print(f"job {job['name']}: would create ({job['script']}, parent {job['parent']}, "
                   f"{job['cpu']} vCPU / {job['memory']} GB, env {env})")
