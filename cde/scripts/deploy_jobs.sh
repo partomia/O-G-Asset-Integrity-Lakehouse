@@ -58,6 +58,7 @@ create_job "${JOB_PREFIX}-asset"    "cde/jobs/build_asset_master.py"
 create_job "${JOB_PREFIX}-gold"     "cde/jobs/build_gold.py"
 create_job "${JOB_PREFIX}-outcomes" "cde/jobs/build_outcomes.py"
 create_job "${JOB_PREFIX}-recon"    "cde/jobs/reconcile.py"
+create_job "${JOB_PREFIX}-stages"   "cde/jobs/run_stages.py"
 
 echo ""
 echo "Jobs deployed from ${REPO_NAME}. One stage by hand (run-time args replace the job's):"
