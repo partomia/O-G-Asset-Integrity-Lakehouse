@@ -43,7 +43,7 @@ COLUMN_TYPES = ("iceberg_column", "hive_column")
 def load_config() -> tuple[dict, dict, str]:
     gov = json.loads((ROOT / "config" / "governance.json").read_text())
     kpi = json.loads((ROOT / "config" / "kpi.json").read_text())
-    api = json.loads((ROOT / "config" / "pipeline.json").read_text())["datalake_api"]
+    api = json.loads((ROOT / "config" / "lakehouse.json").read_text())["datalake_api"]
     return gov, kpi, api
 
 
