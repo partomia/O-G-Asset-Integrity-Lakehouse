@@ -92,3 +92,32 @@ Live, in order:
   rule score / 100 as `p_event_30d` (`p_source = 'rule_score'`), and TTR compares the
   risk-ranked worklist against calendar order on the same inspections (severe = wall loss
   >= 20 %). Locally risk order cuts severe-defect review time from about 28 h to 24 h.
+
+## 2026-10-09 morning: live chain, semantic layer, dashboards, app, governance
+
+- **CDE batch chain**: extract and silver per date (runs 570 to 580), then the new
+  `rsingh-ogx-stages` job (one Spark session for several stages and dates, to avoid a driver
+  start per stage on a busy vcluster): run 581 = silver, asset, gold, recon for 10-04 to 10-06;
+  run 587 = 10-07 (then failed on extract 10-08: executors could not import the job module,
+  fixed by loading jobs unregistered, as `run_local.py` does); extract 10-08 run 589, then a
+  stages run for 10-08. Several runs queued 15 to 25 minutes behind other demos' jobs.
+- Live results equal the local ones: recon 10-04 32 MATCHED; 10-05 one MISMATCH (corrupt PDF)
+  and one EXPLAINED (seismic resend); 10-06 one MISMATCH (work-order trailer); 10-07 29 MATCHED.
+  Golden assets 222 to 251 by date, 1 conflict auto-resolved. `bronze.sensor_reading`
+  2,880,000 rows.
+- **CDW semantic layer** on Impala (`rsingh_ogx_semantic`): 3 certified KPI views, 4 MIS
+  views, 5 dashboard views. KPI consistency 9 of 9 MATCHED on every date; IRE 9.37, 13.96,
+  17.33, 21.09 for 10-04 to 10-07, 1 asset abstained (stuck VI-112B) from 10-05.
+  Impala reserved words `format` and `method` are escaped or renamed (`object_format`).
+- **Data Visualization**: 4 dashboards, 9 datasets, 36 visuals imported on connection
+  `federal-impala-1` (export PKs 13000+; the instance assigned dataset ids 54+). `--verify`:
+  36 of 36 visuals return rows through the Data API, tiles equal to Impala.
+- **CAI**: `ogx-00-sync-code` (2 vCPU / 8 GB) stuck in scheduling; it and the producer job
+  resized to 1 vCPU / 4 GB. The stuck run was left alone (stopping OGX CAI runs awaits
+  approval), so the code was pushed into the project with the CAI files API instead of a git
+  pull. Application **OGX Integrity Workbench** `nk5h-c7u1-c0sr-w54t`, subdomain
+  `rsingh-ogx-workbench`, 1 vCPU / 4 GB: APPLICATION_RUNNING; smoke test (Streamlit AppTest
+  against live Impala) shows no exception across the four tabs.
+- **SDX**: `scripts/governance.py apply`: 4 `OGX_SENSITIVE_*` classifications on 26 columns,
+  glossary "OGX Integrity KPIs" with 3 terms on 7 views, Ranger tag masking policies
+  `rsingh-ogx-sensitive-{hash,location,subsurface,text}` for federal01 / federal07. `verify: OK`.
