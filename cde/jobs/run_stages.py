@@ -35,15 +35,20 @@ def main(argv=None) -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--stages", required=True, help=f"comma-separated, from {', '.join(STAGES)}")
     p.add_argument("--dates", required=True, help="comma-separated business dates, run in order")
+    p.add_argument("--only", action="append", default=[],
+                   help="STAGE=d1,d2: run that stage on these dates only (repeatable)")
     args, rest = p.parse_known_args(argv)
     stages = [s.strip() for s in args.stages.split(",") if s.strip()]
     unknown = [s for s in stages if s not in STAGES]
     if unknown:
         p.error(f"unknown stages {unknown}")
+    only = {k: set(v.split(",")) for k, v in (o.split("=", 1) for o in args.only)}
     spark = C.get_spark("ogx-stages")
     jobs = {s: load_job(STAGES[s]) for s in stages}
     for d in [x.strip() for x in args.dates.split(",") if x.strip()]:
         for s in stages:
+            if s in only and d not in only[s]:
+                continue
             print(f"=== {s} {d}", flush=True)
             jobs[s].run(spark, ["--business-date", d, *rest])
     spark.stop()
