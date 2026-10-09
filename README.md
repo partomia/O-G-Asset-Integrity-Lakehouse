@@ -20,7 +20,8 @@ come from a CC BY 4.0 corrosion image set (`assets/frames/ATTRIBUTION.md`).
 | Reconciliation at every layer: MATCHED / EXPLAINED / LATE / MISMATCH | CDE | `cde/jobs/reconcile.py` |
 | Certified KPI views, MIS and dashboard views, KPI consistency check | CDW Impala | `sql/semantic/`, `scripts/run_semantic.py` |
 | Dashboards (PKs 13000+) | CDW Data Visualization | `dataviz/build_dashboard.py` |
-| Integrity Workbench (worklist, Asset 360, sensors, data quality) | CAI application | `app/` |
+| Corrosion severity model on drone keyframes: features, train and validate, KPI gate, deploy | CAI jobs `ogx-01` to `ogx-04`, model `ogx-integrity` | `features/`, `train/`, `gate/`, `serve/`, `ci/cai_jobs.py` |
+| Integrity Workbench (worklist, Asset 360 with scored keyframes, sensors, data quality) | CAI application | `app/` |
 | Classifications, glossary, tag masking | SDX: Atlas, Ranger | `scripts/governance.py`, `config/governance.json` |
 
 Databases: `rsingh_ogx_{bronze,silver,asset,gold,semantic,ref}`. Objects: `s3a://.../rsingh_ogx/`.
@@ -68,9 +69,30 @@ set -a; source .env; set +a
 cde job run --name rsingh-ogx-stages --arg=--stages --arg=silver,asset,gold,recon --arg=--dates --arg=2026-10-08 ...
 python scripts/run_semantic.py --engine impala --steps views,check,adhoc
 python dataviz/build_dashboard.py --import --connection federal-impala-1
-python ci/setup_cai.py --app
+python ci/setup_cai.py --app               # CAI jobs ogx-01..04 and the Workbench application
 python scripts/governance.py apply
 ```
+
+The CAI project is created from the public repo URL (no deploy key). Set `OGX_IMPALA_USER` and
+`OGX_IMPALA_PASSWORD` in the project environment **before** starting the application, or restart it
+afterwards; otherwise it shows a fallback page with no tabs.
+
+## Corrosion model
+
+Keyframes from the drone video are scored by a 49-feature classical model (`features/feature_logic.py`,
+version `hc-1.0.0`). `train/train_validate.py` picks between random forest, extra trees and gradient
+boosting by 5-fold out-of-fold AUROC and sets the threshold at 0.90 sensitivity; `gate/kpi_gate.py`
+blocks promotion on any miss. Current champion (gradient boosting): test AUROC 0.862, sensitivity
+0.931, specificity 0.513, Brier 0.124. Bands: P1 (p ≥ 0.80), P2 (p ≥ threshold), P3.
+
+## Status and known issues
+
+- Built and live: phases 0 to 7, streaming, semantic layer, dashboards, governance, Workbench,
+  corrosion model chain.
+- Model endpoint `ogx-integrity` is deployed but returns 400 on every call; the Workbench scores
+  in-process and does not depend on it. Next step: check the replica logs in the CAI UI.
+- Not built yet: frame QC and equipment-risk model heads, guardrails, lakehouse scoring and outcome
+  tables, silent trial (PLAN phases 8 to 10, partial).
 
 Demo walkthrough: [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md). Build log and every plan change:
 [docs/PROJECT_LOG.md](docs/PROJECT_LOG.md). Plan: [PLAN.md](PLAN.md).

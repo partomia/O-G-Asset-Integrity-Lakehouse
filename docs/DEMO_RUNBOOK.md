@@ -3,6 +3,9 @@
 Links:
 
 - Integrity Workbench (CAI): https://rsingh-ogx-workbench.federal-cml.federal.dp5i-5vkq.cloudera.site
+  (CAI project `rsingh-og-asset-integrity` → Applications → "OGX Integrity Workbench"). When it is
+  healthy the page title is **Asset Integrity Workbench** with tabs Worklist / Asset 360 / Sensors /
+  Data quality; a page titled "OGX Integrity Workbench" with no tabs is the fallback (see the end).
 - Dashboards (CDW Data Visualization): https://viz-indianbank-spend-analytics.dw-federal-cdp-env.dp5i-5vkq.cloudera.site/arc/apps/
   → Dashboards → **OGX Integrity KPIs**, **OGX Reconciliation & Data Quality**, **OGX Asset Master**, **OGX Sensor Health**
 - CDE jobs: `rsingh-ogx-*` (vcluster in `federal-cdp-env`); streaming runs `rsingh-ogx-stream-bronze`, `rsingh-ogx-stream-agg`
@@ -21,6 +24,9 @@ drone video and live SCADA, each naming the same asset differently (`PL-03-SEG-0
   (exact functional location, normalised tag, GPS to pipeline segment), inspections with wall loss,
   drawings and drone video linked to it, work orders, and its sensors from the stream.
 - History table: SCD2 versions in `gold.dim_asset`.
+- Pick **TK-504** (or any asset with drone video): its keyframes scored by the corrosion
+  champion (P1 / P2 / P3 with severe probability). CAI jobs `ogx-01` to `ogx-04` built,
+  gated (TEST AUROC 0.862, sensitivity 0.93) and deployed it as model `ogx-integrity`.
 - Dashboard **OGX Asset Master**: every source name resolved; the one conflict (segment named in
   one source, GPS 38 m from another) auto-resolved and logged in the review queue.
 
@@ -68,6 +74,13 @@ live run is in `docs/PROJECT_LOG.md`.
 
 ## If something is off
 
+- Workbench shows "OGX Integrity Workbench" with an error and no tabs: the app started without
+  `OGX_IMPALA_USER` / `OGX_IMPALA_PASSWORD`. They are in the project environment, so restart the
+  application (CAI → Applications → Restart, about 30 s) and reload.
 - Workbench shows an Impala error: refresh; the app caches queries for 5 minutes.
+- The first load of each tab takes a few seconds (Impala queries); later loads come from the cache.
+- Model endpoint `ogx-integrity`: deployed, but calls currently return 400 (open item in
+  `docs/PROJECT_LOG.md`). Do not call it live; the Workbench scores keyframes in-process with the
+  same champion (`serve/predict.py`), so Asset 360 is unaffected.
 - A dashboard is empty for the latest date: the CDE chain for that date has not finished; pick
   the previous date (all five dates 10-04 to 10-08 are loaded).
