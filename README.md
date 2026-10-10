@@ -13,6 +13,7 @@ come from a CC BY 4.0 corrosion image set (`assets/frames/ATTRIBUTION.md`).
 | Layer | Cloudera service | Code |
 |---|---|---|
 | Kafka topics `ogx.sensor.telemetry`, `ogx.scada.alarm`, `ogx.control`, Schema Registry | Streams Messaging Data Hub `federal-kafka` | `stream/producer/`, `cde/jobs/stream_produce.py` |
+| Alarm routing: validate on the Schema Registry contract, priority alarms to `ogx.alarm.priority`, raw landing to S3, versioned in NiFi Registry | NiFi Data Hub `federal-nifi` (NiFi 2.6, NiFi Registry bucket `ogx-flows`) | `nifi/deploy_flow.py`, [docs/NIFI.md](docs/NIFI.md) |
 | Streaming bronze (exactly-once foreachBatch) and 1- and 15-minute windows (watermark, MERGE) | CDE Spark 3.5 Structured Streaming | `cde/jobs/stream_telemetry_bronze.py`, `stream_telemetry_agg.py` |
 | Land, bronze, object catalog, quarantine | CDE | `cde/jobs/land_sources.py`, `ingest_bronze.py` |
 | Extraction: PDF text and OCR, drawing tags, SEG-Y and LAS headers, video keyframes | CDE (standard library parsers) | `extract/`, `cde/jobs/extract_unstructured.py` |
@@ -21,7 +22,10 @@ come from a CC BY 4.0 corrosion image set (`assets/frames/ATTRIBUTION.md`).
 | Certified KPI views, MIS and dashboard views, KPI consistency check | CDW Impala | `sql/semantic/`, `scripts/run_semantic.py` |
 | Dashboards (PKs 13000+) | CDW Data Visualization | `dataviz/build_dashboard.py` |
 | Corrosion severity model on drone keyframes: features, train and validate, KPI gate, deploy | CAI jobs `ogx-01` to `ogx-04`, model `ogx-integrity` | `features/`, `train/`, `gate/`, `serve/`, `ci/cai_jobs.py` |
-| Integrity Workbench (worklist, Asset 360 with scored keyframes, sensors, data quality) | CAI application | `app/` |
+| Model versions: MLflow runs, AI Registry `ogx-corrosion`, lifecycle in `ref.model_event` | CAI experiments + AI Registry, CDW | `serve/registry.py`, `lakehouse/` |
+| Guardrails: frame quality, out of distribution, abstain band, safety floor, no automated action | CAI model + application | `guardrails/`, `config/guardrails.yaml`, [docs/GUARDRAILS.md](docs/GUARDRAILS.md) |
+| MLOps: nightly drift, retrain trigger (drift, engineer labels, age), GitHub push to CAI chain | CAI jobs `ogx-05`, `ogx-08`, GitHub Actions `cai-mlops.yml` | `monitor/drift.py`, `ci/retrain_trigger.py`, [docs/MLOPS.md](docs/MLOPS.md) |
+| Integrity Workbench (worklist, Asset 360 with scored keyframes, sensors, data quality, models & guardrails) | CAI application | `app/` |
 | Classifications, glossary, tag masking | SDX: Atlas, Ranger | `scripts/governance.py`, `config/governance.json` |
 
 Databases: `rsingh_ogx_{bronze,silver,asset,gold,semantic,ref}`. Objects: `s3a://.../rsingh_ogx/`.
@@ -69,8 +73,9 @@ set -a; source .env; set +a
 cde job run --name rsingh-ogx-stages --arg=--stages --arg=silver,asset,gold,recon --arg=--dates --arg=2026-10-08 ...
 python scripts/run_semantic.py --engine impala --steps views,check,adhoc
 python dataviz/build_dashboard.py --import --connection federal-impala-1
-python ci/setup_cai.py --app               # CAI jobs ogx-01..04 and the Workbench application
+python ci/setup_cai.py --app               # CAI jobs ogx-00..08 and the Workbench application
 python scripts/governance.py apply
+python nifi/deploy_flow.py deploy           # NiFi alarm router, version 1 in NiFi Registry
 ```
 
 The CAI project is created from the public repo URL (no deploy key). Set `OGX_IMPALA_USER` and
@@ -82,17 +87,23 @@ afterwards; otherwise it shows a fallback page with no tabs.
 Keyframes from the drone video are scored by a 49-feature classical model (`features/feature_logic.py`,
 version `hc-1.0.0`). `train/train_validate.py` picks between random forest, extra trees and gradient
 boosting by 5-fold out-of-fold AUROC and sets the threshold at 0.90 sensitivity; `gate/kpi_gate.py`
-blocks promotion on any miss. Current champion (gradient boosting): test AUROC 0.862, sensitivity
-0.931, specificity 0.513, Brier 0.124. Bands: P1 (p ≥ 0.80), P2 (p ≥ threshold), P3.
+blocks promotion on any miss and on a TEST AUROC loss of more than 0.02 against the champion.
+Current champion (gradient boosting): test AUROC 0.862, sensitivity 0.931, specificity 0.513,
+Brier 0.124. Bands: P1 (p ≥ 0.80), P2 (p ≥ threshold), P3, plus NA (failed input guardrail) and
+UNCERTAIN (within 0.05 of the threshold); criticality A never below P2.
+
+Every training is an MLflow run; every deployed champion is a new version of `ogx-corrosion` in
+the Cloudera AI Registry; every step (trained, gate, deployed, registered, drift alert, retrain
+triggered or skipped) is a row in `ref.model_event`. Retraining starts on a push (GitHub Actions),
+on a drift alert, on 20 new engineer labels from Asset 360 or when the champion is 30 days old.
 
 ## Status and known issues
 
-- Built and live: phases 0 to 7, streaming, semantic layer, dashboards, governance, Workbench,
-  corrosion model chain.
-- Model endpoint `ogx-integrity` is deployed but returns 400 on every call; the Workbench scores
-  in-process and does not depend on it. Next step: check the replica logs in the CAI UI.
-- Not built yet: frame QC and equipment-risk model heads, guardrails, lakehouse scoring and outcome
-  tables, silent trial (PLAN phases 8 to 10, partial).
+- Built and live: phases 0 to 7, streaming, NiFi alarm routing, semantic layer, dashboards,
+  governance, Workbench, corrosion model chain with guardrails, registry versions and the
+  retraining loop.
+- Not built yet: frame QC and equipment-risk model heads, silent trial and named-approver
+  promotion (`ogx-07`), lakehouse scoring job (`ogx-06`), the LLM report-summary guardrail.
 
 Demo walkthrough: [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md). Build log and every plan change:
 [docs/PROJECT_LOG.md](docs/PROJECT_LOG.md). Plan: [PLAN.md](PLAN.md).

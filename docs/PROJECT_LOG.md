@@ -149,3 +149,38 @@ Live, in order:
 - Model deployment `ae268c14` restarted: no longer "model busy", but every call (sha256 or image_b64) returns 400 from
   replica `ogx-integrity-14-32`, i.e. `predict` raises inside the build. Open item: inspect the model build/replica logs
   in the CAI UI. The app scores keyframes in-process with `serve.predict`, so the demo does not depend on the endpoint.
+
+## 2026-10-11 01:00 - NiFi, guardrails, AI Registry versions, retraining loop
+
+- **NiFi** (`federal-nifi`, NiFi 2.6): process group `OGX - SCADA Alarm Router` built by
+  `nifi/deploy_flow.py` (a `check` step resolves every property against NiFi's component
+  definitions before anything is created). Schema Registry access through Knox with basic auth
+  (the service's property is `Schema Registry URL`, singular); `CdpCredentialsProviderControllerService`
+  needs CDP access keys, so `PutCDPObjectStore` uses a Kerberos user service instead. Kafka via
+  `Kafka3ConnectionService` (SASL_SSL PLAIN) and the existing root truststore-only SSL service
+  (referenced only). Other process groups on the canvas (incl. `rsingh-workshop`) untouched.
+  NiFi Registry bucket `ogx-flows` created; flow version 1 committed and exported to `nifi/flows/`
+  (no sensitive values; a test checks it). First run: 84 alarms consumed, 84 valid and landed in
+  `landing/nifi/scada_alarm/2026-10-10/` (2 files), 6 priority alarms published, 0 quarantined.
+- Topic `ogx.alarm.priority` created through the SMM REST API (the brokers are not reachable from
+  the laptop) and its schema registered; it is kept out of `streaming.json` `topics` so the bronze
+  stream (which subscribes to all of them) does not ingest the routed copies.
+- **Guardrails** (`guardrails/`, `config/guardrails.yaml`, `docs/GUARDRAILS.md`): frame limits tuned
+  on 105 clean + 105 degraded library frames and 300 training images (2 of 105 clean frames
+  rejected; glare and low light 100 %, blur 72 %); OOD limit = training q99.5 stored with the model.
+  The old placeholder `guardrails.yaml` (read by no code) was replaced; its LLM section kept.
+  `serve/predict.py` now returns `{"error": ...}` with the exception instead of an opaque 400.
+- **Registry and MLOps**: MLflow run per training, AI Registry version on deploy
+  (`serve/registry.py`, copied from CXR), Iceberg tables `rsingh_ogx_ref.model_event`,
+  `guardrail_event`, `model_drift` (created on first write). New CAI jobs `ogx-05-nightly-drift`
+  (02:00) and `ogx-08-retrain-trigger` (02:30), 1 vCPU. Drift alone retrains at most weekly
+  (the drone frames differ from the training set by design: PSI alerts every night).
+  `cai-mlops.yml` waits for GitHub secrets `CAI_URL`, `CAI_API_KEY`, `CAI_PROJECT_ID` (not set).
+- Code reached the CAI project through the files API (`ci/push_files.py`), not `ogx-00`, so the
+  project's git HEAD is still `b1b3ad7` and model versions carry that sha.
+- Live: `ogx-05` (40 s): 161 lakehouse keyframes, 150 scored, NA 6.8 %, PSI alert, 17 input +
+  23 abstain-band + 3 drift guardrail events, `DRIFT_ALERT`. `ogx-08` with `OGX_RETRAIN_FORCE=1`
+  -> `RETRAIN_TRIGGERED` -> `ogx-01` .. `ogx-03`: TRAINED (MLflow run in experiment
+  `ogx-integrity`), GATE_PASSED (TEST AUROC 0.862, non-regression vs champion passed).
+- Incident: while checking job runs I printed a run's `environment` field to my terminal, which
+  showed part of `OGX_HF_TOKEN`. Not written to any file, commit or log; token rotation requested.

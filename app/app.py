@@ -141,7 +141,7 @@ with tab_wl:
         st.caption("Why this rank: the latest inspection and its trend, sensor breaches over 3 days, "
                    "corrective work orders over 30 days, and how overdue the next inspection is.")
         if pick:
-            st.dataframe(wl[wl.tag == pick].T.rename(columns=lambda _: "value"), use_container_width=True)
+            st.dataframe(wl[wl.tag == pick].T.astype(str).rename(columns=lambda _: "value"), use_container_width=True)
 
 # ------------------------------------------------------------------ asset 360
 with tab_360:
@@ -209,8 +209,8 @@ with tab_360:
                             st.write(f"⚠️ {e['guardrail']}: {e['reason']}")
                     lab = st.radio("Engineer label", ["none", "surface", "severe"], horizontal=True,
                                    index=["none", "surface", "severe"].index(res.get("severity") or "none"),
-                                   key=f"lab-{r.frame_sha256}")
-                    if st.button("Save label", key=f"save-{r.frame_sha256}"):
+                                   key=f"lab-{tag}-{i}-{r.video_id}-{r.frame_index}")
+                    if st.button("Save label", key=f"save-{tag}-{i}-{r.video_id}-{r.frame_index}"):
                         fb = ROOT / "outputs" / "feedback" / "frame_labels.csv"
                         fb.parent.mkdir(parents=True, exist_ok=True)
                         new = not fb.exists()

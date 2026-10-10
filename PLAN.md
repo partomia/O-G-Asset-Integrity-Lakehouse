@@ -357,8 +357,8 @@ Thirteen phases, one commit each, pytest -q green before the next; Cloudera reso
 	•	☒ 5. Extraction and silver: the five extractors, OCR fallback, transform_log.
 	•	☒ 6. Asset master: candidates, match rules, asset_xref, golden_asset, review queue.
 	•	☒ 7. Gold: integrity model, SCD2, source mapping check.
-	•	☐ 8. CAI ML chain: features and hash, three heads, gate, deploy, AI Registry, jobs ogx-00 to ogx-05, ci.yml and cai-mlops.yml.
-	•	☐ 9. Guardrails: input, output and process guardrails with tests that make each fire; ref.guardrail_event.
+	•	☐ 8. CAI ML chain: features and hash, three heads, gate, deploy, AI Registry, jobs ogx-00 to ogx-05, ci.yml and cai-mlops.yml. (2026-10-11: corrosion head end to end with MLflow runs, AI Registry versions, ref.model_event, ogx-05 drift, ogx-08 retrain trigger and cai-mlops.yml; frame_qc and equipment_risk heads open.)
+	•	☒ 9. Guardrails: input, output and process guardrails with tests that make each fire; ref.guardrail_event. (Frame quality and OOD replace the frame_qc head until it exists; LLM guardrail not built: summaries are off.)
 	•	☐ 10. Lakehouse scoring and outcomes: DAG calls ogx-06, fact_review_outcome, silent trial, ogx-07 promotion.
 	•	☒ 11. CDW, CDV and governance: semantic views, KPI consistency check, four dashboards, Atlas and Ranger as code.
 	•	☐ 12. Application and docs: Integrity Workbench, README, runbooks, capabilities, thermography as the worked extension.
@@ -381,9 +381,9 @@ Proposed decisions, to confirm or change before Phase 0:
 	•	Data Visualization on the existing CDW instance with its own connection and OGX dashboards, touching nothing else.
 Open items:
 	•	☒ Repo: O-G-Asset-Integrity-Lakehouse, public (decided 2026-10-08).
-	•	☐ Is a Streams Messaging Data Hub available in the federal environment, or must one be created?
+	•	☒ Is a Streams Messaging Data Hub available in the federal environment, or must one be created? (federal-kafka; NiFi on federal-nifi used for alarm routing, docs/NIFI.md)
 	•	☐ CDE version on the target: long-running Structured Streaming support and job timeout limits.
-	•	☐ Which public corrosion image set, and does its licence allow demo use?
-	•	☐ GPU resource profile in the CAI workbench: yes or no.
+	•	☒ Which public corrosion image set, and does its licence allow demo use? (Corrosion Bi3Q3, CC BY 4.0)
+	•	☒ GPU resource profile in the CAI workbench: yes or no. (No: classical features on 1 vCPU.)
 	•	☐ Confirm the three certified KPIs, or swap one for an inspection-backlog KPI.
 	•	☐ Masked demo users for the Ranger policies (reuse federal01 and federal07?).

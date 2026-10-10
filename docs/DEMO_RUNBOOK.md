@@ -1,4 +1,4 @@
-# Demo runbook (about 25 minutes)
+# Demo runbook (about 35 minutes)
 
 Links:
 
@@ -10,6 +10,10 @@ Links:
   → Dashboards → **OGX Integrity KPIs**, **OGX Reconciliation & Data Quality**, **OGX Asset Master**, **OGX Sensor Health**
 - CDE jobs: `rsingh-ogx-*` (vcluster in `federal-cdp-env`); streaming runs `rsingh-ogx-stream-bronze`, `rsingh-ogx-stream-agg`
 - Hue / Impala: databases `rsingh_ogx_*`
+- NiFi (`federal-nifi` Data Hub): https://federal-nifi-management0.federal.dp5i-5vkq.cloudera.site/federal-nifi/cdp-proxy/nifi-app/nifi/
+  → process group **OGX - SCADA Alarm Router**; NiFi Registry bucket `ogx-flows`
+- CAI project `rsingh-og-asset-integrity`: Jobs `ogx-00`..`ogx-08`, Experiments `ogx-integrity`,
+  Model Registry `ogx-corrosion`, Model `ogx-integrity`
 - Repo: https://github.com/partomia/O-G-Asset-Integrity-Lakehouse
 
 ## 1. The problem (2 min)
@@ -48,6 +52,18 @@ drone video and live SCADA, each naming the same asset differently (`PL-03-SEG-0
   late readings past the watermark.
 - Hue: `SELECT event_date, count(*) FROM rsingh_ogx_bronze.sensor_reading GROUP BY 1 ORDER BY 1;`
 
+### NiFi alarm routing (3 min)
+
+- NiFi canvas → **OGX - SCADA Alarm Router**: ConsumeKafka `ogx.scada.alarm` → ValidateRecord
+  against the contract in **Schema Registry** (schema named after the topic) → QueryRecord
+  routes priority-1 / HIHI / STUCK alarms to `ogx.alarm.priority` → every valid alarm batched to
+  `s3a://.../rsingh_ogx/landing/nifi/scada_alarm/<date>/`; invalid records to quarantine.
+- Right-click the group → Version → it is **version 1 in NiFi Registry** (`ogx-flows/ogx-scada-alarm-router`),
+  built by `nifi/deploy_flow.py` and exported to `nifi/flows/` in the repo (no secrets in the export).
+- Point: Spark ingests everything into bronze; NiFi does edge validation and seconds-latency
+  routing for the control room without code. First run: 84 alarms in, 84 landed, 6 priority.
+- SMM / Schema Registry UI: `ogx.alarm.priority` has the same Avro contract as `ogx.scada.alarm`.
+
 ## 5. Trust: reconciliation and KPI consistency (5 min)
 
 Dashboard **OGX Reconciliation & Data Quality** → "By business date":
@@ -61,13 +77,29 @@ Dashboard **OGX Reconciliation & Data Quality** → "By business date":
 "Latest batch" → KPI consistency: every MIS view and dashboard figure reproduces the certified
 view (9 of 9 MATCHED per date).
 
-## 6. Governance (2 min)
+## 6. Models, guardrails and MLOps (6 min): Workbench → Models & guardrails
+
+- **Champion** card: registry version of `ogx-corrosion`, TEST AUROC / sensitivity / specificity /
+  Brier, MLflow run, feature hash, how many engineer labels it learned from and why it was trained.
+- **Model versions and lifecycle**: `ref.model_event` rows TRAINED → GATE_PASSED → DEPLOYED →
+  REGISTERED, plus DRIFT_ALERT / RETRAIN_TRIGGERED from the nightly loop.
+  In CAI: Experiments → `ogx-integrity` (one run per training), Model Registry → `ogx-corrosion`.
+- **Guardrails**: events by guardrail from the nightly batch (`ogx-05`): frame quality (glare,
+  low light, blur), out of distribution, abstain band, safety floor. Back in **Asset 360 → TK-504**,
+  open "Guardrails and review" under a keyframe: each check's value and limit, the band reason.
+- **Close the loop**: correct a keyframe's label and Save; `ogx-08-retrain-trigger` (02:30
+  nightly) retrains after 20 labels, a drift alert (at most weekly) or 30 days. The KPI gate
+  (absolute and no worse than the champion) decides whether the new model serves.
+- **Git push → CAI**: `.github/workflows/cai-mlops.yml` starts `ogx-00` with the commit and follows
+  the chain to the gate; a rejected candidate turns the check red and the champion keeps serving.
+
+## 7. Governance (2 min)
 
 - Atlas: `OGX_SENSITIVE_*` classifications on inspector names, GPS, subsurface values and
   extracted text; glossary **OGX Integrity KPIs** on the certified views.
 - Ranger tag masking `rsingh-ogx-sensitive-*`: masked users see hashes / NULL.
 
-## 7. Close (2 min)
+## 8. Close (2 min)
 
 Everything is code in a public repo (no secrets; gitleaks hook), one commit per phase, and every
 live run is in `docs/PROJECT_LOG.md`.
@@ -79,8 +111,12 @@ live run is in `docs/PROJECT_LOG.md`.
   application (CAI → Applications → Restart, about 30 s) and reload.
 - Workbench shows an Impala error: refresh; the app caches queries for 5 minutes.
 - The first load of each tab takes a few seconds (Impala queries); later loads come from the cache.
-- Model endpoint `ogx-integrity`: deployed, but calls currently return 400 (open item in
-  `docs/PROJECT_LOG.md`). Do not call it live; the Workbench scores keyframes in-process with the
-  same champion (`serve/predict.py`), so Asset 360 is unaffected.
+- Model endpoint `ogx-integrity`: the endpoint now returns errors as JSON (`{"error": ...}`); the
+  Workbench scores keyframes in-process with the same champion and guardrails (`serve/predict.py`),
+  so Asset 360 never depends on the endpoint.
+- Models & guardrails tab empty: the ref tables appear after the first `ogx-05` / chain run
+  (`python ci/setup_cai.py --run ogx-05-nightly-drift`).
+- NiFi counters show 0: they cover the last 5 minutes; the alarm backlog was consumed on the
+  first run. Provenance (right-click a processor → View data provenance) shows every batch.
 - A dashboard is empty for the latest date: the CDE chain for that date has not finished; pick
   the previous date (all five dates 10-04 to 10-08 are loaded).
