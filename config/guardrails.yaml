@@ -44,3 +44,8 @@ retrain:                                  # ci/retrain_trigger.py (ogx-08-retrai
   drift_cooldown_days: 7                  # drift alone retrains at most weekly (same data -> same model)
   min_new_labels: 20                      # engineer-confirmed frame labels since the last training
   max_model_age_days: 30
+
+llm:                                      # optional report summaries on Cloudera AI Inference (not built)
+  enabled: false
+  require_page_citations: true
+  redact_classifications: [OGX_SENSITIVE_HASH, OGX_SENSITIVE_LOCATION]
