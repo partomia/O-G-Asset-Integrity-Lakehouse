@@ -5,7 +5,10 @@ deploy_champion.py and trimmed:
   2. pin requirements-model.txt to this environment's scikit-learn (the one that trained the
      model), then build and deploy serve/predict.py as CAI Model ogx-integrity with the
      Cloudera AI API v2 (cmlapi); the build snapshots the project files
-  3. if the build or deployment fails, put the previous champion back
+  3. if the build or deployment fails, put the previous champion back (ROLLED_BACK)
+  4. register the champion as a new version of models.<name>.registry_name in the Cloudera AI
+     Registry (serve/registry.py, from the candidate's MLflow run) and record DEPLOYED and
+     REGISTERED in ref.model_event
 Inside a CAI job, cmlapi.default_client() authenticates as the job: no API key in the project.
 """
 from __future__ import annotations
@@ -81,7 +84,7 @@ def wait(fn, ok: set, what: str, timeout=2400):
     raise RuntimeError(f"{what} timed out after {timeout} s")
 
 
-def deploy(cfg, meta) -> None:
+def deploy(cfg, meta) -> dict:
     import cmlapi
 
     from ci.cai_jobs import resolve_runtime
@@ -106,8 +109,8 @@ def deploy(cfg, meta) -> None:
         project_id=pid, model_id=model.id, build_id=build.id,
         cpu=cfg["cai"]["model_cpu"], memory=cfg["cai"]["model_memory_gb"]), pid, model.id, build.id)
     wait(lambda: client.get_model_deployment(pid, model.id, build.id, dep.id), {"deployed"}, "deployment")
-    print(f"champion deployed: model {model.id} build {build.id} deployment {dep.id} "
-          f"(access key {model.access_key})", flush=True)
+    print(f"champion deployed: model {model.id} build {build.id} deployment {dep.id}", flush=True)
+    return {"model_id": model.id, "build_id": build.id, "deployment_id": dep.id}
 
 
 def main() -> int:
@@ -115,12 +118,27 @@ def main() -> int:
     meta, archived = promote(cfg)
     print(f"champion: {meta['model']} {meta['estimator']}, test AUROC {meta['metrics']['test']['auroc']:.3f}", flush=True)
     pin_requirements()
+    from lakehouse.publish import publish_model_event
+    from serve import registry
+
+    gate = json.loads((ROOT / cfg["serving"]["champion_dir"] / "gate_result.json").read_text())
     try:
-        deploy(cfg, meta)
+        ids = deploy(cfg, meta)
     except Exception as e:  # noqa: BLE001
         print(f"deploy failed: {e}", flush=True)
         rollback(cfg, archived)
+        publish_model_event("ROLLED_BACK", meta, gate, stage="candidate", detail=str(e))
         return 1
+    publish_model_event("DEPLOYED", meta, gate, stage="champion", trigger_reason=meta.get("trigger_reason"),
+                        detail=json.dumps(ids))
+    reg = registry.registrar(cfg, meta, "champion")
+    if reg:
+        meta.update(registry_version=reg["number"], registry_model_id=reg["model_id"])
+        (ROOT / cfg["serving"]["champion_dir"] / "model_meta.json").write_text(json.dumps(meta, indent=2))
+        publish_model_event("REGISTERED", meta, gate, stage="champion",
+                            detail=f"{cfg['model']['registry_name']} v{reg['number']} (previous {reg['previous']})")
+    else:
+        publish_model_event("REGISTERED", meta, gate, stage="champion", detail=f"not registered: {registry.LAST_ERROR}")
     return 0
 
 

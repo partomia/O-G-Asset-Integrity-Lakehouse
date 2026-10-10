@@ -9,6 +9,8 @@ pointed at the lakehouse instead of local files. Everything is read from CDW Imp
     work orders, and every source name that resolved to it
   - Sensors: stuck sensors, unit changes and breaches from the streaming pipeline
   - Data quality: reconciliation per layer and the KPI consistency check
+  - Models & guardrails: AI Registry versions and the model's life (ref.model_event), the KPI
+    gate, guardrail events, drift and the retraining loop (MLOps on Cloudera AI)
 
 Needs OGX_IMPALA_USER / OGX_IMPALA_PASSWORD (the CAI project environment).
 """
@@ -63,6 +65,14 @@ def corrosion_model():
     return p
 
 
+def q_opt(sql: str) -> pd.DataFrame:
+    """A query on a table the CAI jobs create on their first run: empty until then."""
+    try:
+        return q(sql)
+    except Exception:  # noqa: BLE001
+        return pd.DataFrame()
+
+
 def lit(s) -> str:
     return "'" + str(s).replace("'", "") + "'"
 
@@ -84,7 +94,8 @@ st.caption("Decision support only: every asset on the worklist is reviewed by an
 d = st.sidebar.selectbox("Business date", [str(x)[:10] for x in dates["business_date"]])
 on = f"business_date = DATE {lit(d)}"
 
-tab_wl, tab_360, tab_sens, tab_dq = st.tabs(["Worklist", "Asset 360", "Sensors", "Data quality"])
+tab_wl, tab_360, tab_sens, tab_dq, tab_ml = st.tabs(["Worklist", "Asset 360", "Sensors", "Data quality",
+                                                     "Models & guardrails"])
 
 # ------------------------------------------------------------------ worklist
 with tab_wl:
@@ -171,21 +182,47 @@ with tab_360:
            f"FROM {P}_silver.video_keyframe k WHERE k.asset_hint = {lit(tag)} AND k.business_date <= DATE {lit(d)} "
            f"ORDER BY k.business_date DESC, k.video_id, k.frame_index LIMIT 12")
     if not kf.empty:
-        st.markdown("**Drone keyframes, scored by the corrosion champion (CAI model ogx-integrity)**")
+        st.markdown("**Drone keyframes, scored by the corrosion champion behind its guardrails**")
+        st.caption("Input guardrails (frame quality, out of distribution) give band NA: the frame is reviewed in "
+                   "calendar order, as without AI. A score near the threshold is UNCERTAIN; a criticality-A asset "
+                   "never drops below P2. The model ranks and suggests; an engineer decides.")
         eng = corrosion_model()
         if eng is None:
             st.info("No corrosion champion yet: run the CAI chain ogx-01 to ogx-04.")
         cols = st.columns(4)
         for i, r in enumerate(kf.itertuples()):
-            res = eng.predict({"sha256": r.frame_sha256}) if eng else {}
+            res = eng.predict({"sha256": r.frame_sha256, "criticality": cur.criticality}) if eng else {}
             path = ROOT / "assets" / "frames" / f"{r.frame_sha256[:16]}.jpg"
             with cols[i % 4]:
                 if path.exists():
                     st.image(str(path), use_container_width=True)
                 band = res.get("band", "")
                 sev = res.get("probabilities", {}).get("severe")
-                st.caption(f"{r.video_id} t={r.t_seconds:.0f}s · **{band}** {res.get('severity', '')}"
-                           + (f" (severe {sev:.2f})" if sev is not None else ""))
+                st.caption(f"{r.video_id} t={r.t_seconds:.0f}s · **{band}** {res.get('severity') or ''}"
+                           + (f" (severe {sev:.2f})" if sev is not None else "")
+                           + (f" · {res['band_reason']}" if res.get("band_reason") else ""))
+                with st.expander("Guardrails and review"):
+                    for c in res.get("guardrails", []):
+                        st.write(f"{'✅' if c['passed'] else '⛔'} {c['guardrail']}: {c['value']} ({c['limit']})")
+                    for e in res.get("guardrail_events", []):
+                        if e["guardrail"] in ("abstain_band", "safety_floor"):
+                            st.write(f"⚠️ {e['guardrail']}: {e['reason']}")
+                    lab = st.radio("Engineer label", ["none", "surface", "severe"], horizontal=True,
+                                   index=["none", "surface", "severe"].index(res.get("severity") or "none"),
+                                   key=f"lab-{r.frame_sha256}")
+                    if st.button("Save label", key=f"save-{r.frame_sha256}"):
+                        fb = ROOT / "outputs" / "feedback" / "frame_labels.csv"
+                        fb.parent.mkdir(parents=True, exist_ok=True)
+                        new = not fb.exists()
+                        with open(fb, "a", newline="") as f:
+                            w = csv.writer(f)
+                            if new:
+                                w.writerow(["ts_utc", "sha256", "label", "model_severity", "model_band",
+                                            "model_version", "asset_tag", "video_id", "frame_index"])
+                            w.writerow([datetime.now(timezone.utc).isoformat(), r.frame_sha256, lab,
+                                        res.get("severity"), band, (res.get("model") or {}).get("version"),
+                                        tag, r.video_id, r.frame_index])
+                        st.success("Saved: a labelled row for the next retraining (ogx-08 counts it)")
     s = q(f"SELECT business_date, sensor_tag, measurement, mean_value, max_value, breach_windows, stuck_windows, "
           f"bar_readings FROM {GOLD}.fact_sensor_daily WHERE asset_id = {lit(aid)} ORDER BY business_date")
     if not s.empty:
@@ -223,3 +260,91 @@ with tab_dq:
     st.dataframe(r[r.status != "MATCHED"], hide_index=True, use_container_width=True)
     with st.expander("Every check"):
         st.dataframe(r, hide_index=True, use_container_width=True)
+
+# ------------------------------------------------------------------ models & guardrails
+with tab_ml:
+    meta_path = ROOT / "models" / "champion" / "model_meta.json"
+    meta = json.loads(meta_path.read_text()) if meta_path.exists() else None
+    st.subheader("Champion")
+    if meta:
+        t = meta["metrics"]["test"]
+        c1, c2, c3, c4, c5 = st.columns(5)
+        c1.metric("Registry", f"{meta.get('registry_name', 'ogx-corrosion')} v{meta.get('registry_version', '?')}")
+        c2.metric("TEST AUROC", f"{t['auroc']:.3f}")
+        c3.metric("Sensitivity", f"{t['sensitivity']:.3f}")
+        c4.metric("Specificity", f"{t['specificity']:.3f}")
+        c5.metric("Brier", f"{t['brier']:.3f}")
+        st.caption(f"{meta.get('model_version') or meta['estimator']} · trained {str(meta.get('trained_at'))[:16]} · "
+                   f"git {meta['git_sha'][:7]} · features {meta['feature_version']} ({meta['feature_hash']}) · "
+                   f"threshold {meta['threshold']:.3f} · trigger: {meta.get('trigger_reason', 'manual')} · "
+                   f"{meta.get('train_rows', '?')} training rows incl. {meta.get('feedback_rows', 0)} engineer labels · "
+                   f"MLflow run {meta.get('mlflow_run_id') or '-'}")
+        gate_path = ROOT / "models" / "champion" / "gate_result.json"
+        if gate_path.exists():
+            with st.expander("KPI gate of this champion"):
+                st.dataframe(pd.DataFrame(json.loads(gate_path.read_text())["checks"]), hide_index=True,
+                             use_container_width=True)
+    else:
+        st.info("No champion yet: run the CAI chain ogx-01 to ogx-04.")
+
+    st.subheader("Model versions and lifecycle (Cloudera AI Registry, MLflow, ref.model_event)")
+    ev = q_opt(f"SELECT recorded_at, event, stage, model_version, registry_name, registry_version, test_auroc, "
+               f"test_sensitivity, test_specificity, gate_passed, feedback_rows, trigger_reason, detail "
+               f"FROM {P}_ref.model_event ORDER BY recorded_at DESC LIMIT 200")
+    if ev.empty:
+        st.info("No model events yet: the next CAI chain run (or ogx-08-retrain-trigger) writes them.")
+    else:
+        reg = ev[ev.event == "REGISTERED"]
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Registered versions", int(reg.registry_version.notna().sum()))
+        c2.metric("Trainings", int((ev.event == "TRAINED").sum()))
+        c3.metric("Gate rejections", int((ev.event == "GATE_FAILED").sum()))
+        c4.metric("Retrains triggered", int((ev.event == "RETRAIN_TRIGGERED").sum()))
+        st.dataframe(ev, hide_index=True, use_container_width=True, height=300)
+
+    st.subheader("MLOps loop")
+    st.markdown(
+        "`git push` → GitHub Actions `cai-mlops.yml` → CAI API v2 → **ogx-00** sync → **ogx-01** features "
+        "(+ engineer labels) → **ogx-02** train (MLflow) → **ogx-03** KPI gate (absolute + non-regression vs "
+        "champion) → **ogx-04** deploy + AI Registry version.  \n"
+        "Without a push: **ogx-05-nightly-drift** (02:00) scores the lakehouse keyframes through the guardrails "
+        "and measures PSI; **ogx-08-retrain-trigger** (02:30) starts ogx-01 on a drift alert, "
+        "≥ 20 new engineer labels or a champion older than 30 days.")
+    drift_path = ROOT / "outputs" / "monitoring" / "drift_report.json"
+    fb_path = ROOT / "outputs" / "feedback" / "frame_labels.csv"
+    c1, c2, c3 = st.columns(3)
+    if drift_path.exists():
+        dr = json.loads(drift_path.read_text())
+        c1.metric("Last drift check", dr["status"], help=f"{dr['recorded_at'][:16]} · {dr['source']}")
+        c2.metric("Frames scored / seen", f"{dr['scored']} / {dr['frames']}")
+    else:
+        c1.metric("Last drift check", "not run")
+    c3.metric("Engineer frame labels", sum(1 for _ in open(fb_path)) - 1 if fb_path.exists() else 0)
+    dm = q_opt(f"SELECT recorded_at, metric, value, status, n_reference, n_current, detail FROM {P}_ref.model_drift "
+               f"ORDER BY recorded_at DESC, metric LIMIT 60")
+    if not dm.empty:
+        st.dataframe(dm, hide_index=True, use_container_width=True, height=220)
+
+    st.subheader("Guardrails")
+    import yaml
+
+    gcfg = yaml.safe_load((ROOT / "config" / "guardrails.yaml").read_text())
+    ge = q_opt(f"SELECT layer, guardrail, COUNT(*) events, MAX(recorded_at) last_seen FROM {P}_ref.guardrail_event "
+               f"GROUP BY layer, guardrail ORDER BY layer, events DESC")
+    left, right = st.columns([3, 2])
+    with left:
+        st.markdown("**Events by guardrail (ref.guardrail_event)**")
+        if ge.empty:
+            st.info("No guardrail events yet: ogx-05-nightly-drift writes them.")
+        else:
+            st.bar_chart(ge.set_index("guardrail")["events"])
+            st.dataframe(ge, hide_index=True, use_container_width=True)
+    with right:
+        st.markdown("**Configured limits (config/guardrails.yaml)**")
+        st.json({k: gcfg[k] for k in ("input", "output")}, expanded=False)
+        st.json({"process": gcfg["process"], "retrain": gcfg["retrain"]}, expanded=False)
+    recent = q_opt(f"SELECT recorded_at, layer, guardrail, subject, value, limit_rule, reason FROM "
+                   f"{P}_ref.guardrail_event ORDER BY recorded_at DESC LIMIT 100")
+    if not recent.empty:
+        with st.expander("Latest guardrail events"):
+            st.dataframe(recent, hide_index=True, use_container_width=True)

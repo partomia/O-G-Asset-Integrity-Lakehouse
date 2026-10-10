@@ -5,6 +5,24 @@
     "alarm": {"name": "ogx.scada.alarm", "partitions": 3, "replication": 3, "retention_hours": 168},
     "control": {"name": "ogx.control", "partitions": 1, "replication": 3, "retention_hours": 168}
   },
+  "nifi": {
+    "_comment": "NiFi flow (nifi/deploy_flow.py). Its output topic is kept out of 'topics' so the bronze stream does not ingest the routed copies.",
+    "out_topic": {"name": "ogx.alarm.priority", "partitions": 3, "replication": 3, "retention_hours": 168},
+    "api": "https://federal-nifi-management0.federal.dp5i-5vkq.cloudera.site/federal-nifi/cdp-proxy-api/nifi-app/nifi-api",
+    "registry_api": "https://federal-nifi-management0.federal.dp5i-5vkq.cloudera.site/federal-nifi/cdp-proxy-api/nifi-registry-app/nifi-registry-api",
+    "registry_client": "Default NiFi Registry Client",
+    "registry_bucket": "ogx-flows",
+    "process_group": "OGX - SCADA Alarm Router",
+    "flow_name": "ogx-scada-alarm-router",
+    "ssl_context_service": "rsingh Truststore-only NiFi SSL Context Service",
+    "schema_registry_url": "https://federal-kafka-master0.federal.dp5i-5vkq.cloudera.site/federal-kafka/cdp-proxy-api/schema-registry/api/v1",
+    "kafka_bootstrap": "federal-kafka-corebroker0.federal.dp5i-5vkq.cloudera.site:9093,federal-kafka-corebroker1.federal.dp5i-5vkq.cloudera.site:9093,federal-kafka-corebroker2.federal.dp5i-5vkq.cloudera.site:9093",
+    "consumer_group": "ogx-nifi-alarm-router",
+    "priority_rule": "priority = '1' OR alarm_type IN ('HIHI', 'STUCK')",
+    "landing_dir": "s3a://federal-buk-574bcea0/data/IB/rsingh_ogx/landing/nifi/scada_alarm",
+    "quarantine_dir": "s3a://federal-buk-574bcea0/data/IB/rsingh_ogx/landing/nifi/quarantine/scada_alarm",
+    "position": [0, 1400]
+  },
   "producer": {
     "tags": 200,
     "interval_s": 5,

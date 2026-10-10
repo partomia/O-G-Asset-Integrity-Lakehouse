@@ -2,6 +2,8 @@
 Job ogx-03-kpi-gate: the candidate's TEST metrics against config/pipeline.yaml gate. Exit code 1
 on any miss, so the CAI dependency stops the chain before deploy. Writes gate_result.json next
 to the candidate; deploy refuses a candidate without a passing result for the same git sha.
+Champion / challenger: a retrained candidate must also not lose more than max_auroc_regression
+TEST AUROC against the serving champion. GATE_PASSED / GATE_FAILED goes to ref.model_event.
 """
 from __future__ import annotations
 
@@ -54,6 +56,23 @@ def main() -> int:
         {"passed": passed, "candidate_git_sha": meta["git_sha"],
          "checks": [{"name": n, "value": v, "op": o, "limit": lim, "ok": ok} for n, v, o, lim, ok in checks]}, indent=2))
     print(f"gate {'PASSED' if passed else 'FAILED'} for {meta['model']} ({meta['estimator']})", flush=True)
+    gate = json.loads((cand / "gate_result.json").read_text())
+    if meta.get("mlflow_run_id"):
+        try:
+            import mlflow
+
+            mlflow.set_experiment(cfg["project"]["mlflow_experiment"])   # the CAI plugin needs it to reopen a run
+            with mlflow.start_run(run_id=meta["mlflow_run_id"]):
+                mlflow.log_metric("kpi_gate_passed", 1.0 if passed else 0.0)
+                mlflow.set_tag("kpi_gate", "PASSED" if passed else "FAILED")
+        except Exception as e:  # noqa: BLE001
+            print(f"(mlflow tag skipped: {e})")
+    from lakehouse.publish import publish_model_event
+
+    champ = f"champion {champion.get('model_version') or champion.get('estimator')} AUROC " \
+            f"{champion['metrics']['test']['auroc']:.3f}" if champion else "no champion yet"
+    publish_model_event("GATE_PASSED" if passed else "GATE_FAILED", meta, gate, stage="candidate",
+                        trigger_reason=meta.get("trigger_reason"), detail=f"vs {champ}")
     return 0 if passed else 1
 
 

@@ -6,7 +6,13 @@ TRAIN + VALID; the best one's out-of-fold probabilities set the operating thresh
 evaluation.target_sensitivity (226 severe images rather than VALID's 64, so the threshold is
 stable), it is refitted on TRAIN + VALID, and TEST is measured once. Out-of-fold figures are
 optimistic (the Roboflow TRAIN split holds augmented copies); TEST is the honest number. Writes the candidate package to serving.candidate_dir: model.joblib and
-model_meta.json (metrics, threshold, feature version and hash, git sha).
+model_meta.json (metrics, threshold, feature version and hash, git sha, the out-of-distribution
+reference for guardrails/input_checks.py, training and feedback row counts).
+
+MLOps: the run is logged to the CAI MLflow experiment (parameters, val/TEST metrics, the
+scikit-learn model), which is what serve/registry.py registers as an AI Registry version, and
+a TRAINED event goes to ref.model_event with the reason the retrain was triggered (OGX_TRIGGER,
+set on ogx-01 by ci/retrain_trigger.py and carried in the feature table's meta.json).
 """
 from __future__ import annotations
 
@@ -35,6 +41,8 @@ from sklearn.model_selection import StratifiedKFold, cross_val_predict  # noqa: 
 
 from common import finish, git_sha, load_config  # noqa: E402
 from features.feature_logic import FEATURE_VERSION, feature_hash  # noqa: E402
+from guardrails.input_checks import ood_stats  # noqa: E402
+from lakehouse.store import model_version  # noqa: E402
 
 CLASSES = ["none", "surface", "severe"]
 
@@ -58,6 +66,38 @@ def metrics(y_pos: np.ndarray, p: np.ndarray, thr: float) -> dict:
     return {"auroc": float(roc_auc_score(y_pos, p)), "sensitivity": tp / max(tp + fn, 1),
             "specificity": tn / max(tn + fp, 1), "brier": float(brier_score_loss(y_pos, p)),
             "tp": tp, "fn": fn, "tn": tn, "fp": fp, "n": int(len(p))}
+
+
+def log_to_mlflow(cfg: dict, meta: dict, model, meta_path: Path) -> str | None:
+    """The run in the CAI experiment; None (and the candidate kept) where mlflow is unavailable."""
+    try:
+        import mlflow
+        import mlflow.sklearn
+    except ImportError:
+        print("mlflow not installed (laptop / CI): experiment logging skipped", flush=True)
+        return None
+    try:
+        mlflow.set_experiment(cfg["project"]["mlflow_experiment"])
+        with mlflow.start_run(run_name=meta["model_version"]) as run:
+            mlflow.log_params({"model": meta["model"], "estimator": meta["estimator"],
+                               "feature_version": meta["feature_version"], "feature_hash": meta["feature_hash"],
+                               "git_sha": meta["git_sha"][:7], "threshold": round(meta["threshold"], 4),
+                               "target_sensitivity": cfg["evaluation"]["target_sensitivity"],
+                               "train_rows": meta["train_rows"], "feedback_rows": meta["feedback_rows"],
+                               "trigger": meta.get("trigger_reason") or "manual"})
+            for split in ("valid", "test"):
+                mlflow.log_metrics({f"{split}_{k}": float(v) for k, v in meta["metrics"][split].items()
+                                    if isinstance(v, (int, float))})
+            mlflow.log_metrics({f"oof_auroc_{k}": v for k, v in meta["oof_auroc_by_estimator"].items()})
+            mlflow.sklearn.log_model(model, "model")
+            meta["mlflow_run_id"] = run.info.run_id
+            meta_path.write_text(json.dumps(meta, indent=2))
+            mlflow.log_artifact(str(meta_path))
+            print(f"MLflow run {run.info.run_id} in experiment {cfg['project']['mlflow_experiment']}", flush=True)
+            return run.info.run_id
+    except Exception as ex:  # noqa: BLE001
+        print(f"WARNING mlflow logging failed, candidate kept: {ex}", flush=True)
+        return None
 
 
 def main() -> int:
@@ -100,8 +140,18 @@ def main() -> int:
             "threshold": thr, "p1_probability": float(cfg["evaluation"]["p1_probability"]),
             "feature_version": FEATURE_VERSION, "feature_hash": feature_hash(), "git_sha": git_sha(),
             "metrics": out, "test_accuracy_3class": acc3, "oof_auroc_by_estimator": scores,
-            "trained_at": datetime.now(timezone.utc).isoformat()}
-    (cand / "model_meta.json").write_text(json.dumps(meta, indent=2))
+            "trained_at": datetime.now(timezone.utc).isoformat(), "train_rows": int(dev.sum()),
+            "feedback_rows": int(sum(str(f).startswith("feedback:") for f in d["files"])),
+            "registry_name": cfg["model"].get("registry_name"), "trigger_reason": os.environ.get("OGX_TRIGGER") or fmeta.get("trigger_reason", "manual"),
+            "ood": ood_stats(X[dev])}
+    meta["model_version"] = model_version(meta)
+    meta_path = cand / "model_meta.json"
+    meta_path.write_text(json.dumps(meta, indent=2))
+    log_to_mlflow(cfg, meta, model, meta_path)
+    from lakehouse.publish import publish_model_event
+
+    publish_model_event("TRAINED", meta, stage="candidate", trigger_reason=meta["trigger_reason"],
+                        detail=f"oof AUROC {scores}")
     t = out["test"]
     print(f"candidate {best}: threshold {thr:.3f}; TEST severe AUROC {t['auroc']:.3f}, sensitivity "
           f"{t['sensitivity']:.3f}, specificity {t['specificity']:.3f}, Brier {t['brier']:.3f}; 3-class accuracy {acc3:.3f}",

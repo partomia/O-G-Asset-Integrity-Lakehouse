@@ -73,7 +73,7 @@ models:
     stage_on_pass: champion
     registry_name: ogx-corrosion
     classes: [none, surface, severe]
-    description: "Corrosion severity on drone keyframes (Corrosion Bi3Q3): ViT-B/16 features, 3-class logistic regression"
+    description: "Corrosion severity on drone keyframes (Corrosion Bi3Q3): 49 colour and texture features (hc-1.0.0), tree-ensemble picked by out-of-fold AUROC, behind the guardrails in config/guardrails.yaml"
 
   frame_qc:
     finding: UNFIT

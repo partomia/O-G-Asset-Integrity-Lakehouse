@@ -13,6 +13,9 @@ makes the KPI gate's exit code a hard stop. The job's environment OGX_MODEL pick
 The federal quota fits one 2 vCPU workload beside the endpoint: chains run one after another.
 ogx-setup-data runs once; ogx-stream-producer backfills or streams live; ogx-06 is started by
 the lakehouse DAG (cde/dags/ogx_dag.py) for one business date at a time.
+MLOps loop without a push: ogx-05-nightly-drift (02:00) scores the lakehouse keyframes through
+the guardrails and measures drift; ogx-08-retrain-trigger (02:30) starts ogx-01 when drift
+alerts, enough engineer labels arrived or the champion is stale (ci/retrain_trigger.py).
 """
 from __future__ import annotations
 
@@ -54,6 +57,9 @@ JOBS = [
      "cpu": 1, "memory": 4, "timeout": 3600, "schedule": None},
     {"name": "ogx-07-promote-champion", "script": "serve/promote_champion.py", "parent": None,
      "cpu": 1, "memory": 2, "timeout": 5400, "schedule": None},
+    # MLOps loop: drift and guardrail rates at 02:00, the retrain decision at 02:30 (it starts ogx-01)
+    {"name": "ogx-08-retrain-trigger", "script": "ci/retrain_trigger.py", "parent": None,
+     "cpu": 1, "memory": 2, "timeout": 600, "schedule": "30 2 * * *"},
 ]
 
 CHAINS = {

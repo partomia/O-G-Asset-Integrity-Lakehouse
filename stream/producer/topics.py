@@ -18,7 +18,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CFG = json.loads((ROOT / "config" / "streaming.json").read_text())
-SCHEMAS = {"telemetry": "sensor_reading.avsc", "alarm": "scada_alarm.avsc", "control": "control.avsc"}
+SCHEMAS = {"telemetry": "sensor_reading.avsc", "alarm": "scada_alarm.avsc", "control": "control.avsc",
+           "nifi_out": "scada_alarm.avsc"}   # NiFi routes a subset of ogx.scada.alarm, same contract
+
+
+def all_topics() -> dict:
+    """The stream topics plus the NiFi flow's output topic."""
+    return {**CFG["topics"], "nifi_out": CFG["nifi"]["out_topic"]}
 
 
 def kafka_config() -> dict:
@@ -57,7 +63,7 @@ def create_topics(check_only: bool = False) -> dict:
     admin = KafkaAdminClient(**kafka_config())
     existing = set(admin.list_topics())
     out = {}
-    for t in CFG["topics"].values():
+    for t in all_topics().values():
         if t["name"] in existing:
             out[t["name"]] = "EXISTS"
             continue
@@ -91,7 +97,7 @@ def register_schemas() -> dict:
         verify = str(bundle)
     out = {}
     for key, fname in SCHEMAS.items():
-        topic = CFG["topics"][key]["name"]
+        topic = all_topics()[key]["name"]
         text = (ROOT / "stream" / "schemas" / fname).read_text()
         meta = {"type": "avro", "schemaGroup": "Kafka", "name": topic, "description": f"OGX {key} message contract",
                 "compatibility": "BACKWARD", "validationLevel": "ALL"}

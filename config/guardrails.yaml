@@ -1,39 +1,46 @@
-# Guardrails for ML (docs/GUARDRAILS.md). Every firing is written to ref.guardrail_event
-# (guardrail, layer, subject, reason, business date, model). Each has a test that makes it fire.
+# ---------------------------------------------------------------------------
+# ML guardrails (guardrails/, docs/GUARDRAILS.md). Every check that fires is an event
+# in ref.guardrail_event (and outputs/guardrails/events.jsonl in the CAI project).
+# ---------------------------------------------------------------------------
 input:
-  contracts: {enabled: true}               # contracts/ (objects, stream, entities): quarantine, never scored
-  frame_qc:
-    enabled: true
-    unfit_band: NA                          # an unfit frame is reviewed in calendar order, as without AI
-  ood:
-    enabled: true
-    # cosine distance of a keyframe embedding to its nearest training-centroid; above -> band NA, reason OOD
-    max_centroid_distance: 0.55
-  sensor_sanity:
-    enabled: true
-    stuck_windows: 3                        # zero variance in this many consecutive 15-minute windows
-    min_readings_15m: 90
-    units_expected: {PI: psi, TI: degC, VI: mm/s, CP: mm/y}
-  asset_resolution: {enabled: true}         # an object the asset master cannot resolve is not scored
+  # frame quality: a keyframe that fails any of these gets band NA (reviewed in calendar order).
+  # Tuned on the 105 clean + 105 degraded library frames and 300 training images: 1 % of clean
+  # frames rejected; glare and low light 100 % caught, blur 72 % (docs/GUARDRAILS.md)
+  min_side_px: 64
+  brightness: {min: 0.25, max: 0.92}      # mean HSV value
+  min_contrast: 0.03                      # std of grey level
+  min_sharpness: 0.012                    # mean absolute grey-level gradient
+  max_glare_fraction: 0.50                # share of near-white pixels (V > 0.97, S < 0.10)
+  # out-of-distribution: standardised distance of the feature vector to the training set
+  # (mean of squared z-scores); the limit is the training set's ood_quantile, stored with the model
+  ood_quantile: 0.995
+  # sensor sanity (stream_telemetry_agg.py, build_gold.py): the asset abstains, it is not guessed
+  stuck_windows_abstain: 1
+  # an asset the asset master did not resolve is never scored
+  require_resolved_asset: true
+
 output:
-  abstain:
-    enabled: true
-    # severe probability between these -> "uncertain, engineer review" rather than a rank
-    low: 0.35
-    high: 0.55
-  no_automated_action: {enabled: true}      # the model ranks; only an engineer opens or closes a work order
-  criticality_floor:
-    enabled: true
-    critical_class: A                       # a criticality-A asset never ranks below its calendar due date
+  # a severe probability within this distance of the operating threshold is not ranked:
+  # "uncertain, engineer review"
+  uncertain_margin: 0.05
+  # a criticality-A asset never drops below P2 on a model score alone
+  safety_floor: {criticality: ["A"], min_band: "P2"}
+  # the model ranks and suggests; only an engineer opens or closes a work order
+  allowed_actions: ["rank", "suggest_inspection"]
+
 process:
-  feature_hash_lock: {enabled: true}
-  kpi_gate: {enabled: true}
-  silent_trial_approver: {enabled: true}
-  drift:
-    enabled: true
+  kpi_gate: gate/kpi_gate.py              # chain stops, champion keeps serving
+  feature_hash_lock: true                 # endpoint refuses to start on a mismatch
+  named_approver_for_promotion: true      # serve/promote_champion.py
+  drift:                                  # monitor/drift.py (ogx-05-nightly-drift)
+    psi_warn: 0.10
     psi_alert: 0.25
     min_samples: 30
-llm:
-  enabled: false                            # optional report summaries on Cloudera AI Inference
-  require_page_citations: true
-  redact_classifications: [OGX_SENSITIVE_HASH, OGX_SENSITIVE_LOCATION]
+    max_ood_rate: 0.10
+    max_na_rate: 0.25
+
+retrain:                                  # ci/retrain_trigger.py (ogx-08-retrain-trigger)
+  on_drift_alert: true
+  drift_cooldown_days: 7                  # drift alone retrains at most weekly (same data -> same model)
+  min_new_labels: 20                      # engineer-confirmed frame labels since the last training
+  max_model_age_days: 30
