@@ -104,6 +104,12 @@ on a drift alert, on 20 new engineer labels from Asset 360 or when the champion 
   retraining loop.
 - Not built yet: frame QC and equipment-risk model heads, silent trial and named-approver
   promotion (`ogx-07`), lakehouse scoring job (`ogx-06`), the LLM report-summary guardrail.
+- Orchestration: CDE Airflow DAG `ogx_asset_integrity` (job `rsingh-ogx-orchestration`), one
+  business date per run: `cde job run --name rsingh-ogx-orchestration --config-json '{"business_date": "2026-10-08"}'`.
+- Stop and start the whole demo: `python scripts/platform.py status|stop|start` (project scope;
+  `--scope platform --yes-shared` also stops the shared Data Hubs, CDW, CDE and CAI services).
+- Building the next use case: [docs/USE_CASE_PLAYBOOK.md](docs/USE_CASE_PLAYBOOK.md) and the Cursor
+  skill in `tools/cursor-skills/cloudera-usecase-builder/`.
 
 Demo walkthrough: [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md). Build log and every plan change:
 [docs/PROJECT_LOG.md](docs/PROJECT_LOG.md). Plan: [PLAN.md](PLAN.md).

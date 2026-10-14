@@ -184,3 +184,50 @@ Live, in order:
   `ogx-integrity`), GATE_PASSED (TEST AUROC 0.862, non-regression vs champion passed).
 - Incident: while checking job runs I printed a run's `environment` field to my terminal, which
   showed part of `OGX_HF_TOKEN`. Not written to any file, commit or log; token rotation requested.
+
+## 2026-10-15 01:00 - model endpoint, AI Registry, app, orchestration, platform stop/start
+
+- **Model endpoint "model busy": root cause.** The project runs a PBJ runtime
+  (`ml-runtime-pbj-jupyterlab-python3.11-standard`), where the model function must be wrapped by
+  `cml.models_v1.cml_model`; without it the replica accepts the first request and never answers
+  (restart of deployment `0b779370`: "not reachable", then "context deadline exceeded --- model
+  busy" on every call, even for a request that scores nothing). CXR's `predict.py` has the
+  decorator; ours did not. `serve/predict.py` now uses it (a no-op outside CAI). The temporary
+  diagnostics model `ogx-probe` was never deployed (its build stayed in "pushing"); the API cannot
+  delete models (HTTP 501), so delete it in the CAI UI.
+- **AI Registry empty: root cause.** Both `ogx-04` runs of 10-10 waited 2,400 s for the
+  deployment, timed out and `ROLLED_BACK`; registration came after the deployment, so it never
+  ran. `ogx-04` now registers first (the version records what passed the gate) and waits up to
+  `cai.deploy_timeout_s` (4,200 s). Run `6frveadxpe1huj2q`: **`ogx-corrosion` version 1, READY**
+  (first `ogx-*` entry in Registered Models). Its endpoint build `82d9633c` and the probe build
+  stayed in "pushing" (image push) for over an hour; builds took 2 minutes on 10-11. Open item:
+  the workspace's image registry (workspace status `modify:finished`), for the CAI admin.
+- **Application** going down: the Streamlit child could exit while the CAI kernel lived on (CAI
+  showed RUNNING, nothing served), one cached Impala connection was shared by every session and
+  never replaced after Impala closed it, and every rerun re-scored 12 keyframes on 1 vCPU.
+  `launch_app.py` now restarts the child, `app.py` keeps one connection per script thread and
+  reconnects once on error, keyframe scores are cached. Resized **2 vCPU / 8 GB** and restarted
+  (`ci/setup_cai.py --app` now resizes an existing app). AppTest against live Impala: 5 tabs, no
+  exception, 12 keyframes scored.
+- **Retrain trigger** wrote "no drift alert" while ogx-05 raised `DRIFT_ALERT` each night; the
+  real reason was the drift cooldown (champion younger than `drift_cooldown_days`). The detail now
+  says which rule held.
+- **CDE orchestration**: there was none (no DAG, no schedule; every run started by hand).
+  `cde/dags/ogx_dag.py` (land -> bronze -> extract -> silver -> asset -> gold -> recon,
+  `batch_complete`) registered as `rsingh-ogx-orchestration`. **The GitHub repo is now private**:
+  `cde repository sync` fails ("Repository not found"), so the DAG comes from files resource
+  `rsingh-ogx-dag`; the Spark jobs keep the 10-09 repository snapshot (job code unchanged since).
+  CAI `ogx-00-sync-code` cannot pull either; code reaches CAI with `ci/push_files.py`.
+- Validation run 627 (2026-10-08): land run 628 queued in "starting": the virtual cluster was
+  full. Ours: `rsingh-ogx-stream-{bronze,agg}` (runs 569, 573) had run idle since the producer
+  stopped on 10-09 (no commits after 05:33 UTC that day) and were killed (checkpoints kept;
+  `scripts/platform.py start` resumes them). Others: Mule, Spend and Churn orchestration and
+  generate-bronze runs "running" since 10-12, not touched.
+- **`scripts/platform.py`** (`config/platform.json`): `status | stop | start` at project scope
+  (CAI app, model, schedules and runs; CDE runs and streaming; NiFi process group) or platform
+  scope with `--yes-shared` (Data Hubs Kafka, NiFi, Flink; CDW `federal-impala-1`; CDE
+  `federal-cde-vc`; CAI `federal-cml-ws`), in dependency order. `status --scope platform` verified
+  live; stop and start not run.
+- **Cursor skill** `cloudera-usecase-builder` (`tools/cursor-skills/`, symlinked into
+  `~/.cursor/skills/`) and `docs/USE_CASE_PLAYBOOK.md`: the workflow, conventions and every
+  platform lesson of the eight sibling repos.
