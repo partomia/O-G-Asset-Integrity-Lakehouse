@@ -1,0 +1,25 @@
+{
+  "_comment": "scripts/platform.py: what 'stop' and 'start' touch. project = this demo's workloads only; platform = the shared CDP services of the environment as well (also used by sibling demos). Names are resolved by the CDP CLI at run time.",
+  "environment": "federal-cdp-env",
+  "project": {
+    "cai_project": "rsingh-og-asset-integrity",
+    "cai_job_prefix": "ogx-",
+    "cai_apps": ["OGX Integrity Workbench"],
+    "cai_models": ["ogx-integrity"],
+    "cai_scheduled_jobs": ["ogx-05-nightly-drift", "ogx-08-retrain-trigger"],
+    "cde_job_prefix": "rsingh-ogx-",
+    "cde_streaming_jobs": ["rsingh-ogx-stream-bronze", "rsingh-ogx-stream-agg"],
+    "cde_dag_jobs": ["rsingh-ogx-orchestration"],
+    "nifi_process_groups": ["OGX - SCADA Alarm Router"]
+  },
+  "platform": {
+    "datahubs": {"kafka": "federal-kafka", "nifi": "federal-nifi", "flink": "federal-flink"},
+    "cai_workspace": "federal-cml-ws",
+    "cde_service": "federal-cde",
+    "cde_vc": "federal-cde-vc",
+    "cdw_vws": ["federal-impala-1"],
+    "cdw_dbc": null
+  },
+  "stop_order": ["cai", "nifi", "cde", "cdw", "flink", "kafka"],
+  "start_order": ["kafka", "flink", "cdw", "cde", "nifi", "cai"]
+}
