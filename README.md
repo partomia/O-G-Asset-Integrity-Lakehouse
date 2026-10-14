@@ -104,12 +104,48 @@ on a drift alert, on 20 new engineer labels from Asset 360 or when the champion 
   retraining loop.
 - Not built yet: frame QC and equipment-risk model heads, silent trial and named-approver
   promotion (`ogx-07`), lakehouse scoring job (`ogx-06`), the LLM report-summary guardrail.
-- Orchestration: CDE Airflow DAG `ogx_asset_integrity` (job `rsingh-ogx-orchestration`), one
-  business date per run: `cde job run --name rsingh-ogx-orchestration --config-json '{"business_date": "2026-10-08"}'`.
-- Stop and start the whole demo: `python scripts/platform.py status|stop|start` (project scope;
-  `--scope platform --yes-shared` also stops the shared Data Hubs, CDW, CDE and CAI services).
-- Building the next use case: [docs/USE_CASE_PLAYBOOK.md](docs/USE_CASE_PLAYBOOK.md) and the Cursor
-  skill in `tools/cursor-skills/cloudera-usecase-builder/`.
+- Open: the model endpoint's rebuild with the PBJ fix is waiting on CAI model builds, which stop
+  in "pushing"; the Workbench scores keyframes in process, so the demo does not depend on it.
+
+## Enhancements (2026-10-15)
+
+| Area | What changed | Where |
+|---|---|---|
+| Model endpoint | the model function is wrapped by `cml.models_v1.cml_model`, which PBJ runtimes need (without it every call answered "model busy"); a load failure is returned as an error instead of crashing the replica | `serve/predict.py` |
+| AI Registry | `ogx-04` registers the champion **before** the endpoint deploy, so a slow or failed deploy keeps the version (`ogx-corrosion` v1); deploy wait configurable (`cai.deploy_timeout_s`) | `serve/deploy_champion.py`, `config/pipeline.yaml` |
+| Workbench | 2 vCPU / 8 GB; the launcher restarts Streamlit if it exits; one Impala connection per session thread with reconnect; keyframe scores cached | `app/launch_app.py`, `app/app.py`, `ci/setup_cai.py` |
+| Retraining | the skip event says which rule held (drift cooldown, labels, age) | `ci/retrain_trigger.py` |
+| Orchestration | CDE Airflow DAG `ogx_asset_integrity` (land → bronze → extract → silver → asset → gold → recon) as job `rsingh-ogx-orchestration` | `cde/dags/ogx_dag.py`, `cde/scripts/deploy_dag.sh` |
+| Operations | stop, start and status of the whole demo across CAI, NiFi, CDE, CDW, Flink and Kafka | `scripts/platform.py`, `config/platform.json` |
+| Reuse | Cursor skill `cloudera-usecase-builder` and the playbook for the next use case | `tools/cursor-skills/`, [docs/USE_CASE_PLAYBOOK.md](docs/USE_CASE_PLAYBOOK.md) |
+
+## Demo day
+
+```bash
+set -a; source .env; set +a
+```
+
+Before (30 to 60 minutes ahead):
+
+1. `python scripts/platform.py status --scope platform`: every Data Hub AVAILABLE, the Impala
+   warehouse Running, the CDE virtual cluster AppInstalled, the CAI workspace finished.
+2. `python scripts/platform.py start`: Workbench, model deployment, job schedules, the two CDE
+   streaming jobs (they resume from their checkpoints) and the NiFi alarm router.
+3. Live sensor feed for the session (3 hours):
+   `cde job run --name rsingh-ogx-stream-produce --arg=--mode --arg=live --arg=--duration --arg=10800`
+4. Optional fresh batch: `cde job run --name rsingh-ogx-orchestration --config-json '{"business_date": "2026-10-08"}'`,
+   then `python scripts/run_semantic.py --engine impala --steps views,check --dates 2026-10-08`.
+5. Open the Workbench and the four OGX dashboards once, so the first screen in front of the
+   audience is warm.
+
+During: follow [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md) (about 35 minutes).
+
+After:
+
+1. `python scripts/platform.py stop`: this demo's workloads only (shared services keep running).
+2. End of a demo season, with the owners of the sibling demos agreeing:
+   `python scripts/platform.py stop --scope platform --yes-shared`; bring it back with
+   `start --scope platform --yes-shared` (Kafka first, CAI last, about 30 to 45 minutes).
 
 Demo walkthrough: [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md). Build log and every plan change:
 [docs/PROJECT_LOG.md](docs/PROJECT_LOG.md). Plan: [PLAN.md](PLAN.md).

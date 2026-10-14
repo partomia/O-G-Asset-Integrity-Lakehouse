@@ -1,5 +1,8 @@
 # Demo runbook (about 35 minutes)
 
+Before and after the session: README "Demo day" (`scripts/platform.py status`, `start`, the live
+producer run, and `stop` afterwards).
+
 Links:
 
 - Integrity Workbench (CAI): https://rsingh-ogx-workbench.federal-cml.federal.dp5i-5vkq.cloudera.site

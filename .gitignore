@@ -29,6 +29,16 @@ derby.log
 logs/
 *.log
 
+# CAI home-directory state (pip --user installs, caches, IDE settings): kept out of model builds,
+# which install only requirements-model.txt (cdsw-build.sh)
+.local/
+.cache/
+.config/
+.experiments/
+.ipython/
+.jupyter/
+.Rprofile
+
 # OS / IDE
 .DS_Store
 Thumbs.db
