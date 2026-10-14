@@ -39,7 +39,7 @@ PROJECT_ENV_FROM_CALLER = ("OGX_IMPALA_USER", "OGX_IMPALA_PASSWORD", "OGX_WORKLO
                            "OGX_KAFKA_BOOTSTRAP", "OGX_KAFKA_SECURITY_PROTOCOL", "OGX_KAFKA_SASL_MECHANISM",
                            "OGX_KAFKA_USER", "OGX_KAFKA_PASSWORD", "OGX_SCHEMA_REGISTRY_URL", "OGX_HF_TOKEN")
 APP = {"name": "OGX Integrity Workbench", "subdomain": "rsingh-ogx-workbench", "script": "app/launch_app.py",
-       "cpu": 1, "memory": 4, "description": "Integrity engineer's worklist, Asset 360, document search, feedback"}
+       "cpu": 2, "memory": 8, "description": "Integrity engineer's worklist, Asset 360, document search, feedback"}
 
 
 class Workbench:
@@ -162,7 +162,11 @@ def ensure_app(wb: Workbench, project: dict, dry_run: bool) -> None:
     pid = project["id"]
     app = next((a for a in wb("GET", f"/projects/{pid}/applications", params={"page_size": 100})
                 .get("applications", []) if a["name"] == APP["name"]), None)
-    if app:
+    if app and (app.get("cpu"), app.get("memory")) != (APP["cpu"], APP["memory"]) and not dry_run:
+        wb("PATCH", f"/projects/{pid}/applications/{app['id']}", body={"cpu": APP["cpu"], "memory": APP["memory"]})
+        wb("POST", f"/projects/{pid}/applications/{app['id']}:restart")
+        print(f"application {APP['name']}: resized to {APP['cpu']} vCPU / {APP['memory']} GB and restarted")
+    elif app:
         print(f"application {APP['name']}: exists ({app['id']}, {app.get('status')})")
     elif dry_run:
         print(f"application {APP['name']}: would create ({APP['script']}, {APP['cpu']} vCPU / {APP['memory']} GB)")

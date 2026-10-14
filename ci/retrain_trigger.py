@@ -77,6 +77,21 @@ def decide(meta: dict | None, rules: dict, drift: dict | None, now: datetime, fo
     return reasons
 
 
+def skip_detail(meta: dict, rules: dict, drift: dict | None, now: datetime) -> str:
+    """Why RETRAIN_SKIPPED, per reason: a drift ALERT inside the cooldown is not 'no drift alert'."""
+    age = (now - _ts(meta["trained_at"])).days
+    if not (drift and drift.get("status") == "ALERT"):
+        d = f"drift {drift.get('status') if drift else 'not measured'}"
+    elif not rules.get("on_drift_alert"):
+        d = "drift ALERT ignored (on_drift_alert false)"
+    elif drift.get("model_version") not in (None, meta.get("model_version")):
+        d = f"drift ALERT for another model version ({drift.get('model_version')})"
+    else:
+        d = f"drift ALERT within cooldown ({age} of {rules.get('drift_cooldown_days', 0)} days)"
+    return (f"{d}; {new_labels(_ts(meta['trained_at']))} of {rules['min_new_labels']} new labels; "
+            f"champion {age} of {rules['max_model_age_days']} days old")
+
+
 def start_chain(reason: str) -> str:
     import cmlapi
 
@@ -107,7 +122,8 @@ def main() -> int:
     print(f"champion {meta.get('model_version') if meta else None}; drift {drift and drift.get('status')}; "
           f"reasons: {reason or 'none'}", flush=True)
     if not reasons:
-        publish_model_event("RETRAIN_SKIPPED", meta, stage="champion", detail="no drift alert, too few new labels, not stale")
+        publish_model_event("RETRAIN_SKIPPED", meta, stage="champion",
+                            detail=skip_detail(meta, rules, drift, datetime.now(timezone.utc)))
         return 0
     if args.dry_run:
         print("dry run: would start the retraining chain")

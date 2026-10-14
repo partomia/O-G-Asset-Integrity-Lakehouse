@@ -18,6 +18,7 @@ import csv
 import json
 import os
 import sys
+import threading
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -34,25 +35,48 @@ SEM, GOLD, ASSET = f"{P}_semantic", f"{P}_gold", f"{P}_asset"
 BAND_COLOR = {"HIGH": "#FF550C", "MEDIUM": "#FE8756", "LOW": "#A8AFB9"}
 
 
-@st.cache_resource
-def connection():
+_CONN = threading.local()
+
+
+def connection(fresh: bool = False):
+    """One Impala connection per Streamlit script thread: impyla connections are not thread-safe,
+    and Impala closes idle sessions, so a dead connection is replaced instead of cached for good."""
     from impala.dbapi import connect
 
-    imp = CFG["impala"]
-    return connect(host=os.environ.get("OGX_IMPALA_HOST", imp["host"]), port=int(imp["port"]), use_ssl=True,
-                   use_http_transport=True, http_path=imp["http_path"], auth_mechanism=imp["auth_mechanism"],
-                   user=os.environ["OGX_IMPALA_USER"], password=os.environ["OGX_IMPALA_PASSWORD"])
+    if fresh or getattr(_CONN, "c", None) is None:
+        old = getattr(_CONN, "c", None)
+        if old is not None:
+            try:
+                old.close()
+            except Exception:  # noqa: BLE001
+                pass
+        imp = CFG["impala"]
+        _CONN.c = connect(host=os.environ.get("OGX_IMPALA_HOST", imp["host"]), port=int(imp["port"]), use_ssl=True,
+                          use_http_transport=True, http_path=imp["http_path"], auth_mechanism=imp["auth_mechanism"],
+                          user=os.environ["OGX_IMPALA_USER"], password=os.environ["OGX_IMPALA_PASSWORD"],
+                          timeout=120)
+    return _CONN.c
 
 
-@st.cache_data(ttl=300, show_spinner=False)
-def q(sql: str) -> pd.DataFrame:
-    cur = connection().cursor()
+def _run(sql: str, fresh: bool) -> pd.DataFrame:
+    cur = connection(fresh).cursor()
     try:
         cur.execute(sql)
         cols = [d[0].split(".")[-1] for d in cur.description or []]
         return pd.DataFrame(cur.fetchall(), columns=cols)
     finally:
-        cur.close()
+        try:
+            cur.close()
+        except Exception:  # noqa: BLE001
+            pass
+
+
+@st.cache_data(ttl=300, show_spinner=False, max_entries=500)
+def q(sql: str) -> pd.DataFrame:
+    try:
+        return _run(sql, fresh=False)
+    except Exception:  # noqa: BLE001  stale or closed session: reconnect once
+        return _run(sql, fresh=True)
 
 
 @st.cache_resource
@@ -63,6 +87,13 @@ def corrosion_model():
     import serve.predict as p
 
     return p
+
+
+@st.cache_data(show_spinner=False, max_entries=2000)
+def score_frame(sha256: str, criticality: str) -> dict:
+    """A keyframe's score is fixed for a champion: score it once, not on every rerun."""
+    eng = corrosion_model()
+    return eng.predict({"sha256": sha256, "criticality": criticality}) if eng else {}
 
 
 def q_opt(sql: str) -> pd.DataFrame:
@@ -191,7 +222,7 @@ with tab_360:
             st.info("No corrosion champion yet: run the CAI chain ogx-01 to ogx-04.")
         cols = st.columns(4)
         for i, r in enumerate(kf.itertuples()):
-            res = eng.predict({"sha256": r.frame_sha256, "criticality": cur.criticality}) if eng else {}
+            res = score_frame(r.frame_sha256, str(cur.criticality)) if eng else {}
             path = ROOT / "assets" / "frames" / f"{r.frame_sha256[:16]}.jpg"
             with cols[i % 4]:
                 if path.exists():

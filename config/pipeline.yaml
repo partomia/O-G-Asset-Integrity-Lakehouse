@@ -56,6 +56,7 @@ cai:
   runtime_identifier: ""
   model_cpu: 1
   model_memory_gb: 2
+  deploy_timeout_s: 4200              # a replica can queue for capacity; ogx-04's job timeout is 5400
   git_branch: main
 
 registry:

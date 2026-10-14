@@ -23,6 +23,11 @@ import sys
 import traceback
 from pathlib import Path
 
+# The replica gets 1 vCPU but OpenMP sees every host core: HistGradientBoosting then
+# oversubscribes, is throttled and the endpoint answers "model busy". Must precede numpy.
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
+    os.environ.setdefault(_v, "1")
+
 
 def _repo_root() -> Path:
     try:
@@ -34,21 +39,35 @@ def _repo_root() -> Path:
 ROOT = _repo_root()
 sys.path.insert(0, str(ROOT))
 
-import joblib  # noqa: E402
+try:
+    import cml.models_v1 as _cml_models
 
-from features.feature_logic import feature_hash, features, load_image  # noqa: E402
-from guardrails import input_checks, output_policy  # noqa: E402
+    cml_model = _cml_models.cml_model
+except ImportError:  # outside CAI (tests, app, jobs)
+    def cml_model(fn):
+        return fn
 
 CHAMPION = ROOT / os.environ.get("OGX_CHAMPION_DIR", "models/champion")
-_META = json.loads((CHAMPION / "model_meta.json").read_text())
-_MODEL = joblib.load(CHAMPION / "model.joblib")
-if _META["feature_hash"] != feature_hash():   # process guardrail: feature hash lock
-    raise RuntimeError("champion was trained on different feature logic")
-_FRAMES = {}
-_csv = ROOT / "assets" / "frames" / "frames.csv"
-if _csv.exists():
-    with open(_csv) as f:
-        _FRAMES = {r["sha256"]: ROOT / "assets" / "frames" / r["frame"] for r in csv.DictReader(f)}
+_META, _MODEL, _FRAMES, _LOAD_ERROR = {}, None, {}, None
+# A load failure must not crash the replica (it would never turn ready and hide the cause):
+# every call answers with the error instead, and nothing is scored.
+try:
+    import joblib
+
+    from features.feature_logic import feature_hash, features, load_image
+    from guardrails import input_checks, output_policy
+
+    _META = json.loads((CHAMPION / "model_meta.json").read_text())
+    _MODEL = joblib.load(CHAMPION / "model.joblib")
+    if _META["feature_hash"] != feature_hash():   # process guardrail: feature hash lock
+        raise RuntimeError("champion was trained on different feature logic")
+    _csv = ROOT / "assets" / "frames" / "frames.csv"
+    if _csv.exists():
+        with open(_csv) as f:
+            _FRAMES = {r["sha256"]: ROOT / "assets" / "frames" / r["frame"] for r in csv.DictReader(f)}
+except Exception as e:  # noqa: BLE001
+    _LOAD_ERROR = {"error": f"model not loaded: {type(e).__name__}: {e}", "root": str(ROOT),
+                   "trace": traceback.format_exc()[-1500:]}
 
 
 def model_info() -> dict:
@@ -72,7 +91,12 @@ def score(img, criticality: str | None = None) -> dict:
             "guardrails": checks, **out, "model": model_info()}
 
 
+# A PBJ runtime's model server calls only a function wrapped by cml_model: without it every
+# request hangs and the endpoint answers "model busy".
+@cml_model
 def predict(args: dict) -> dict:
+    if _LOAD_ERROR:
+        return _LOAD_ERROR
     try:
         if isinstance(args, str):
             args = json.loads(args)
