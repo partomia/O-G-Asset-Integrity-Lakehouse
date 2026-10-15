@@ -49,6 +49,7 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - App shows its fallback page -> it started before the project env vars were set -> restart the application after setting the variables [OGX].
 - An app or job URL answers 302 -> CAI SSO login -> treat 302 as healthy in smoke tests [CASA, Collections, Mule].
 - The Overview showed "Total GPU: 0" for a GPU deployment -> stale overview tile -> check the Deployments tab [Mule].
+- `platform.py stop` reports no active CAI job run while one is running -> `GET /jobs/<id>/runs` returns the OLDEST runs first, so `page_size=20` misses the newest once a job has more than 20 runs -> pass `sort=-created_at` (newest first) [Collections; OGX's `platform.py` has the same latent gap].
 - A run's `environment` printed to the terminal exposed a token -> job/run objects return env values in clear -> never print run or job environments; rotate the token if it was shown [OGX].
 - Local pytest published fake lineage events to the live `model_event` table -> the test shell had sourced `.env` -> publish only inside CAI (`CDSW_PROJECT_ID` set); strip platform credentials in `conftest.py` [CXR].
 
@@ -93,7 +94,10 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - Airflow: nightly DAG runs fail about 90 min after the schedule with the first task `failed`, duration 0, empty `hostname`, `queued_when` 30 min before its end, no Spark run in `cde run list`, and `cde run logs --type <task>/attempt_1` says "could not open logs file" -> the task never got a worker slot on the full shared virtual cluster (queued timeout 30 min, then the same on its retry) -> read task instances over the Airflow REST API (`/dags/<id>/dagRuns/<run>/taskInstances`), free the cluster (pause idle schedules, kill stale runs), then backfill the missed dates [CXR].
 - Airflow: `cde job schedule resume` fails -> CDE CLI 1.23.0 has `pause` / `unpause` (and `pause-all` / `unpause-all`), no `resume` -> use `cde job schedule unpause --name <job>` [CXR].
 - `cde job list` / `cde run list` fail now and then with `Get ".../dex/api/v1/jobs?...": EOF` -> a dropped connection to the CDE API -> retry read-only CLI calls (list, describe) a few times with a back-off; never retry kill, pause or run [CXR].
+- Checking a redeployed DAG's bounds over the Airflow REST API finds no `dagrun_timeout` -> Airflow 2.11 names it `dag_run_timeout` in `/dags/<id>/details`; task `execution_timeout` is in `/dags/<id>/tasks` (TimeDelta objects in seconds); `last_parsed_time` confirms the new file was parsed [Collections].
 - Airflow Variables are set over the vcluster's Airflow REST API with a Knox token for the workload user -> scripted -> touch only your own prefix's keys [Spend, CXR, OGX, Mule].
+- After adding `dagrun_timeout`, `/dags/<id>/details` still shows `dagrun_timeout: None` -> Airflow 2.11's REST field is `dag_run_timeout` (a TimeDelta, e.g. 21600 s), so the guard looks missing -> read `dag_run_timeout`, plus `max_active_runs`, `has_import_errors` and each task's `execution_timeout` from `/dags/<id>/tasks` [Mule].
+- Redeploying a DAG to add guards -> `cde job update --dag-file` of a paused DAG keeps it paused (checked `is_paused` and `last_parsed` 40 s later) -> safe whenever `cde run list --filter status[in]running,starting` shows no run of the prefix; in-flight runs keep the old DAG [Mule].
 
 ## CDW Impala/Hive
 - Syntax errors on `rows`, `method`, `format`, `change`, `matched` -> Impala reserved words (409; `method` since 3.0) that Spark accepts -> backtick-quote every generated identifier, rename columns, and test aliases against the list [Collections, Spend, GDL, OGX, Mule].
@@ -120,6 +124,7 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - A table sorted by a measure came back unordered from the Data API (top 15) -> sort is not honoured -> add a rank column in the view and filter `rank <= N` [Mule].
 - The instance has no URL in the CDW API -> discovery gap -> keep the instance URL in config/.env [Spend].
 - A separate Data Visualization app can be launched in CAI (runtime 8.1.7, about 1.5-4.5 min to start) -> option alongside the CDW instance -> build its connection with the public Impala endpoint [Churn, Mule].
+- CDW Data Visualization instances cannot be suspended, but a CAI-launched one is an ordinary CAI application (2 vCPU / 8 GB of the per-user quota) -> list it in `config/platform.json` `cai_apps` so `platform_ctl.py stop` releases it with the project; leave the CDW instances out of platform scope if the project does not use them [Mule].
 
 ## Kafka/Schema Registry/SMM
 - Broker port 9093 is closed from the laptop (public IPs notwithstanding) -> network policy -> run admin and producer work from CDE, or create topics through the SMM REST API over Knox [OGX].
