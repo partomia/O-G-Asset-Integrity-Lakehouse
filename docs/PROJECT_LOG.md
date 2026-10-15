@@ -291,3 +291,7 @@ Live, in order:
 - The 10-09 champion carried no OOD limit; v2 does: across the 210-frame library, NA 72 / P2 118 /
   P1 20; OOD rejects 6 of 105 clean and 21 of 105 degraded frames (the noise/occlusion cases the
   frame checks pass, as GUARDRAILS.md intends). App restarted (stopped during the test).
+- CDE DAG run 627 (business date 2026-10-08) **succeeded**: land 628, bronze 631 (waited for the
+  VC until the cleanup, then ran), extract 636, silver 637, asset 638, gold 639, recon 640, each
+  1-2 min. DAG job `rsingh-ogx-orchestration` redeployed from the (public again) repository
+  resource `rsingh-ogx-pipeline` with the timeouts.

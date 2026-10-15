@@ -104,11 +104,10 @@ on a drift alert, on 20 new engineer labels from Asset 360 or when the champion 
   retraining loop.
 - Not built yet: frame QC and equipment-risk model heads, silent trial and named-approver
   promotion (`ogx-07`), lakehouse scoring job (`ogx-06`), the LLM report-summary guardrail.
-- Model endpoint `ogx-integrity` live again (build `6a71fd85`, 1 vCPU / 2 GB, about 0.4 s per
-  keyframe). Builds that stopped in "pushing" were carrying the workbench's `.local` and `.cache`
-  folders (several GB); `.gitignore` now keeps them out.
-- Open: the CDE virtual cluster is full of other projects' runs "running" since 10-12, so DAG run
-  627 waits at `bronze`; those runs need their owners (kill) or a larger VC quota.
+- Model endpoint `ogx-integrity` serves AI Registry `ogx-corrosion` v2 (retrained 10-15, two runs
+  in the CAI experiment), 1 vCPU / 2 GB, about 0.4 s per keyframe. Model builds that stall are
+  replaced after 10 minutes; registration is idempotent per MLflow run.
+- CDE Airflow DAG `rsingh-ogx-orchestration` validated end to end (run 627, all stages succeeded).
 
 ## Enhancements (2026-10-15)
 
