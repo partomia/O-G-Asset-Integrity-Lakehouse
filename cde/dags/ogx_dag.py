@@ -36,6 +36,8 @@ default_args = {
     "depends_on_past": False,
     "retries": 1,
     "retry_delay": timedelta(minutes=3),
+    # the virtual cluster is shared: a stage stuck in "starting" must not hold quota for days
+    "execution_timeout": timedelta(minutes=90),
 }
 
 with DAG(
@@ -47,6 +49,7 @@ with DAG(
     catchup=False,
     is_paused_upon_creation=False,
     max_active_runs=1,
+    dagrun_timeout=timedelta(hours=6),
     params={"business_date": "2026-10-08", "bronze_mode": "normal"},
     tags=["lakehouse", "iceberg", "unstructured", "asset-master", "reconciliation"],
 ) as dag:

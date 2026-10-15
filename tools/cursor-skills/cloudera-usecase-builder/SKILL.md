@@ -56,6 +56,10 @@ Rules for every phase:
 4. Present ONE approval list up front (pushes, CAI project/jobs/models/app, CDE resources/jobs/DAG,
    Kafka topics/schemas, first CDW write, Atlas/Ranger, Data Viz import, dataset download). After
    approval, proceed; anything destructive, outside the prefix, or on shared services asks again.
+5. Keep this skill current: when a platform failure is solved, add a symptom -> cause -> fix
+   bullet to reference.md (and a line under Platform essentials if it changes how projects are
+   built) in `O-G-Asset-Integrity-Lakehouse/tools/cursor-skills/cloudera-usecase-builder/`
+   (the installed skill is a symlink to it), then commit and push that repo.
 
 ## Conventions
 
@@ -68,13 +72,19 @@ Rules for every phase:
 - Credentials only in git-ignored `.env` (taken from siblings' `.env`, re-prefixed); `.env.example`
   has placeholders; gitleaks pre-commit + commit-msg hook (no attribution trailers).
 - Never print environment variables, job `environment` fields or `.env`: filter output.
-- Long live waits: run in the background writing to a log file and poll it; never block a tool
-  call for many minutes, and never pipe a long-running command through `cut`/`grep` (it buffers).
+- Long live waits: a bounded foreground poll loop (status every 15 s, explicit timeout) is the
+  reliable form. Background `nohup` jobs can be killed when the tool call returns or the laptop
+  sleeps, so re-read live state from the API rather than trusting a stale log. Never pipe a
+  long-running command through `cut`/`grep` (it buffers).
 
 ## Platform essentials (details and every known failure in reference.md)
 
 - CAI on PBJ runtimes: the model function MUST be decorated with `cml.models_v1.cml_model`,
   otherwise every call hangs ("model busy").
+- CAI model builds copy every project file that is not git-ignored: `.gitignore` must list the
+  workbench home state (`.local/ .cache/ .config/ .ipython/ .jupyter/ .experiments/`) or builds
+  hang in "pushing", and must NOT list the serving model folder (exclude it from Git with
+  `.git/info/exclude` instead).
 - CAI capacity: jobs, app and models at 1 vCPU / 4 GB schedule at once; 2 vCPU / 8 GB may queue.
 - Register the model version in the AI Registry BEFORE the endpoint deploy, so a slow deploy
   never loses the version. Registry API path: `/api/v2/registry/models`.
@@ -82,7 +92,12 @@ Rules for every phase:
   that reconnects; cache expensive scoring with `st.cache_data`.
 - CDE: public repo -> Git repository resource; private repo -> files resource or a credential.
   Load stage modules unregistered so executors pickle closures by value.
+- CDE Airflow DAGs: `max_active_runs=1`, `dagrun_timeout` and a per-task `execution_timeout`.
+  The virtual cluster quota (20 CPU / 80 GB) is shared, and runs stuck "running" for days block
+  every other project's stages in "starting".
 - Data Hubs, CDW, CDE and CAI are shared by sibling demos: stop/start them only with consent.
+  Every project gets `scripts/platform.py` + `config/platform.json` (status/stop/start, project
+  scope by default) so idle demos release their share.
 
 ## Additional resources
 

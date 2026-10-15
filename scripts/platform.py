@@ -175,18 +175,29 @@ def cai_project(action: str) -> None:
 
 
 def cde_project(action: str) -> None:
-    runs = [r for r in cde("run", "list", "--filter", "status[eq]running", "--filter",
+    runs = [r for r in cde("run", "list", "--filter", "status[in]running,starting", "--filter",
                            f"job[rlike]^{PRJ['cde_job_prefix']}") or []]
+    scheduled = [j for j in cde("job", "list", "--filter", f"name[rlike]^{PRJ['cde_job_prefix']}") or []
+                 if (j.get("schedule") or {}).get("enabled")]
     if action == "status":
-        say(f"  running: " + (", ".join(f"{r['job']} #{r['id']}" for r in runs) or "none"))
+        say(f"  active runs: " + (", ".join(f"{r['job']} #{r['id']} {r['status']}" for r in runs) or "none"))
+        for j in scheduled:
+            say(f"  schedule {j['name']}: {'paused' if j['schedule'].get('paused') else 'active'}")
         missing = [j for j in PRJ["cde_streaming_jobs"] if j not in {r["job"] for r in runs}]
         if missing:
             say(f"  streaming not running: {', '.join(missing)}")
         return
     if action == "stop":
-        for r in runs:
+        for j in scheduled:
+            if not j["schedule"].get("paused"):
+                act(f"pause CDE schedule {j['name']}", cde, "job", "schedule", "pause", "--name", j["name"])
+        # Spark children first, so an orchestration run does not retry them
+        for r in sorted(runs, key=lambda r: r["type"] == "airflow"):
             act(f"kill CDE run {r['job']} #{r['id']}", cde, "run", "kill", "--id", str(r["id"]))
         return
+    for j in scheduled:
+        if j["schedule"].get("paused"):
+            act(f"resume CDE schedule {j['name']}", cde, "job", "schedule", "resume", "--name", j["name"])
     running = {r["job"] for r in runs}
     if all(j in running for j in PRJ["cde_streaming_jobs"]):
         say("  streaming jobs already running")

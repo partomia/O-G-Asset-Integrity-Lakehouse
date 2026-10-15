@@ -254,3 +254,18 @@ Live, in order:
   runs "running" since 10-12 plus their new nightly runs. Not touched.
 - `reference.md` written for the Cursor skill (symptom -> cause -> fix, by service), including
   these two CAI findings.
+
+## 2026-10-15 09:00 - shared resources released to this project (user request)
+
+- On the user's instruction, other projects' resources were stopped so this project has the
+  shared capacity:
+  - CDE: killed runs 616, 618, 620, 630, 633 (Spark) and 614, 617, 619, 629, 632 (orchestration);
+    paused the schedules of `rsingh-{casa-alb,churn-pred,coll-dlq,cxr,mule-acct,spend-anl}-orchestration`.
+    Resume with `cde job schedule resume --name <job>`; unpausing runs the last closed interval at once.
+  - CAI: stopped model deployments of rsingh-coll-dlq, rsingh-mule-acct, rsingh-churn-prediction,
+    rsingh-casa-alb, rsingh-spend-analytics (2) and rsingh-chest-x-ray-triage. Left running:
+    `ogx-integrity`, and `credit-risk-model` in Federal-ML-VIZ-Workshop (not one of ours).
+- Within a minute, the VC ran only this project: bronze run 631 moved from "starting" to running.
+- `platform.py`: the CDE layer now also handles runs in "starting", pauses and resumes the
+  project's Airflow schedules, and kills Spark children before orchestration runs.
+  `ogx_dag.py`: `dagrun_timeout` 6 h and per-task `execution_timeout` 90 min (redeploy after 627).

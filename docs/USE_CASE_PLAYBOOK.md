@@ -67,10 +67,43 @@ platform stop/start script), add it to `templates.md` and the reference table in
 | Command | Effect |
 |---------|--------|
 | `status [--scope platform]` | app, model, schedules and runs on CAI; CDE runs; NiFi group; with platform scope also Data Hubs, CDW warehouse, CDE virtual cluster, CAI workspace |
-| `stop` | stops the CAI app and model deployment, pauses the scheduled jobs and stops running ones, kills running `rsingh-<xx>-*` CDE runs (streaming resumes from checkpoints), stops the NiFi process group |
-| `start` | resumes schedules, restarts the newest model deployment and the app, starts the streaming jobs, starts the NiFi group (the "Hold failures" processor stays stopped) |
+| `stop` | stops the CAI app and model deployment, pauses the scheduled jobs and stops running ones, pauses `rsingh-<xx>-*` CDE Airflow schedules and kills their running or starting runs (streaming resumes from checkpoints), stops the NiFi process group |
+| `start` | resumes CAI and CDE schedules, restarts the newest model deployment and the app, starts the streaming jobs, starts the NiFi group (the "Hold failures" processor stays stopped) |
 | `stop/start --scope platform --yes-shared` | the above plus Data Hubs (Kafka, NiFi, Flink), the CDW Impala warehouse, the CDE virtual cluster and the CAI workspace, in dependency order |
 | `--only cai,cde` / `--dry-run` | limit layers / print without acting |
 
 Data Visualization has no suspend command in the CDP CLI and is left running. The shared services
 are also used by the sibling demos, so platform scope is for the end of a demo season, not a day.
+
+### Adding the script to an existing project
+
+Paste into a Cursor agent opened on that repo:
+
+```text
+Add a stop/start/status script for this project's live Cloudera resources, ported from
+/Users/rsingh/Downloads/py_aws/O-G-Asset-Integrity-Lakehouse (read scripts/platform.py,
+config/platform.json, the "Stopping and starting a demo" section of docs/USE_CASE_PLAYBOOK.md,
+and the cloudera-usecase-builder skill). Do not edit that repo or any other sibling repo.
+
+1. Inventory first, from this repo's code and docs/PROJECT_LOG.md, then confirm live (read-only):
+   the CAI project name, its apps, model deployments and scheduled jobs; the CDE job prefix,
+   Airflow DAG jobs with schedules, and any streaming jobs; NiFi process groups; Kafka topics;
+   CDW virtual warehouses and Data Visualization instances used. Show me the inventory.
+2. Write config/platform.json in the same shape (project section = only this project's
+   resources; platform section = the shared Data Hubs, CDW VW, CDE VC, CAI workspace; stop_order
+   and start_order). Drop layers this project does not use.
+3. Write scripts/platform.py: `status | stop | start`, `--scope project|platform` (project is the
+   default), `--only`, `--dry-run`, and `--yes-shared` required for platform scope.
+   Project stop: stop CAI apps and model deployments, pause CAI job schedules and stop active
+   runs; pause the project's CDE Airflow schedules (`cde job schedule pause`) and kill its CDE
+   runs in "running" or "starting", Spark children before orchestration runs; stop NiFi groups.
+   Project start reverses this (resume schedules, restart newest deployment and app, restart
+   streaming from checkpoints). Every action filters strictly by this project's prefixes.
+   Credentials come from the git-ignored .env only; never print environment values.
+4. Make sure every Airflow DAG has max_active_runs=1, dagrun_timeout and a per-task
+   execution_timeout; redeploy a DAG only when it has no run in flight.
+5. Verify live with `status` and `status --scope platform`, and `stop --dry-run` /
+   `start --dry-run`. Do not run a real stop or start without asking me.
+6. Add a short README section and a docs/PROJECT_LOG.md entry; run tests; commit and push.
+   Add any new platform lesson to the cloudera-usecase-builder skill's reference.md.
+```
