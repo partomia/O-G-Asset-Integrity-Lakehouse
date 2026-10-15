@@ -1,7 +1,8 @@
 # This repository is PUBLIC. Data, credentials and run outputs never enter Git.
 # In Cloudera AI, .gitignore also keeps files out of model builds, so large
 # folders must be listed here. models/champion/ is deliberately NOT ignored: it
-# is small and the model build needs it. Do not commit it.
+# is small and the model build needs it. Do not commit it: keep it out of Git locally with
+# `echo models/champion/ >> .git/info/exclude` (CAI builds do not read that file).
 
 # Secrets & local config
 .env
@@ -55,5 +56,4 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 .ipynb_checkpoints/
-models/champion/
 models/silent_trial/

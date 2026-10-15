@@ -231,3 +231,26 @@ Live, in order:
 - **Cursor skill** `cloudera-usecase-builder` (`tools/cursor-skills/`, symlinked into
   `~/.cursor/skills/`) and `docs/USE_CASE_PLAYBOOK.md`: the workflow, conventions and every
   platform lesson of the eight sibling repos.
+
+## 2026-10-15 07:30 - model builds "pushing": root cause; endpoint verified
+
+- **Root cause.** A CAI model build copies every project file that is not git-ignored into the
+  image. The project held the workbench's home state: `.local/lib/python3.11/site-packages`
+  (torch, torchvision, scipy, pyarrow, scikit-learn: pip `--user` installs by the jobs) and
+  `.cache` (pip, matplotlib), several GB, none of it ignored, so the image push never finished
+  (build `82d9633c` still "pushing" after 11 h). Workbench capacity was fine (CPU groups 4/8 and
+  6/10 nodes) and this project was the only one building. `.gitignore` now lists `.local/`,
+  `.cache/`, `.config/`, `.experiments/`, `.ipython/`, `.jupyter/`; the next builds took minutes.
+- Second finding: line `models/champion/` (added 10-09) contradicted the header and, once the
+  file was uploaded to CAI, dropped the champion from the image (build `53565b1d` answered
+  "model_meta.json not found"). Removed; the champion stays out of Git through
+  `.git/info/exclude`.
+- **Endpoint verified.** Build `6a71fd85` (PBJ `cml_model` fix, slim context, champion),
+  deployment `747288ff`, 1 vCPU / 2 GB: deployed in 30 s; keyframes scored in 0.3-0.4 s with the
+  full guardrail trace (band P2, "engineer review required"); unknown frame -> `{"error"}`.
+- `ogx-04` run `6frveadxpe1huj2q` ended FAILED (its build wait was the stuck `82d9633c`);
+  registry version 1 stands.
+- CDE: land (628) succeeded; bronze (631) "starting": the VC still holds Mule, Spend and Churn
+  runs "running" since 10-12 plus their new nightly runs. Not touched.
+- `reference.md` written for the Cursor skill (symptom -> cause -> fix, by service), including
+  these two CAI findings.
