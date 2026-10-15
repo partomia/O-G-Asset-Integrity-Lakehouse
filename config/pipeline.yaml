@@ -57,6 +57,8 @@ cai:
   model_cpu: 1
   model_memory_gb: 2
   deploy_timeout_s: 4200              # a replica can queue for capacity; ogx-04's job timeout is 5400
+  build_timeout_s: 600                # builds take ~100 s; one that stops reporting is replaced
+  build_attempts: 3
   git_branch: main
 
 registry:

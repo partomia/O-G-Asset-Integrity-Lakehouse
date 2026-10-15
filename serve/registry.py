@@ -52,8 +52,18 @@ def versions(client, name: str) -> list:
 
 def register_version(client, meta: dict, name: str, stage: str, experiment_id: str,
                      project_id: str | None = None, extra: dict | None = None, description: str = "") -> dict:
-    """The candidate's MLflow model as a new version of `name`; {model_id, version, number, previous}."""
+    """The candidate's MLflow model as a new version of `name`; {model_id, version, number, previous}.
+    A re-run for the same MLflow run (an ogx-04 retry) returns the version it already made."""
     before = versions(client, name)
+    for v in before:
+        md = _get(v, "model_version_metadata") or {}
+        if _get(_get(md, "mlflow_metadata") or {}, "run_id") == meta["mlflow_run_id"]:
+            model_id = _get(find_model(client, name), "model_id")
+            number = _get(v, "number")
+            prev = max((_get(o, "number") or 0 for o in before if _get(o, "number") != number), default=None)
+            print(f"registry: {name} version {number} already holds run {meta['mlflow_run_id']}", flush=True)
+            return {"model_id": model_id, "version": _get(v, "model_version_id"), "number": number,
+                    "previous": prev}
     created = client.create_registered_model({
         "project_id": project_id or os.environ.get("CDSW_PROJECT_ID", ""), "experiment_id": experiment_id,
         "run_id": meta["mlflow_run_id"], "model_path": "model", "model_name": name,

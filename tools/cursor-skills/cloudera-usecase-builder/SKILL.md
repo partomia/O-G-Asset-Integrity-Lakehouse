@@ -45,7 +45,7 @@ Copy this checklist into the chat and keep it current:
 - [ ] 9 CAI: project, env, jobs chain 00-04 (+05 drift, 08 retrain), model endpoint, AI Registry
 - [ ] 10 Guardrails, MLOps loop, app (Streamlit) on CAI
 - [ ] 11 Governance: Atlas classifications + glossary, Ranger tag masking
-- [ ] 12 Ops: scripts/platform.py stop/start, runbooks, README status
+- [ ] 12 Ops: scripts/platform_ctl.py stop/start, runbooks, README status
 ```
 
 Rules for every phase:
@@ -84,7 +84,8 @@ Rules for every phase:
 - CAI model builds copy every project file that is not git-ignored: `.gitignore` must list the
   workbench home state (`.local/ .cache/ .config/ .ipython/ .jupyter/ .experiments/`) or builds
   hang in "pushing", and must NOT list the serving model folder (exclude it from Git with
-  `.git/info/exclude` instead).
+  `.git/info/exclude` instead). Builds still stall now and then: time out a build after ~10 min
+  and start a new one rather than waiting; make registry registration idempotent per MLflow run.
 - CAI capacity: jobs, app and models at 1 vCPU / 4 GB schedule at once; 2 vCPU / 8 GB may queue.
 - Register the model version in the AI Registry BEFORE the endpoint deploy, so a slow deploy
   never loses the version. Registry API path: `/api/v2/registry/models`.
@@ -96,8 +97,9 @@ Rules for every phase:
   The virtual cluster quota (20 CPU / 80 GB) is shared, and runs stuck "running" for days block
   every other project's stages in "starting".
 - Data Hubs, CDW, CDE and CAI are shared by sibling demos: stop/start them only with consent.
-  Every project gets `scripts/platform.py` + `config/platform.json` (status/stop/start, project
-  scope by default) so idle demos release their share.
+  Every project gets `scripts/platform_ctl.py` + `config/platform.json` (status/stop/start, project
+  scope by default) so idle demos release their share. Port it from CXR's `platform_ctl.py`
+  (OGX's `scripts/platform.py` shadows the stdlib `platform` module and uses `schedule resume`).
 
 ## Additional resources
 

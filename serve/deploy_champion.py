@@ -99,12 +99,23 @@ def deploy(cfg, meta) -> dict:
         disable_authentication=False), pid)
     print(f"model {model.name} id={model.id}, runtime {runtime}", flush=True)
     t = meta["metrics"]["test"]
-    build = client.create_model_build(cmlapi.CreateModelBuildRequest(
-        project_id=pid, model_id=model.id, file_path="serve/predict.py", function_name="predict",
-        runtime_identifier=runtime,
-        comment=f"{meta['estimator']} {meta['feature_version']} git {meta['git_sha'][:7]} test auroc {t['auroc']:.3f}",
-    ), pid, model.id)
-    wait(lambda: client.get_model_build(pid, model.id, build.id), {"built", "succeeded"}, "build")
+    # Builds take ~100 s, but now and then one stops reporting (stuck in "building" or "pushing"
+    # for hours) while an identical new build finishes normally: replace it instead of waiting.
+    attempts = int(cfg["cai"].get("build_attempts", 3))
+    for attempt in range(1, attempts + 1):
+        build = client.create_model_build(cmlapi.CreateModelBuildRequest(
+            project_id=pid, model_id=model.id, file_path="serve/predict.py", function_name="predict",
+            runtime_identifier=runtime,
+            comment=f"{meta['estimator']} {meta['feature_version']} git {meta['git_sha'][:7]} test auroc {t['auroc']:.3f}",
+        ), pid, model.id)
+        try:
+            wait(lambda: client.get_model_build(pid, model.id, build.id), {"built", "succeeded"}, "build",
+                 timeout=int(cfg["cai"].get("build_timeout_s", 600)))
+            break
+        except RuntimeError as e:
+            if attempt == attempts:
+                raise
+            print(f"build {build.id} attempt {attempt}: {e}; starting a new build", flush=True)
     dep = client.create_model_deployment(cmlapi.CreateModelDeploymentRequest(
         project_id=pid, model_id=model.id, build_id=build.id,
         cpu=cfg["cai"]["model_cpu"], memory=cfg["cai"]["model_memory_gb"]), pid, model.id, build.id)

@@ -24,7 +24,7 @@ Keep only the folders the use case needs; names are fixed so tooling and docs ca
 ├── sql/semantic/        10_kpi_*.sql  20_mis_views.sql  50_dashboard_views.sql
 ├── dataviz/             build_dashboard.py  <xx>_dashboards.json
 ├── nifi/                deploy_flow.py  flows/<flow>.json (exported, no sensitive values)
-├── scripts/             run_local.py  run_semantic.py  governance.py  platform.py  install_hooks.sh  hooks/
+├── scripts/             run_local.py  run_semantic.py  governance.py  platform_ctl.py  install_hooks.sh  hooks/
 ├── docs/                PROJECT_LOG.md  DEMO_RUNBOOK.md  REUSE_INVENTORY.md  + one per capability
 └── tests/
 ```
@@ -79,7 +79,7 @@ CDW:   databases rsingh_<xx>_*; first write; semantic views
 CDV:   connection; datasets/dashboards with PKs <range>
 SDX:   classifications <XX>_SENSITIVE_*; glossary; Ranger policies rsingh-<xx>-* (users)
 Data:  public dataset <id>@<revision> (licence)
-Ops:   scripts/platform.py stop/start at project scope (shared services need a separate yes)
+Ops:   scripts/platform_ctl.py stop/start at project scope (shared services need a separate yes)
 ```
 
 ## config/platform.json

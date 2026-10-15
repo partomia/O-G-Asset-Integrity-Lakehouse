@@ -269,3 +269,25 @@ Live, in order:
 - `platform.py`: the CDE layer now also handles runs in "starting", pauses and resumes the
   project's Airflow schedules, and kills Spark children before orchestration runs.
   `ogx_dag.py`: `dagrun_timeout` 6 h and per-task `execution_timeout` 90 min (redeploy after 627).
+
+## 2026-10-15 11:30 - forced retrain: experiment run 2, registry v2 deployed
+
+- User asked why the CAI experiment showed one entry: `ogx-integrity` is one experiment with one
+  run per training; only the 10-10 training had logged (10-09 predates MLflow logging; the
+  trigger skipped since, drift cooldown 7 days and no new labels).
+- `ogx-08` with `OGX_RETRAIN_FORCE=1` (run `zny3btn04ch62w2r`) -> `ogx-01` .. `ogx-03` in 5 min:
+  TRAINED `gradient_boosting-hc-1.0.0-b1b3ad7-202610150436` (MLflow run 2, TEST AUROC 0.862,
+  same data so same numbers), GATE_PASSED, REGISTERED **`ogx-corrosion` v2**.
+- `ogx-04` (`ixjxpuh028rr28bn`): build `6b24fbfb` stopped reporting at "building" 92 s in (8 MB
+  context, so not the image size this time); timed out at 2,400 s and ROLLED_BACK. Stopping the
+  app (quota theory) changed nothing; an identical build from the API finished in 91 s.
+  The 10-14 "pushing" build had the same signature (`updated_at` frozen 34 s in): the stall is
+  intermittent on the platform side; the multi-GB `.local` context was a real but separate issue.
+- Fixes: `deploy_champion.py` replaces a build that has not finished in `build_timeout_s` (600 s),
+  up to `build_attempts` (3); `registry.register_version` returns the existing version for the
+  same MLflow run (no duplicate on a retry).
+- `ogx-04` re-run `akjur3w0uv04wwzc`: registry v2 re-used, build `d253630e` in 82 s, deployment
+  `5a51afc1`, DEPLOYED event; 3 min end to end. Endpoint serves registry v2 at 0.4 s per call.
+- The 10-09 champion carried no OOD limit; v2 does: across the 210-frame library, NA 72 / P2 118 /
+  P1 20; OOD rejects 6 of 105 clean and 21 of 105 degraded frames (the noise/occlusion cases the
+  frame checks pass, as GUARDRAILS.md intends). App restarted (stopped during the test).
