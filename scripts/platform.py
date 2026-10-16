@@ -35,7 +35,14 @@ from pathlib import Path
 
 import requests
 
-ROOT = Path(__file__).resolve().parents[1]
+def _repo_root() -> Path:
+    try:
+        return Path(__file__).resolve().parents[1]
+    except NameError:  # CAI job kernels run the script without __file__; cwd is the project
+        return Path.cwd()
+
+
+ROOT = _repo_root()
 sys.path.insert(0, str(ROOT))
 CFG = json.loads((ROOT / "config" / "platform.json").read_text())
 PRJ, PLT = CFG["project"], CFG["platform"]
@@ -91,8 +98,11 @@ def cde(*args: str):
 
 class Cai:
     def __init__(self):
-        self.base = os.environ["OGX_CAI_HOST"].rstrip("/") + "/api/v2"
-        self.h = {"Authorization": f"Bearer {os.environ['OGX_CAI_API_KEY']}"}
+        # laptop: OGX_CAI_HOST / OGX_CAI_API_KEY from .env; inside a CAI job: the engine's own API v2 key
+        host = os.environ.get("OGX_CAI_HOST") or os.environ["CDSW_API_URL"].split("/api/")[0]
+        key = os.environ.get("OGX_CAI_API_KEY") or os.environ["CDSW_APIV2_KEY"]
+        self.base = host.rstrip("/") + "/api/v2"
+        self.h = {"Authorization": f"Bearer {key}"}
         found = self("GET", "/projects", params={"search_filter": json.dumps({"name": PRJ["cai_project"]})})
         self.pid = next(p["id"] for p in found["projects"] if p["name"] == PRJ["cai_project"])
 
@@ -328,7 +338,7 @@ def layer(name: str, action: str, scope: str) -> None:
                 raise
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     global DRY
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("action", choices=["status", "stop", "start"])
@@ -336,7 +346,7 @@ def main() -> int:
     ap.add_argument("--only", default="", help=f"comma-separated layers from {', '.join(LAYERS)}")
     ap.add_argument("--yes-shared", action="store_true", help="required to stop or start the shared services")
     ap.add_argument("--dry-run", action="store_true")
-    a = ap.parse_args()
+    a, _ = ap.parse_known_args(argv)  # a CAI job kernel adds -f <file>
     DRY = a.dry_run
     if a.scope == "platform" and a.action != "status" and not (a.yes_shared or a.dry_run):
         raise SystemExit("--scope platform stops/starts services other demos share: add --yes-shared")
@@ -351,4 +361,6 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    rc = main()
+    if rc:  # the CAI job wrapper treats any SystemExit, even 0, as a failure
+        sys.exit(rc)
