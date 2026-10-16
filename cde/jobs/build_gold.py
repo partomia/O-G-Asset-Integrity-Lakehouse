@@ -74,12 +74,13 @@ def dim_asset(spark, names, d):
 
 
 def dim_date(spark, names):
-    days = sorted(set(C.CFG["business_dates"] + [C.CFG["live_date"]]))
+    batch_days = C.CFG["business_dates"] + C.CFG.get("scheduled_dates", [])
+    days = sorted(set(batch_days + [C.CFG["live_date"]]))
     df = spark.createDataFrame([(x,) for x in days], "d string").select(
         F.col("d").cast("date").alias("date"), F.date_format(F.col("d").cast("date"), "yyyyMMdd").cast("int").alias("date_key"),
         F.dayofweek(F.col("d").cast("date")).alias("day_of_week"), F.weekofyear(F.col("d").cast("date")).alias("week"),
         F.month(F.col("d").cast("date")).alias("month"), F.year(F.col("d").cast("date")).alias("year"),
-        F.col("d").isin(C.CFG["business_dates"]).alias("is_business_date"))
+        F.col("d").isin(batch_days).alias("is_business_date"))
     C.replace_table(df, names.t("gold", "dim_date"))
 
 

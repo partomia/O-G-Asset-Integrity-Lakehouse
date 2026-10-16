@@ -8,6 +8,7 @@
             "video_fps": 2, "work_orders": 40, "cdc_changes": 12, "drawing_revisions": 2},
   "business_dates": ["2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08"],
   "live_date": "2026-10-09",
+  "scheduled_dates": ["2026-10-16", "2026-10-17", "2026-10-18", "2026-10-19"],
   "landing": "s3a://federal-buk-574bcea0/data/IB/rsingh_ogx/landing",
   "raw": "s3a://federal-buk-574bcea0/data/IB/rsingh_ogx/raw",
   "reports": "s3a://federal-buk-574bcea0/data/IB/rsingh_ogx/reports",
