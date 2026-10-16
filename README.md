@@ -108,6 +108,10 @@ on a drift alert, on 20 new engineer labels from Asset 360 or when the champion 
   in the CAI experiment), 1 vCPU / 2 GB, about 0.4 s per keyframe. Model builds that stall are
   replaced after 10 minutes; registration is idempotent per MLflow run.
 - CDE Airflow DAG `rsingh-ogx-orchestration` validated end to end (run 627, all stages succeeded).
+- Final demo window: the DAG runs nightly at 02:00 IST for business dates 2026-10-16 .. 10-19
+  (each night also replays that day's sensor stream), then its `end_date` stops it. CAI job
+  `stop-ogx-project` fires once on 2026-10-20 15:30 IST and stops the app, the model endpoint, the
+  nightly CAI schedules and the NiFi flow. Bring it back with `python scripts/platform.py start`.
 
 ## Enhancements (2026-10-15)
 

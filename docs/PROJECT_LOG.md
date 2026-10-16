@@ -295,3 +295,22 @@ Live, in order:
   VC until the cleanup, then ran), extract 636, silver 637, asset 638, gold 639, recon 640, each
   1-2 min. DAG job `rsingh-ogx-orchestration` redeployed from the (public again) repository
   resource `rsingh-ogx-pipeline` with the timeouts.
+
+## 2026-10-16 13:40 - four nightly runs, then the project stops itself
+
+- User asked why Airflow showed one run and the model stayed v2: the DAG had no schedule, and
+  `ogx-08` correctly skipped on 10-15 ("drift ALERT within cooldown (0 of 7 days); 0 of 20 new
+  labels; champion 0 of 30 days old"). User asked for nightly runs for four days, then a stop.
+- DAG: `30 20 * * *` (02:00 IST), `start_date` 2026-10-15 20:30 UTC, `end_date` 2026-10-18 20:30
+  UTC -> four runs, business dates 10-16 .. 10-19 (`data_interval_end` date for scheduled runs,
+  `params.business_date` for manual ones). Calendar dates, not 10-09: the producer's event ids are
+  `<tag>:<ms>`, so a backfill of 10-09 would duplicate the live readings of that morning.
+  Scheduled runs add a stream branch before gold: `stream-produce` backfill of the day,
+  `stream-bronze` and `stream-agg` with `--trigger available-now` (both tested from the 10-09
+  checkpoints: runs 641, 642 succeeded). `lakehouse.json` `scheduled_dates` feeds `dim_date`.
+  CDE shows the schedule (next logical date 2026-10-15T20:30Z). No CAI retrain is expected in the
+  window (cooldown ends 10-22); `ogx-05` scores each night's keyframes.
+- CAI job `stop-ogx-project` (`ci/project_stop.py`, `0 3 20 10 *` America/Los_Angeles = 10-20
+  15:30 IST, after that day's ogx-05/08): `platform.py stop --only cai,nifi`, then pauses itself.
+  `platform.py` now runs inside CAI (`CDSW_API_URL` / `CDSW_APIV2_KEY`, no `__file__`, `-f`
+  argument, no `sys.exit(0)`). Dry run inside CAI (`OGX_STOP_DRY_RUN=1`) succeeded.
