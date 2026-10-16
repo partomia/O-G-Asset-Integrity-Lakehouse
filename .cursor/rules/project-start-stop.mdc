@@ -1,0 +1,37 @@
+---
+description: How to start, stop or check the whole OGX project on Cloudera (scripts/platform.py)
+alwaysApply: true
+---
+
+# Starting and stopping the project
+
+When asked to start, stop, pause, resume or check the project (or "bring the demo up/down"),
+use `scripts/platform.py` from the repo root. Never improvise with raw API calls first.
+
+```bash
+set -a; source .env; set +a                        # credentials; never print them
+.venv/bin/python scripts/platform.py status        # always first: show the user the state
+.venv/bin/python scripts/platform.py stop --dry-run   # show the plan
+.venv/bin/python scripts/platform.py stop          # or: start
+.venv/bin/python scripts/platform.py status        # always last: confirm every layer
+```
+
+- Default scope `project` touches only this demo (config/platform.json): CAI app
+  "OGX Integrity Workbench", model `ogx-integrity`, CAI schedules ogx-05/ogx-08, CDE `rsingh-ogx-*`
+  runs and the nightly DAG schedule, NiFi group "OGX - SCADA Alarm Router". Data, Kafka topics and
+  checkpoints are kept, so start resumes without gaps.
+- `--only cai,cde,nifi` limits layers. `--scope platform --yes-shared` also stops or starts the
+  shared Data Hubs (Kafka, NiFi, Flink), CDW `federal-impala-1`, CDE VC and the CAI workspace:
+  sibling demos use them, so ask the user explicitly before using it, every time.
+- CAI schedules are stopped by clearing the cron (API v2 ignores `paused`); start sets the crons
+  from `config/platform.json`. Read the state back; do not trust a 200.
+- `start` does not run the sensor producer or the DAG. Live stream for a demo:
+  `cde job run --name rsingh-ogx-stream-produce --arg=--mode --arg=live --arg=--duration --arg=10800`.
+  Nightly DAG: `cde/dags/ogx_dag.py` has `end_date` 2026-10-18 20:30 UTC; move it (and
+  `scheduled_dates` in config/lakehouse.json) before resuming the schedule for new nights, then
+  `./cde/scripts/deploy_dag.sh`.
+- Model endpoint restart takes ~1-3 min, the app ~30 s. If a model build is needed and stalls,
+  see tools/cursor-skills/cloudera-usecase-builder/reference.md.
+- Scheduled one-off stop: CAI job `stop-ogx-project` (`ci/project_stop.py`), schedule cleared;
+  set a dated cron (timezone America/Los_Angeles) to use it again.
+- Afterwards add a short entry to docs/PROJECT_LOG.md and update the README status line.

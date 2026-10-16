@@ -45,7 +45,8 @@ logs/
 Thumbs.db
 .idea/
 .vscode/
-.cursor/
+.cursor/*
+!.cursor/rules/
 *.swp
 
 # Python
