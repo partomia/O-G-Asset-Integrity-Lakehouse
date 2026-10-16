@@ -1,6 +1,6 @@
 # Demo runbook (about 35 minutes)
 
-Before and after the session: README "Demo day" (`scripts/platform.py status`, `start`, the live
+Before and after the session: README "Demo day" (`scripts/platform_ctl.py status`, `start`, the live
 producer run, and `stop` afterwards).
 
 Links:

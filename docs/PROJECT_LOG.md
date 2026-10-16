@@ -261,7 +261,7 @@ Live, in order:
   shared capacity:
   - CDE: killed runs 616, 618, 620, 630, 633 (Spark) and 614, 617, 619, 629, 632 (orchestration);
     paused the schedules of `rsingh-{casa-alb,churn-pred,coll-dlq,cxr,mule-acct,spend-anl}-orchestration`.
-    Resume with `cde job schedule resume --name <job>`; unpausing runs the last closed interval at once.
+    Resume with `cde job schedule unpause --name <job>`; unpausing runs the last closed interval at once.
   - CAI: stopped model deployments of rsingh-coll-dlq, rsingh-mule-acct, rsingh-churn-prediction,
     rsingh-casa-alb, rsingh-spend-analytics (2) and rsingh-chest-x-ray-triage. Left running:
     `ogx-integrity`, and `credit-risk-model` in Federal-ML-VIZ-Workshop (not one of ours).
@@ -323,5 +323,10 @@ Live, in order:
 - Found while verifying: CAI API v2 accepts `{"paused": true}` and ignores it; the "paused"
   ogx-05/08 schedules were still live. `platform.py` now clears the cron on stop and sets it back
   from `platform.json` on start; schedules of ogx-05, ogx-08 and `stop-ogx-project` are cleared.
-- Restart: `python scripts/platform.py start` (CAI schedules, model, app; NiFi; CDE schedule
+- Cursor rule `.cursor/rules/project-start-stop.mdc` (always applied): start/stop/status requests
+  go through the script. With it, from the sibling repos' lessons in the skill: renamed to
+  `scripts/platform_ctl.py` (`scripts/platform.py` shadowed the stdlib `platform` for scripts run
+  from `scripts/` on Linux), and CDE schedules resume with `cde job schedule unpause` (the CLI has
+  no `resume`).
+- Restart: `python scripts/platform_ctl.py start` (CAI schedules, model, app; NiFi; CDE schedule
   resume; its `end_date` 2026-10-18 20:30 UTC still applies, so move it to run more nights).

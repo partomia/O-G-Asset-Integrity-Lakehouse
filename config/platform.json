@@ -1,5 +1,5 @@
 {
-  "_comment": "scripts/platform.py: what 'stop' and 'start' touch. project = this demo's workloads only; platform = the shared CDP services of the environment as well (also used by sibling demos). Names are resolved by the CDP CLI at run time.",
+  "_comment": "scripts/platform_ctl.py: what 'stop' and 'start' touch. project = this demo's workloads only; platform = the shared CDP services of the environment as well (also used by sibling demos). Names are resolved by the CDP CLI at run time.",
   "environment": "federal-cdp-env",
   "project": {
     "cai_project": "rsingh-og-asset-integrity",

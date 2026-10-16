@@ -39,9 +39,9 @@ The skill loads only when named (`disable-model-invocation: true`), so it costs 
    open items; approve once.
 4. Let the agent run the phases. Each ends with `pytest -q` green, a commit and a push, and live
    steps end with a `docs/PROJECT_LOG.md` entry. Ask for status at any time with
-   `python scripts/platform.py status`.
-5. Before a demo: `python scripts/platform.py start`, then the runbook (`docs/DEMO_RUNBOOK.md`).
-   After it: `python scripts/platform.py stop` (project scope; leaves shared services alone).
+   `python scripts/platform_ctl.py status`.
+5. Before a demo: `python scripts/platform_ctl.py start`, then the runbook (`docs/DEMO_RUNBOOK.md`).
+   After it: `python scripts/platform_ctl.py stop` (project scope; leaves shared services alone).
 
 ## Where the time goes, and how the skill cuts it
 
@@ -52,7 +52,7 @@ The skill loads only when named (`disable-model-invocation: true`), so it costs 
 | Long blocking waits on builds and queued jobs | runs live waits in the background and polls a log |
 | Approvals one action at a time | one approval list up front, by service |
 | Losing track of what ran live | `PROJECT_LOG.md` entry per live step, plan changes called out |
-| Leaving clusters running between demos | `scripts/platform.py stop/start` per project, platform scope only with consent |
+| Leaving clusters running between demos | `scripts/platform_ctl.py stop/start` per project, platform scope only with consent |
 
 ## Keeping the skill current
 
@@ -62,7 +62,7 @@ platform stop/start script), add it to `templates.md` and the reference table in
 
 ## Stopping and starting a demo
 
-`scripts/platform.py` (config in `config/platform.json`):
+`scripts/platform_ctl.py` (config in `config/platform.json`):
 
 | Command | Effect |
 |---------|--------|
@@ -81,7 +81,7 @@ Paste into a Cursor agent opened on that repo:
 
 ```text
 Add a stop/start/status script for this project's live Cloudera resources, ported from
-/Users/rsingh/Downloads/py_aws/O-G-Asset-Integrity-Lakehouse (read scripts/platform.py,
+/Users/rsingh/Downloads/py_aws/O-G-Asset-Integrity-Lakehouse (read scripts/platform_ctl.py,
 config/platform.json, the "Stopping and starting a demo" section of docs/USE_CASE_PLAYBOOK.md,
 and the cloudera-usecase-builder skill). Do not edit that repo or any other sibling repo.
 
@@ -92,7 +92,7 @@ and the cloudera-usecase-builder skill). Do not edit that repo or any other sibl
 2. Write config/platform.json in the same shape (project section = only this project's
    resources; platform section = the shared Data Hubs, CDW VW, CDE VC, CAI workspace; stop_order
    and start_order). Drop layers this project does not use.
-3. Write scripts/platform.py: `status | stop | start`, `--scope project|platform` (project is the
+3. Write scripts/platform_ctl.py: `status | stop | start`, `--scope project|platform` (project is the
    default), `--only`, `--dry-run`, and `--yes-shared` required for platform scope.
    Project stop: stop CAI apps and model deployments, clear CAI job schedules (PATCH
    {"schedule": ""}; API v2 accepts {"paused": true} but ignores it; keep each cron in

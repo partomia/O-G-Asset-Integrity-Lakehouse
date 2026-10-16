@@ -16,10 +16,10 @@ in start_order (Kafka first, CAI last), each layer's service before its workload
 the layers. Data Visualization has no suspend in the CDP CLI and is left running.
 
   set -a; source .env; set +a
-  python scripts/platform.py status [--scope platform]
-  python scripts/platform.py stop  [--only cai,cde] [--dry-run]
-  python scripts/platform.py start
-  python scripts/platform.py stop --scope platform --yes-shared
+  python scripts/platform_ctl.py status [--scope platform]
+  python scripts/platform_ctl.py stop  [--only cai,cde] [--dry-run]
+  python scripts/platform_ctl.py start
+  python scripts/platform_ctl.py stop --scope platform --yes-shared
 """
 from __future__ import annotations
 
@@ -209,7 +209,7 @@ def cde_project(action: str) -> None:
         return
     for j in scheduled:
         if j["schedule"].get("paused"):
-            act(f"resume CDE schedule {j['name']}", cde, "job", "schedule", "resume", "--name", j["name"])
+            act(f"unpause CDE schedule {j['name']}", cde, "job", "schedule", "unpause", "--name", j["name"])
     running = {r["job"] for r in runs}
     if all(j in running for j in PRJ["cde_streaming_jobs"]):
         say("  streaming jobs already running")

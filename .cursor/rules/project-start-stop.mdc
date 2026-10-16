@@ -1,19 +1,19 @@
 ---
-description: How to start, stop or check the whole OGX project on Cloudera (scripts/platform.py)
+description: How to start, stop or check the whole OGX project on Cloudera (scripts/platform_ctl.py)
 alwaysApply: true
 ---
 
 # Starting and stopping the project
 
 When asked to start, stop, pause, resume or check the project (or "bring the demo up/down"),
-use `scripts/platform.py` from the repo root. Never improvise with raw API calls first.
+use `scripts/platform_ctl.py` from the repo root. Never improvise with raw API calls first.
 
 ```bash
 set -a; source .env; set +a                        # credentials; never print them
-.venv/bin/python scripts/platform.py status        # always first: show the user the state
-.venv/bin/python scripts/platform.py stop --dry-run   # show the plan
-.venv/bin/python scripts/platform.py stop          # or: start
-.venv/bin/python scripts/platform.py status        # always last: confirm every layer
+.venv/bin/python scripts/platform_ctl.py status        # always first: show the user the state
+.venv/bin/python scripts/platform_ctl.py stop --dry-run   # show the plan
+.venv/bin/python scripts/platform_ctl.py stop          # or: start
+.venv/bin/python scripts/platform_ctl.py status        # always last: confirm every layer
 ```
 
 - Default scope `project` touches only this demo (config/platform.json): CAI app

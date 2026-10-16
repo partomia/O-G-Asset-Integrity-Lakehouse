@@ -108,9 +108,9 @@ on a drift alert, on 20 new engineer labels from Asset 360 or when the champion 
   in the CAI experiment), 1 vCPU / 2 GB, about 0.4 s per keyframe. Model builds that stall are
   replaced after 10 minutes; registration is idempotent per MLflow run.
 - CDE Airflow DAG `rsingh-ogx-orchestration` validated end to end (run 627, all stages succeeded).
-- **Stopped** since 2026-10-16 (`scripts/platform.py stop`): app, model endpoint, CAI schedules,
+- **Stopped** since 2026-10-16 (`scripts/platform_ctl.py stop`): app, model endpoint, CAI schedules,
   NiFi flow and the CDE nightly schedule. Data, topics and checkpoints are kept. Bring it back
-  with `python scripts/platform.py start`. The DAG can run nightly with the day's sensor stream
+  with `python scripts/platform_ctl.py start`. The DAG can run nightly with the day's sensor stream
   (`cde/dags/ogx_dag.py`, `end_date` bounds the window); `ci/project_stop.py` (CAI job
   `stop-ogx-project`) can stop the project on a set date.
 
@@ -123,7 +123,7 @@ on a drift alert, on 20 new engineer labels from Asset 360 or when the champion 
 | Workbench | 2 vCPU / 8 GB; the launcher restarts Streamlit if it exits; one Impala connection per session thread with reconnect; keyframe scores cached | `app/launch_app.py`, `app/app.py`, `ci/setup_cai.py` |
 | Retraining | the skip event says which rule held (drift cooldown, labels, age) | `ci/retrain_trigger.py` |
 | Orchestration | CDE Airflow DAG `ogx_asset_integrity` (land → bronze → extract → silver → asset → gold → recon) as job `rsingh-ogx-orchestration` | `cde/dags/ogx_dag.py`, `cde/scripts/deploy_dag.sh` |
-| Operations | stop, start and status of the whole demo across CAI, NiFi, CDE, CDW, Flink and Kafka | `scripts/platform.py`, `config/platform.json` |
+| Operations | stop, start and status of the whole demo across CAI, NiFi, CDE, CDW, Flink and Kafka | `scripts/platform_ctl.py`, `config/platform.json` |
 | Reuse | Cursor skill `cloudera-usecase-builder` and the playbook for the next use case | `tools/cursor-skills/`, [docs/USE_CASE_PLAYBOOK.md](docs/USE_CASE_PLAYBOOK.md) |
 
 ## Demo day
@@ -134,9 +134,9 @@ set -a; source .env; set +a
 
 Before (30 to 60 minutes ahead):
 
-1. `python scripts/platform.py status --scope platform`: every Data Hub AVAILABLE, the Impala
+1. `python scripts/platform_ctl.py status --scope platform`: every Data Hub AVAILABLE, the Impala
    warehouse Running, the CDE virtual cluster AppInstalled, the CAI workspace finished.
-2. `python scripts/platform.py start`: Workbench, model deployment, job schedules, the two CDE
+2. `python scripts/platform_ctl.py start`: Workbench, model deployment, job schedules, the two CDE
    streaming jobs (they resume from their checkpoints) and the NiFi alarm router.
 3. Live sensor feed for the session (3 hours):
    `cde job run --name rsingh-ogx-stream-produce --arg=--mode --arg=live --arg=--duration --arg=10800`
@@ -149,9 +149,9 @@ During: follow [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md) (about 35 minutes).
 
 After:
 
-1. `python scripts/platform.py stop`: this demo's workloads only (shared services keep running).
+1. `python scripts/platform_ctl.py stop`: this demo's workloads only (shared services keep running).
 2. End of a demo season, with the owners of the sibling demos agreeing:
-   `python scripts/platform.py stop --scope platform --yes-shared`; bring it back with
+   `python scripts/platform_ctl.py stop --scope platform --yes-shared`; bring it back with
    `start --scope platform --yes-shared` (Kafka first, CAI last, about 30 to 45 minutes).
 
 Demo walkthrough: [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md). Build log and every plan change:

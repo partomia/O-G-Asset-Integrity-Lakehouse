@@ -1,11 +1,11 @@
 """
 CAI job stop-ogx-project: a one-off, scheduled end of the demo. Runs
-`scripts/platform.py stop --only cai,nifi` (application, model deployment, ogx-* schedules and
+`scripts/platform_ctl.py stop --only cai,nifi` (application, model deployment, ogx-* schedules and
 runs, the NiFi process group), then clears its own schedule so it fires once.
 
 CDE needs nothing here: the DAG's end_date ends the nightly runs and no streaming job runs
 between them. The name does not start with ogx-, so the CAI layer does not stop this run.
-Restart everything later from a laptop: python scripts/platform.py start.
+Restart everything later from a laptop: python scripts/platform_ctl.py start.
 """
 from __future__ import annotations
 
@@ -28,8 +28,7 @@ sys.path.insert(0, str(ROOT))
 
 import importlib.util  # noqa: E402
 
-# loaded by path: scripts/ on sys.path would shadow the standard library's platform module
-spec = importlib.util.spec_from_file_location("ogx_platform", ROOT / "scripts" / "platform.py")
+spec = importlib.util.spec_from_file_location("ogx_platform_ctl", ROOT / "scripts" / "platform_ctl.py")
 P = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(P)
 

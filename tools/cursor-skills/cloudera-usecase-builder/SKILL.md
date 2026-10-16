@@ -45,7 +45,9 @@ Copy this checklist into the chat and keep it current:
 - [ ] 9 CAI: project, env, jobs chain 00-04 (+05 drift, 08 retrain), model endpoint, AI Registry
 - [ ] 10 Guardrails, MLOps loop, app (Streamlit) on CAI
 - [ ] 11 Governance: Atlas classifications + glossary, Ranger tag masking
-- [ ] 12 Ops: scripts/platform_ctl.py stop/start, runbooks, README status
+- [ ] 12 Ops: scripts/platform_ctl.py stop/start, runbooks, README status, and an always-applied
+      `.cursor/rules/project-start-stop.mdc` (copy OGX's) so later "start/stop the project"
+      requests use the script; un-ignore it with `.cursor/*` + `!.cursor/rules/`
 ```
 
 Rules for every phase:
@@ -98,8 +100,9 @@ Rules for every phase:
   every other project's stages in "starting".
 - Data Hubs, CDW, CDE and CAI are shared by sibling demos: stop/start them only with consent.
   Every project gets `scripts/platform_ctl.py` + `config/platform.json` (status/stop/start, project
-  scope by default) so idle demos release their share. Port it from CXR's `platform_ctl.py`
-  (OGX's `scripts/platform.py` shadows the stdlib `platform` module and uses `schedule resume`).
+  scope by default) so idle demos release their share. Port it from OGX's or CXR's
+  `scripts/platform_ctl.py` (never name a script after a stdlib module). CAI schedules stop by
+  clearing the cron (API v2 ignores `paused`); CDE schedules use `pause` / `unpause`.
 
 ## Additional resources
 
