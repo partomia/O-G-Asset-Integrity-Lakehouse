@@ -1,7 +1,7 @@
 """
 CAI job stop-ogx-project: a one-off, scheduled end of the demo. Runs
 `scripts/platform.py stop --only cai,nifi` (application, model deployment, ogx-* schedules and
-runs, the NiFi process group), then pauses its own schedule so it fires once.
+runs, the NiFi process group), then clears its own schedule so it fires once.
 
 CDE needs nothing here: the DAG's end_date ends the nightly runs and no streaming job runs
 between them. The name does not start with ogx-, so the CAI layer does not stop this run.
@@ -39,9 +39,9 @@ def main() -> int:
     if os.environ.get("OGX_STOP_DRY_RUN") != "1":
         c = P.Cai()
         for j in c("GET", c.p("/jobs"), params={"page_size": 200})["jobs"]:
-            if j["name"] == JOB_NAME and not j.get("paused"):
-                c("PATCH", c.p(f"/jobs/{j['id']}"), json={"paused": True})
-                print(f"paused the schedule of {JOB_NAME}", flush=True)
+            if j["name"] == JOB_NAME and j.get("schedule"):
+                c("PATCH", c.p(f"/jobs/{j['id']}"), json={"schedule": ""})  # API v2 ignores "paused"
+                print(f"cleared the schedule of {JOB_NAME}", flush=True)
     return rc
 
 

@@ -151,8 +151,8 @@ def cai_project(action: str) -> None:
             say(f"  model {name}: " + (f"deployed (build {live[0][0]['id'][:8]})" if live else "not deployed"))
         for j in c.jobs():
             runs = c.active_runs(j)
-            if j.get("schedule") or runs:
-                say(f"  job {j['name']}: schedule {j.get('schedule') or '-'}{' PAUSED' if j.get('paused') else ''}"
+            if j.get("schedule") or runs or j["name"] in PRJ["cai_scheduled_jobs"]:
+                say(f"  job {j['name']}: schedule {j.get('schedule') or 'none (stopped)'}"
                     f"{', ' + str(len(runs)) + ' active run(s)' if runs else ''}")
         return
     if action == "stop":
@@ -164,15 +164,17 @@ def cai_project(action: str) -> None:
                 act(f"stop model {m['name']} deployment {d['id'][:8]}", c, "POST",
                     c.p(f"/models/{m['id']}/builds/{b['id']}/deployments/{d['id']}:stop"))
         for j in c.jobs():
-            if j["name"] in PRJ["cai_scheduled_jobs"] and not j.get("paused"):
-                act(f"pause schedule of {j['name']}", c, "PATCH", c.p(f"/jobs/{j['id']}"), json={"paused": True})
+            # API v2 accepts {"paused": true} and ignores it: clear the cron instead
+            if j["name"] in PRJ["cai_scheduled_jobs"] and j.get("schedule"):
+                act(f"clear schedule of {j['name']}", c, "PATCH", c.p(f"/jobs/{j['id']}"), json={"schedule": ""})
             for r in c.active_runs(j):
                 act(f"stop job run {j['name']} {r['id']}", c, "POST", c.p(f"/jobs/{j['id']}/runs/{r['id']}:stop"))
         return
     # start: schedules, the newest deployment of each model, then the applications
     for j in c.jobs():
-        if j["name"] in PRJ["cai_scheduled_jobs"] and j.get("paused"):
-            act(f"resume schedule of {j['name']}", c, "PATCH", c.p(f"/jobs/{j['id']}"), json={"paused": False})
+        cron = PRJ["cai_scheduled_jobs"].get(j["name"])
+        if cron and j.get("schedule") != cron:
+            act(f"set schedule of {j['name']} to {cron}", c, "PATCH", c.p(f"/jobs/{j['id']}"), json={"schedule": cron})
     for name in PRJ["cai_models"]:
         mine = [(m, b, d) for m, b, d in deps if m["name"] == name]
         if mine and mine[0][2]["status"] != "deployed":

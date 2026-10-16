@@ -314,3 +314,14 @@ Live, in order:
   15:30 IST, after that day's ogx-05/08): `platform.py stop --only cai,nifi`, then pauses itself.
   `platform.py` now runs inside CAI (`CDSW_API_URL` / `CDSW_APIV2_KEY`, no `__file__`, `-f`
   argument, no `sys.exit(0)`). Dry run inside CAI (`OGX_STOP_DRY_RUN=1`) succeeded.
+
+## 2026-10-16 15:55 - project stopped (user request), nightly window cancelled
+
+- `platform.py stop`: app stopped, model deployment `5a51afc1` stopped, NiFi group stopped
+  (0 running / 10 stopped), CDE schedule `rsingh-ogx-orchestration` paused (no run tonight), no
+  active CDE runs, streaming jobs not running.
+- Found while verifying: CAI API v2 accepts `{"paused": true}` and ignores it; the "paused"
+  ogx-05/08 schedules were still live. `platform.py` now clears the cron on stop and sets it back
+  from `platform.json` on start; schedules of ogx-05, ogx-08 and `stop-ogx-project` are cleared.
+- Restart: `python scripts/platform.py start` (CAI schedules, model, app; NiFi; CDE schedule
+  resume; its `end_date` 2026-10-18 20:30 UTC still applies, so move it to run more nights).

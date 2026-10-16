@@ -67,7 +67,7 @@ platform stop/start script), add it to `templates.md` and the reference table in
 | Command | Effect |
 |---------|--------|
 | `status [--scope platform]` | app, model, schedules and runs on CAI; CDE runs; NiFi group; with platform scope also Data Hubs, CDW warehouse, CDE virtual cluster, CAI workspace |
-| `stop` | stops the CAI app and model deployment, pauses the scheduled jobs and stops running ones, pauses `rsingh-<xx>-*` CDE Airflow schedules and kills their running or starting runs (streaming resumes from checkpoints), stops the NiFi process group |
+| `stop` | stops the CAI app and model deployment, clears the scheduled jobs' cron (restored by `start` from `platform.json`) and stops running ones, pauses `rsingh-<xx>-*` CDE Airflow schedules and kills their running or starting runs (streaming resumes from checkpoints), stops the NiFi process group |
 | `start` | resumes CAI and CDE schedules, restarts the newest model deployment and the app, starts the streaming jobs, starts the NiFi group (the "Hold failures" processor stays stopped) |
 | `stop/start --scope platform --yes-shared` | the above plus Data Hubs (Kafka, NiFi, Flink), the CDW Impala warehouse, the CDE virtual cluster and the CAI workspace, in dependency order |
 | `--only cai,cde` / `--dry-run` | limit layers / print without acting |
@@ -94,8 +94,9 @@ and the cloudera-usecase-builder skill). Do not edit that repo or any other sibl
    and start_order). Drop layers this project does not use.
 3. Write scripts/platform.py: `status | stop | start`, `--scope project|platform` (project is the
    default), `--only`, `--dry-run`, and `--yes-shared` required for platform scope.
-   Project stop: stop CAI apps and model deployments, pause CAI job schedules and stop active
-   runs; pause the project's CDE Airflow schedules (`cde job schedule pause`) and kill its CDE
+   Project stop: stop CAI apps and model deployments, clear CAI job schedules (PATCH
+   {"schedule": ""}; API v2 accepts {"paused": true} but ignores it; keep each cron in
+   platform.json so start can set it back) and stop active runs; pause the project's CDE Airflow schedules (`cde job schedule pause`) and kill its CDE
    runs in "running" or "starting", Spark children before orchestration runs; stop NiFi groups.
    Project start reverses this (resume schedules, restart newest deployment and app, restart
    streaming from checkpoints). Every action filters strictly by this project's prefixes.
