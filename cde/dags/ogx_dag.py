@@ -16,7 +16,7 @@ The semantic layer runs on CDW Impala after the batch:
   python scripts/run_semantic.py --engine impala --dates <date>
 
 Scheduled nightly at 02:00 IST (20:30 UTC) for the business dates in lakehouse.json
-"scheduled_dates" (2026-10-16 .. 2026-10-19): each run closes the UTC day its data interval ends
+"scheduled_dates" (2026-10-23 .. 2026-10-26): each run closes the UTC day its data interval ends
 on, and also replays that day's sensor stream (producer backfill, then both streaming jobs with
 an available-now trigger) before gold. end_date stops the schedule after the fourth run.
 Manual runs use params.business_date (Trigger DAG w/ config), in date order, and skip the stream:
@@ -53,9 +53,9 @@ with DAG(
     description="Structured and unstructured O&G sources -> bronze / silver / asset master / gold on Iceberg",
     default_args=default_args,
     schedule_interval="30 20 * * *",
-    # first interval ends 2026-10-16 20:30 UTC (business date 10-16), the last starts on end_date
-    start_date=datetime(2026, 10, 15, 20, 30),
-    end_date=datetime(2026, 10, 18, 20, 30),
+    # first interval ends 2026-10-23 20:30 UTC (business date 10-23), the last starts on end_date
+    start_date=datetime(2026, 10, 22, 20, 30),
+    end_date=datetime(2026, 10, 25, 20, 30),
     catchup=False,
     is_paused_upon_creation=False,
     max_active_runs=1,
