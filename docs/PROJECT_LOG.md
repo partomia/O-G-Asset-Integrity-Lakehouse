@@ -330,3 +330,21 @@ Live, in order:
   no `resume`).
 - Restart: `python scripts/platform_ctl.py start` (CAI schedules, model, app; NiFi; CDE schedule
   resume; its `end_date` 2026-10-18 20:30 UTC still applies, so move it to run more nights).
+
+## 2026-10-23 19:25 - nightly window moved to 10-23 .. 10-26, project started
+
+- The 10-16 .. 10-19 window never ran (stopped before the first run). DAG `start_date` 2026-10-22
+  20:30 UTC, `end_date` 2026-10-25 20:30 UTC -> four runs at 02:00 IST, business dates 10-23 ..
+  10-26; `lakehouse.json` `scheduled_dates` to match (feeds `dim_date`). Pushed, then
+  `deploy_dag.sh`: CDE shows the new start/end; no run fires on unpause (first interval ends
+  2026-10-23 20:30 UTC).
+- `platform_ctl.py start` would have started the continuous `stream-bronze` / `stream-agg` runs,
+  while each scheduled DAG run starts the same jobs (available-now) on the same checkpoints. Start
+  now leaves streaming off while a CDE schedule window is open (end + one daily interval).
+- Model restart of `5a51afc1` (stopped 10-16): HTTP 500 `restartModelNotFound`, although API v2
+  still lists the deployment. `platform_ctl.py start` now creates a new deployment of the same
+  build when that happens: `2cf26d29` on build `d253630e` (registry v2), deployed in ~30 s, a
+  keyframe call answers P2 in 0.2 s.
+- Status after start: app running, model deployed, ogx-05 `0 2 * * *`, ogx-08 `30 2 * * *`, NiFi
+  9 running / 1 stopped ("Hold failures", by design), CDE schedule active, streaming off.
+  `ogx-08` may retrain this window: the drift cooldown ended 10-22.

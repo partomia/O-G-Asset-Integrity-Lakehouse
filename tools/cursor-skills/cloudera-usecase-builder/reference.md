@@ -41,6 +41,7 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - Creating a project from a private GitHub URL gives `creation_status: failure` -> CAI cannot clone private repos without credentials -> create a blank project, upload a read-only deploy key, and have a bootstrap job check out `origin/main`; or make the repo public [CXR, OGX].
 - Workbench endpoint calls take 2-16 s (TabICL/Mitra) -> the model context is rebuilt or cold -> expect 2-16 s per call; 16.8 s cold, then about 2 s [Spend, Churn, Mule].
 - The endpoint accepts the CAI API v2 key as its bearer token -> this works, but the scope is broad -> use a separate Model API key in production [Spend, Churn, Collections, Mule].
+- Restarting a model deployment stopped for a week answers HTTP 500 `restartModelNotFound` while API v2 still lists it -> the serving backend dropped it -> create a new deployment of the same build (same cpu/memory/replicas); `platform_ctl.py start` does this [OGX].
 - Every endpoint call answers "model busy" / 30 s timeout -> once seen with a private AI Registry, once with a deployment that never warmed -> restart it; if 400s follow, `predict` is raising, so return `{"error": ...}` instead of an opaque 400 [OGX, Spend].
 - Registry model answers 400 to every input -> a float32 tensor signature rejects float64 input -> log the model with a float64 signature [Spend].
 - Registry model answers 400 to all-zero or whole-number rows -> MLflow schema/type inference on integer-valued JSON -> send health-check rows containing fractional values (0.5) [Spend].
@@ -60,6 +61,7 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - Local pytest published fake lineage events to the live `model_event` table -> the test shell had sourced `.env` -> publish only inside CAI (`CDSW_PROJECT_ID` set); strip platform credentials in `conftest.py` [CXR].
 
 ## CDE (Spark, streaming, Airflow, resources)
+- A scheduled DAG that runs the streaming jobs with an available-now trigger and the continuous runs of the same jobs share one checkpoint -> never run both; project start leaves the continuous runs off while the schedule window (end + one interval) is open [OGX].
 - Run rejected: "queue root.dex-app-… cannot fit application" (36 vCPU / 84 GB request) -> the federal vcluster quota is smaller than go01's sizing -> driver 2c/4 GB, executors 4c/8 GB, min 1 / initial 2 / max 4-16 [Churn, Spend, Mule, CASA, Collections].
 - generate-bronze failed within 28 s with no logs ("object not found") -> executors of 8c/12 GB x 4 initial were oversized -> same fix: 4c/8 GB, 2 initial [Mule].
 - Driver pod waits 16-17 min, then "Initial job has not accepted any resources" for over an hour, or stages run on 1-3 executors -> the vcluster was adding nodes or out of capacity -> poll and wait, or kill and move clusters; a smaller executor size places more easily [Churn, Spend].

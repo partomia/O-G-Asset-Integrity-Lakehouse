@@ -179,11 +179,37 @@ def cai_project(action: str) -> None:
         mine = [(m, b, d) for m, b, d in deps if m["name"] == name]
         if mine and mine[0][2]["status"] != "deployed":
             m, b, d = mine[0]
-            act(f"restart model {name} deployment {d['id'][:8]}", c, "POST",
-                c.p(f"/models/{m['id']}/builds/{b['id']}/deployments/{d['id']}:restart"))
+            path = f"/models/{m['id']}/builds/{b['id']}/deployments"
+            try:
+                act(f"restart model {name} deployment {d['id'][:8]}", c, "POST", c.p(f"{path}/{d['id']}:restart"))
+            except RuntimeError as e:
+                # a deployment stopped for days can be gone from the serving backend
+                # (restartModelNotFound) while API v2 still lists it: deploy the same build again
+                if "restartModelNotFound" not in str(e):
+                    raise
+                spec = {k: d[k] for k in ("project_id", "model_id", "build_id", "cpu", "memory",
+                                          "nvidia_gpu", "replicas") if k in d}
+                new = act(f"new deployment of model {name} build {b['id'][:8]} ({d['id'][:8]} not restartable)",
+                          c, "POST", c.p(path), json=spec)
+                if new:
+                    say(f"  deployment {new['id'][:8]} created")
     for a in c.apps():
         if a["status"] != "APPLICATION_RUNNING":
             act(f"start application {a['name']}", c, "POST", c.p(f"/applications/{a['id']}:restart"))
+
+
+def _schedule_open(schedule: dict) -> bool:
+    from datetime import datetime, timedelta, timezone
+    from email.utils import parsedate_to_datetime
+    end = schedule.get("end")
+    if not end:
+        return True
+    try:
+        end_at = parsedate_to_datetime(end)
+    except (TypeError, ValueError):
+        end_at = datetime.fromisoformat(end.replace("Z", "+00:00"))
+    # Airflow fires the last run (logical date = end) one daily interval after end
+    return end_at + timedelta(days=1) > datetime.now(timezone.utc)
 
 
 def cde_project(action: str) -> None:
@@ -211,6 +237,13 @@ def cde_project(action: str) -> None:
         if j["schedule"].get("paused"):
             act(f"unpause CDE schedule {j['name']}", cde, "job", "schedule", "unpause", "--name", j["name"])
     running = {r["job"] for r in runs}
+    # the scheduled DAG runs the streaming jobs itself (available-now, same checkpoints): a
+    # continuous run alongside it would share the checkpoint
+    nightly = [j["name"] for j in scheduled if _schedule_open(j["schedule"])]
+    if nightly:
+        say(f"  streaming jobs not started: the nightly schedule ({', '.join(nightly)}) runs them "
+            "with the same checkpoints until its end date")
+        return
     if all(j in running for j in PRJ["cde_streaming_jobs"]):
         say("  streaming jobs already running")
         return
