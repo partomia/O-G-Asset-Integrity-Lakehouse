@@ -156,4 +156,5 @@ After:
    `start --scope platform --yes-shared` (Kafka first, CAI last, about 30 to 45 minutes).
 
 Demo walkthrough: [docs/DEMO_RUNBOOK.md](docs/DEMO_RUNBOOK.md). Build log and every plan change:
-[docs/PROJECT_LOG.md](docs/PROJECT_LOG.md). Plan: [PLAN.md](PLAN.md).
+[docs/PROJECT_LOG.md](docs/PROJECT_LOG.md). Plan: [PLAN.md](PLAN.md); the plan revised to what
+was built, with every change marked: [docs/PLAN_REVISED.md](docs/PLAN_REVISED.md).
