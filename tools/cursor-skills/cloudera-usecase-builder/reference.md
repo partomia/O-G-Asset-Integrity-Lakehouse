@@ -79,6 +79,8 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - Stdlib-only job code needs no python-env -> no resource build at all -> write simple parsers/writers in the standard library where practical [OGX].
 - Spark 3.5 streaming fails with "Error parsing '60s' to interval" -> Spark 3.5 wants long-form intervals -> use `"60 seconds"` [OGX].
 - Stream restarts must not duplicate data -> foreachBatch replay -> stamp each Iceberg commit with `<query id>:<batch id>` and skip replayed batches [OGX].
+- Two chained available-now streams (bronze, then a window job reading the bronze table) drained together finish with nothing in the second -> it starts before the bronze commit -> drain in order, waiting for each run to succeed [EVX].
+- A stream reading an Iceberg table fails with "Cannot find table" via `readStream.format("iceberg").load(name)`, and tables created inside `foreachBatch` are invisible to the driver session locally -> use `readStream.table(name)`, and run the next job on `spark.newSession()` [EVX].
 - A long-running streaming job is allowed -> the vcluster has no job timeout -> run the producer in `--mode live --duration N` so it stops by itself [OGX].
 - "does not support REPLACE TABLE AS SELECT" on gold -> a bare `writeTo().createOrReplace()` goes to the Hive-backed `spark_catalog` and makes a Hive table -> always create through a helper with `using("iceberg")` [GDL, OGX].
 - Silver fails at import with an `AssertionError` from `F.lit` -> a Column was built at module load, before a SparkSession existed -> build Columns inside functions; test imports in a fresh process [GDL, OGX].
