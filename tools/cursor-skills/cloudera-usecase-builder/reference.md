@@ -113,6 +113,7 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - The last lines a job printed (its result) were missing from `cde run logs --type driver/stdout` even after the run succeeded, or one line was cut at about 1.2 KB -> the streamed log is incomplete -> fetch `cde run logs --id <n> --download-all` (a zip; `driver_stdout.log` is complete) and print results as several short marker lines [EVX].
 - A Spark CSV export with `partitionBy(date)` over ~270 dates took minutes in the S3 job commit (21 tasks x 270 dates = 5.7k part files committed one by one) -> `repartition(date)` first, one file per date; write many small objects (manifests) from a driver thread pool, not serially [EVX].
 - Local PySpark task results failed with `TaskResultLost (result lost from block manager)` / broken pipe on the laptop's LAN address -> set `spark.driver.host` and `spark.driver.bindAddress` to `127.0.0.1` for local sessions [EVX].
+- `cde job create` on a git repository resource failed with `findHashForPath: object not found in the tree` -> `--application-file` is a path inside the repository (`cde/jobs/x.py`), not the `/app/mount/...` mount path [EVX].
 
 ## CDW Impala/Hive
 - Syntax errors on `rows`, `method`, `format`, `change`, `matched` -> Impala reserved words (409; `method` since 3.0) that Spark accepts -> backtick-quote every generated identifier, rename columns, and test aliases against the list [Collections, Spend, GDL, OGX, Mule].
@@ -198,3 +199,4 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - Prefix-stable generators (a later as-of only adds rows) let federal reproduce go01 and laptop numbers exactly -> use them as a cross-environment check [CASA, Collections, Churn, Spend].
 - Larger cohorts made seasonal naive stronger (WAPE margin 0.125 -> 0.028) -> re-check gate margins at cluster scale [Spend].
 - PSI drift alerts every night by design (demo frames differ from training) -> limit drift-only retraining to weekly and report drift, do not tune it away [OGX, CXR].
+- Synthetic blank images (no defect) were byte-identical, so bronze flagged them DUPLICATE; a sample-run check of extractors missed that a drawn defect frame never met a filled-patch threshold -> add per-image noise in generators; unit-test every extractor on generated objects for each planted case (clean, sub-threshold, defect) [EVX].
