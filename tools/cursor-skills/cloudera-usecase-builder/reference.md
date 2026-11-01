@@ -108,6 +108,8 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - Airflow Variables are set over the vcluster's Airflow REST API with a Knox token for the workload user -> scripted -> touch only your own prefix's keys [Spend, CXR, OGX, Mule].
 - After adding `dagrun_timeout`, `/dags/<id>/details` still shows `dagrun_timeout: None` -> Airflow 2.11's REST field is `dag_run_timeout` (a TimeDelta, e.g. 21600 s), so the guard looks missing -> read `dag_run_timeout`, plus `max_active_runs`, `has_import_errors` and each task's `execution_timeout` from `/dags/<id>/tasks`; `last_parsed_time` confirms the new file was parsed [Mule, Collections].
 - Redeploying a DAG to add guards -> `cde job update --dag-file` of a paused DAG keeps it paused (checked `is_paused` and `last_parsed` 40 s later) -> safe whenever `cde run list --filter status[in]running,starting` shows no run of the prefix; in-flight runs keep the old DAG [Mule, Collections].
+- WAP on CDE Spark 3.5.4 / Iceberg 1.5.2: `CREATE BRANCH`, writes via `spark.wap.branch` or the `<table>.branch_<b>` identifier, `overwritePartitions` on a branch, `VERSION AS OF '<branch>'` audits, `system.fast_forward` and the `spark.wap.id` + `cherrypick_snapshot` path all work (scratch-table spike) -> branch WAP is viable; `fast_forward` needs `main` to be an ancestor of the branch, so keep one writer per published table [EVX].
+- Printed job results missing from `cde run logs --id <n>` -> the default log type is `driver/stderr` -> read `--type driver/stdout`; a long `print()` may arrive as one line with `\r`, so parse from a marker prefix rather than by line [EVX].
 
 ## CDW Impala/Hive
 - Syntax errors on `rows`, `method`, `format`, `change`, `matched` -> Impala reserved words (409; `method` since 3.0) that Spark accepts -> backtick-quote every generated identifier, rename columns, and test aliases against the list [Collections, Spend, GDL, OGX, Mule].
@@ -122,6 +124,8 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - An Impala `DESCRIBE HISTORY` hung for 13 min while the vcluster was starved -> shared-environment pressure -> retry later; pin reads with `FOR SYSTEM_VERSION AS OF` [Spend].
 - The CDW instance's own connection uses a cluster-internal host (port 28000) that CAI cannot reach -> internal endpoint -> use the warehouse's public endpoint (443, HTTP transport, `cliservice`, LDAP) [Churn, Collections].
 - Ranger custom mask `TRUNC({col}, 'YYYY')` fails on INT columns (`trunc(INT, STRING)`) -> a tag propagated to a derived INT column -> see SDX (propagate=false) [Churn].
+- Impala cannot address an Iceberg branch by name (`FOR SYSTEM_VERSION AS OF 'b'` is a ParseException, `<table>.branch_b` does not resolve), but reads the branch head by snapshot id (`FOR SYSTEM_VERSION AS OF <id>`) -> log the branch snapshot id when publishing and use it for Impala-side audits [EVX].
+- A laptop `INVALIDATE METADATA` with no table hung the client on the shared warehouse -> it reloads every catalog object -> always scope it (`INVALIDATE METADATA <db>.<table>`) or use `REFRESH <db>.<table>` [EVX].
 
 ## Data Visualization
 - API returns 401 with a password -> the instance signs in with SAML -> use a Data Visualization API key [GDL, OGX].
@@ -151,6 +155,7 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - No live Flink/SSB runs: `federal-flink` exists, but streaming was built on CDE Spark Structured Streaming; SSB kept as the documented option for sub-second alerting [OGX].
 
 ## SDX (Atlas, Ranger)
+- Atlas shows a Spark-created Iceberg table (`iceberg_table`, its S3 directory and create process) but no lineage edges for branch writes, `fast_forward` or other procedure calls -> the Spark hook records only DDL-style operations -> publish table-to-table lineage from the job code [EVX].
 - Atlas searches return nothing -> Iceberg tables are `iceberg_table` / `iceberg_column`, views are `hive_table` / `hive_column` -> search both types [GDL, OGX].
 - Atlas has no Spark lineage for a table -> the Spark Atlas hook drops outputs on a "Detected cycle" (a lookup reads the table being written) -> checkpoint only that lookup [GDL].
 - Ranger built-in "Date: show only year" mask left a DATE column in clear -> it does not apply on Impala DATE -> custom mask `TRUNC({col}, 'YYYY')` [Churn].
