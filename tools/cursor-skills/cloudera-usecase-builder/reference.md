@@ -114,6 +114,7 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - A Spark CSV export with `partitionBy(date)` over ~270 dates took minutes in the S3 job commit (21 tasks x 270 dates = 5.7k part files committed one by one) -> `repartition(date)` first, one file per date; write many small objects (manifests) from a driver thread pool, not serially [EVX].
 - Local PySpark task results failed with `TaskResultLost (result lost from block manager)` / broken pipe on the laptop's LAN address -> set `spark.driver.host` and `spark.driver.bindAddress` to `127.0.0.1` for local sessions [EVX].
 - `cde job create` on a git repository resource failed with `findHashForPath: object not found in the tree` -> `--application-file` is a path inside the repository (`cde/jobs/x.py`), not the `/app/mount/...` mount path [EVX].
+- A new column in the DataFrame failed `writeTo(t).overwritePartitions()` / `append()` on an existing Iceberg table (`cannot resolve column`) -> V2 writes do not evolve the schema -> `ALTER TABLE ADD COLUMNS` for the new columns first (an additive, minor contract change) [EVX].
 
 ## CDW Impala/Hive
 - Syntax errors on `rows`, `method`, `format`, `change`, `matched` -> Impala reserved words (409; `method` since 3.0) that Spark accepts -> backtick-quote every generated identifier, rename columns, and test aliases against the list [Collections, Spend, GDL, OGX, Mule].
@@ -167,6 +168,8 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - Masking gaps (address lines, whole-record payload/text/binary columns left clear) -> the name map missed them -> add them to the tag map, REDACT the text columns, use MASK_NULL for binary; profiler tag rules help find them [GDL].
 - Data Catalog profilers never ran -> the shared compute cluster's infra node group was at 0 nodes -> scale it (to 3); profilers then run hourly [GDL].
 - Atlas and Ranger REST go through the data lake Knox gateway with basic auth; the tag service `cm_tag` is linked to `cm_hive`; check as masked and unmasked users in Hue [GDL, OGX, Churn].
+- Full-refresh tables (master, SCD2 dimensions, PII dimensions) written with `createOrReplace` get a new Atlas entity each run, so their column classifications (and the tag masks) silently drop until governance re-runs -> overwrite an existing table in place (`writeTo(t).overwrite(lit(True))`), create only when absent [EVX].
+- Tag masking set-up order: classification typedefs and `cm_tag` mask policies first (they need no tables), column tags per layer as each layer's tables first appear in Atlas (a database with no CDE run yet has no entities), glossary assignments last (they need the semantic views) [EVX].
 
 ## Git/CI/secrets
 - GitHub-hosted runners fail with `ConnectTimeout` -> the workbench resolves to a private IP -> use a self-hosted runner (`runs-on` from repo variable `CAI_RUNS_ON`), or a publicly reachable workbench (federal works) [CXR, Spend].
@@ -200,3 +203,6 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - Larger cohorts made seasonal naive stronger (WAPE margin 0.125 -> 0.028) -> re-check gate margins at cluster scale [Spend].
 - PSI drift alerts every night by design (demo frames differ from training) -> limit drift-only retraining to weekly and report drift, do not tune it away [OGX, CXR].
 - Synthetic blank images (no defect) were byte-identical, so bronze flagged them DUPLICATE; a sample-run check of extractors missed that a drawn defect frame never met a filled-patch threshold -> add per-image noise in generators; unit-test every extractor on generated objects for each planted case (clean, sub-threshold, defect) [EVX].
+- Generator ids built from a VIN suffix (`vin[-9:]`) repeated across production lines, and the per-key dedup in silver silently dropped 52 rows -> make ids unique by construction (line + date + sequence) and test key uniqueness per date with the real parsers; a dedup that reports what it dropped is a cheap generator test [EVX].
+- A date-keyed planted fault is placed once per generator partition, so one date carries several instances and count-based checks fail -> record each planted instance as a truth row and compare catches with that list [EVX].
+- A fact derived from an earlier step (production day from the first process step) is unknown for rows whose earlier step falls outside a partial local window -> check "known or source not loaded", keep the KPI to rows with a known grain; the full history does not hit it [EVX].
