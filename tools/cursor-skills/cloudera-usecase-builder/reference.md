@@ -56,6 +56,8 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - Do not set `kernel` when a runtime is given -> API v2 rule -> send the runtime identifier only [CXR].
 - The deployment request has no replicas field -> API v2 shape -> send `cpu`, `memory`, `nvidia_gpus` and `environment` only [CXR].
 - Streamlit app kernel dies -> `exec`/`os.system` of Streamlit kills the app kernel -> launch it as a child process, with CORS/XSRF off for uploads behind the CAI proxy [CXR, OGX].
+- Every workbench tab raises `ImportError: pyarrow requires NumPy >=2.0.0` while the runtime has NumPy 1.26 -> a recent pyarrow pulled by `st.dataframe` -> pin `pyarrow>=14,<18` in the launcher pip install, or fall back to `st.table` [EVX].
+- A duplicate `discover()` inside `app/app.py` shadowed `app/discover.py` and raised `NameError: importlib` on every page -> one discover module; no同名 helpers in the entry script [EVX].
 - App shows its fallback page -> it started before the project env vars were set -> restart the application after setting the variables [OGX].
 - An app or job URL answers 302 -> CAI SSO login -> treat 302 as healthy in smoke tests [CASA, Collections, Mule].
 - The Overview showed "Total GPU: 0" for a GPU deployment -> stale overview tile -> check the Deployments tab [Mule].
@@ -125,6 +127,7 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - `publish()` raised `AssertionError` on the transform name after the Iceberg commit had succeeded -> the audit type has to be one of the declared `TRANSFORM_TYPES`, and the write happens before that line -> use a declared type (`enrich`); a bad type leaves a committed table and a failed run [EVX].
 
 ## CDW Impala/Hive
+- Workbench SQL with `(SELECT max(_business_date) FROM …)` inside a JOIN `ON` fails at parse time -> Impala rejects scalar subqueries in `ON` -> put the latest-score slice in a derived table in `FROM` (`latest_scores()` pattern) [EVX].
 - Syntax errors on `rows`, `method`, `format`, `change`, `matched` -> Impala reserved words (409; `method` since 3.0) that Spark accepts -> backtick-quote every generated identifier, rename columns, and test aliases against the list [Collections, Spend, GDL, OGX, Mule].
 - "TIMESTAMPTZ column that Impala cannot write" -> Impala 4.5 cannot write Iceberg timestamptz -> use `timestamp_ntz` holding UTC (Spark in UTC) for tables Impala writes [GDL, OGX].
 - Clash on column `_file` -> Iceberg reserves `_file` as a metadata column -> name the lineage column `_source_file`; `split` was renamed too [CXR, OGX].
