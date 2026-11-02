@@ -1,0 +1,77 @@
+# Prompts per stage. Placeholders are {name}; agents/runner.py fills them by plain replacement,
+# so JSON braces in the context blocks are left alone.
+condition_analysis:
+  agent: condition_analyst
+  title: "Condition analysis"
+  description: |
+    Facility {facility} ({facility_name}), business date {business_date}.
+
+    Anomaly pre-screen (rolling z-score on 15-minute window means, plus the pipeline's own flags):
+    {anomaly_block}
+
+    Risk worklist for the facility (certified view mis_risk_worklist, JSON):
+    {worklist}
+
+    Daily sensor statistics of those assets (gold.fact_sensor_daily, JSON):
+    {sensor_daily}
+
+    Do:
+    1. State the facility's condition in 4-6 bullets, quantified (worst assets, breaches, exposure).
+    2. For every asset or sensor flagged by the pre-screen, give the tag, the measurement, what fired
+       and the size of the deviation.
+    3. Call out data faults separately: stuck sensors (the asset is abstained from the risk score),
+       unit changes (bar readings) and late readings. These are not process events.
+    4. Do not prescribe actions.
+  expected_output: |
+    Markdown with sections "Facility condition", "Flagged assets", "Data faults", "Data gaps".
+
+integrity_assessment:
+  agent: integrity_engineer
+  title: "Integrity assessment"
+  description: |
+    Using the condition analysis above, assess integrity for the flagged and top-ranked assets.
+
+    Latest inspection findings (gold.fact_inspection, JSON):
+    {inspections}
+
+    Inspection report excerpts (silver.doc_chunk; cite as [file p.N]):
+    {doc_excerpts}
+
+    Open and recent work orders (gold.fact_work_order, last {work_order_days} days, JSON):
+    {work_orders}
+
+    Do:
+    1. "Immediate risk": assets needing inspection or repair now. Name the damage mechanism and cite
+       the wall loss, the corrosion type and the report [file p.N] you rely on.
+    2. "Watchlist": gradual degradation or a sensor picture that needs confirming.
+    3. "Sensor faults": instruments to repair before their readings can be trusted.
+    4. Do not duplicate a work order that is already open for the same asset; refer to it.
+  expected_output: |
+    Markdown with sections "Immediate risk", "Watchlist", "Sensor faults". Every line names a tag.
+
+operations_plan:
+  agent: operations_planner
+  title: "Operations plan and draft tickets"
+  description: |
+    Combine the two reports above into an executive summary of at most 8 lines, then draft one work
+    ticket per asset that needs action. Tickets are drafts: an integrity engineer approves or rejects
+    each one. Never instruct to close work orders, shut in wells or change set points.
+
+    Ticket format (repeat per asset, exactly these fenced blocks, no JSON):
+
+    ```ticket
+    asset_tag: <tag from the worklist, e.g. PL-03-SEG-027 or W-07>
+    ticket_type: <Inspection|Repair|Sensor|Monitor>
+    priority: <High|Medium|Low>
+    due_in_days: <integer>
+    description: <one to three sentences of concrete guidance>
+    evidence: <the numbers and the report this rests on>
+    ```
+
+    Rules:
+    - ticket_type Sensor for a stuck, unit-changed or otherwise untrustworthy instrument.
+    - priority High for wall loss at or above 25 %, a criticality-A asset in band HIGH, or an
+      immediate risk named by the integrity engineer; Medium within 30 days; Low otherwise.
+    - At most {max_tickets} tickets. If nothing needs a ticket, output exactly NO_TICKETS.
+  expected_output: |
+    Markdown summary followed by zero or more ```ticket blocks (or NO_TICKETS).

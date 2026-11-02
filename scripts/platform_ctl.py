@@ -46,7 +46,7 @@ ROOT = _repo_root()
 sys.path.insert(0, str(ROOT))
 CFG = json.loads((ROOT / "config" / "platform.json").read_text())
 PRJ, PLT = CFG["project"], CFG["platform"]
-LAYERS = ("kafka", "flink", "cdw", "cde", "nifi", "cai")
+LAYERS = ("kafka", "flink", "cdw", "cde", "nifi", "caii", "cai")
 DRY = False
 
 
@@ -278,7 +278,34 @@ def nifi_project(action: str) -> None:
                            json={"revision": p["revision"], "state": "STOPPED"})
 
 
-PROJECT = {"cai": cai_project, "cde": cde_project, "nifi": nifi_project}
+def caii_project(action: str) -> None:
+    """The LLM endpoint of the Agentic Integrity Monitor (config/inference.json). Stop deletes it,
+    which frees its GPU node; start deploys it again from the AI Registry (~3-10 min to answer).
+    Scaling to 0 does not work: the new revision never gets the single GPU node the old one holds.
+    The service, its infra nodes and the registry model stay."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("ogx_caii_ctl", ROOT / "scripts" / "caii_ctl.py")
+    ctl = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(ctl)
+    if not ctl.CFG.get("domain"):
+        say("  inference service: none (config/inference.json has no domain); the app runs rule-based")
+        return
+    s = ctl.Serving(ctl.CFG["domain"])
+    present = s.endpoint() is not None
+    if action == "status":
+        if not present:
+            say(f"  endpoint {ctl.EP['name']}: absent")
+            return
+        e = s("describeEndpoint", {"namespace": ctl.CFG["namespace"], "name": ctl.EP["name"]})
+        say(f"  endpoint {e['name']}: {e['status'].get('active_model_state')}, {e.get('replica_count')} replica(s)")
+    elif action == "stop" and present:
+        act(f"delete endpoint {ctl.EP['name']} (frees the GPU node)", ctl.delete)
+    elif action == "start" and not present:
+        act(f"deploy endpoint {ctl.EP['name']} ({ctl.EP['instance_type']}; answers in ~3-10 min)", ctl.deploy)
+
+
+PROJECT = {"cai": cai_project, "caii": caii_project, "cde": cde_project, "nifi": nifi_project}
 
 
 # ------------------------------------------------------------------ shared services
@@ -358,11 +385,11 @@ SHARED = {"kafka": lambda a: datahub("kafka", a), "flink": lambda a: datahub("fl
 def layer(name: str, action: str, scope: str) -> None:
     say(f"[{name}]")
     steps = []
-    if action == "start" and scope == "platform":
+    if action == "start" and scope == "platform" and name in SHARED:
         steps.append(SHARED[name])
     if name in PROJECT:
         steps.append(PROJECT[name])
-    if action != "start" and scope == "platform":
+    if action != "start" and scope == "platform" and name in SHARED:
         steps.append(SHARED[name])
     for step in steps:
         try:

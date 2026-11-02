@@ -16,10 +16,13 @@ set -a; source .env; set +a                        # credentials; never print th
 .venv/bin/python scripts/platform_ctl.py status        # always last: confirm every layer
 ```
 
-- Default scope `project` touches only this demo (config/platform.json): CAI app
-  "OGX Integrity Workbench", model `ogx-integrity`, CAI schedules ogx-05/ogx-08, CDE `rsingh-ogx-*`
-  runs and the nightly DAG schedule, NiFi group "OGX - SCADA Alarm Router". Data, Kafka topics and
-  checkpoints are kept, so start resumes without gaps.
+- Default scope `project` touches only this demo (config/platform.json): CAI apps
+  "OGX Integrity Workbench" and "OGX Agentic Integrity Monitor", model `ogx-integrity`, CAI
+  schedules ogx-05/ogx-08, CDE `rsingh-ogx-*` runs and the nightly DAG schedule, NiFi group
+  "OGX - SCADA Alarm Router", and the CAII LLM endpoint `ogx-llm` (layer `caii`: stop deletes it,
+  freeing the GPU node; start deploys it again, ~3-10 min). Data, Kafka topics and
+  checkpoints are kept, so start resumes without gaps. The CAII service `rsingh-ogx-inference` and
+  its compute cluster stay up (infra nodes only); `scripts/caii_ctl.py` manages the endpoint.
 - `--only cai,cde,nifi` limits layers. `--scope platform --yes-shared` also stops or starts the
   shared Data Hubs (Kafka, NiFi, Flink), CDW `federal-impala-1`, CDE VC and the CAI workspace:
   sibling demos use them, so ask the user explicitly before using it, every time.

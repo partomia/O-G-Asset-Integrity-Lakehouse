@@ -9,7 +9,7 @@ created straight from its URL (no deploy key, no git archive upload).
      connection and the environment's CA certificate text (from the caller's environment and
      OGX_KAFKA_CA_PEM; values never printed).
   3. The jobs of ci/cai_jobs.py with parents, schedule, timeout, size and environment.
-  4. --app: the application OGX Integrity Workbench.
+  4. --app: the application OGX Integrity Workbench; --agent-app: the OGX Agentic Integrity Monitor.
 
   set -a; source .env; set +a
   python ci/setup_cai.py --dry-run
@@ -17,6 +17,7 @@ created straight from its URL (no deploy key, no git archive upload).
   python ci/setup_cai.py --run ogx-setup-data
   python ci/setup_cai.py --run ogx-stream-producer --env OGX_PRODUCER_MODE=live,OGX_PRODUCER_DURATION=120
   python ci/setup_cai.py --app
+  python ci/setup_cai.py --agent-app
 """
 from __future__ import annotations
 
@@ -40,6 +41,9 @@ PROJECT_ENV_FROM_CALLER = ("OGX_IMPALA_USER", "OGX_IMPALA_PASSWORD", "OGX_WORKLO
                            "OGX_KAFKA_USER", "OGX_KAFKA_PASSWORD", "OGX_SCHEMA_REGISTRY_URL", "OGX_HF_TOKEN")
 APP = {"name": "OGX Integrity Workbench", "subdomain": "rsingh-ogx-workbench", "script": "app/launch_app.py",
        "cpu": 2, "memory": 8, "description": "Integrity engineer's worklist, Asset 360, document search, feedback"}
+AGENT_APP = {"name": "OGX Agentic Integrity Monitor", "subdomain": "rsingh-ogx-agents",
+             "script": "agent_app/launch_app.py", "cpu": 1, "memory": 4,
+             "description": "Three agents on Cloudera AI Inference over the lakehouse: analysis, draft tickets, history"}
 
 
 class Workbench:
@@ -158,24 +162,24 @@ def ensure_jobs(wb: Workbench, project: dict, dry_run: bool) -> dict:
     return ids
 
 
-def ensure_app(wb: Workbench, project: dict, dry_run: bool) -> None:
+def ensure_app(wb: Workbench, project: dict, dry_run: bool, spec: dict = APP) -> None:
     pid = project["id"]
     app = next((a for a in wb("GET", f"/projects/{pid}/applications", params={"page_size": 100})
-                .get("applications", []) if a["name"] == APP["name"]), None)
-    if app and (app.get("cpu"), app.get("memory")) != (APP["cpu"], APP["memory"]) and not dry_run:
-        wb("PATCH", f"/projects/{pid}/applications/{app['id']}", body={"cpu": APP["cpu"], "memory": APP["memory"]})
+                .get("applications", []) if a["name"] == spec["name"]), None)
+    if app and (app.get("cpu"), app.get("memory")) != (spec["cpu"], spec["memory"]) and not dry_run:
+        wb("PATCH", f"/projects/{pid}/applications/{app['id']}", body={"cpu": spec["cpu"], "memory": spec["memory"]})
         wb("POST", f"/projects/{pid}/applications/{app['id']}:restart")
-        print(f"application {APP['name']}: resized to {APP['cpu']} vCPU / {APP['memory']} GB and restarted")
+        print(f"application {spec['name']}: resized to {spec['cpu']} vCPU / {spec['memory']} GB and restarted")
     elif app:
-        print(f"application {APP['name']}: exists ({app['id']}, {app.get('status')})")
+        print(f"application {spec['name']}: exists ({app['id']}, {app.get('status')})")
     elif dry_run:
-        print(f"application {APP['name']}: would create ({APP['script']}, {APP['cpu']} vCPU / {APP['memory']} GB)")
+        print(f"application {spec['name']}: would create ({spec['script']}, {spec['cpu']} vCPU / {spec['memory']} GB)")
     else:
         app = wb("POST", f"/projects/{pid}/applications", body={
-            "project_id": pid, "name": APP["name"], "subdomain": APP["subdomain"], "script": APP["script"],
-            "cpu": APP["cpu"], "memory": APP["memory"], "kernel": "python3", "runtime_identifier": RUNTIME,
-            "description": APP["description"]})
-        print(f"application {APP['name']}: created ({app['id']}), subdomain {APP['subdomain']}")
+            "project_id": pid, "name": spec["name"], "subdomain": spec["subdomain"], "script": spec["script"],
+            "cpu": spec["cpu"], "memory": spec["memory"], "kernel": "python3", "runtime_identifier": RUNTIME,
+            "description": spec["description"]})
+        print(f"application {spec['name']}: created ({app['id']}), subdomain {spec['subdomain']}")
 
 
 def run_job(wb: Workbench, pid: str, job_id: str, name: str, env: dict | None = None, poll: int = 30) -> str:
@@ -197,6 +201,7 @@ def main() -> int:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--app", action="store_true")
+    p.add_argument("--agent-app", action="store_true", help="the OGX Agentic Integrity Monitor application")
     p.add_argument("--run", default="", help="start this job by name and follow it to the end")
     p.add_argument("--env", default="", help="with --run: KEY=VALUE,... for the job run's environment")
     p.add_argument("--poll", type=int, default=30)
@@ -215,6 +220,8 @@ def main() -> int:
     ids = ensure_jobs(wb, project, args.dry_run)
     if args.app:
         ensure_app(wb, project, args.dry_run)
+    if args.agent_app:
+        ensure_app(wb, project, args.dry_run, AGENT_APP)
     print(f"\nGitHub secrets: CAI_URL = {os.environ['OGX_CAI_HOST'].rstrip('/')}, CAI_PROJECT_ID = {project['id']}")
     print(f"Airflow Variables: OGX_CAI_PROJECT_ID = {project['id']}, "
           f"OGX_CAI_SCORE_JOB_ID = {ids.get(SCORE_JOB, '(not created)')}")

@@ -45,7 +45,16 @@ retrain:                                  # ci/retrain_trigger.py (ogx-08-retrai
   min_new_labels: 20                      # engineer-confirmed frame labels since the last training
   max_model_age_days: 30
 
-llm:                                      # optional report summaries on Cloudera AI Inference (not built)
-  enabled: false
-  require_page_citations: true
-  redact_classifications: [OGX_SENSITIVE_HASH, OGX_SENSITIVE_LOCATION]
+llm:                                      # agents/grounding.py: the Agentic Integrity Monitor on Cloudera AI Inference
+  enabled: true
+  require_page_citations: true            # the integrity stage cites [file p.N] of the excerpts it was given
+  redact_classifications: [OGX_SENSITIVE_HASH, OGX_SENSITIVE_LOCATION]   # never in the prompt: no hashes, no coordinates
+  min_numbers_checked: 4
+  max_ungrounded_number_share: 0.25       # share of a stage's numbers that may be absent from its context
+  max_tickets: 8
+  forbidden_actions:                      # tickets suggest; an engineer acts
+    - '\bshut[- ]?in\b'
+    - '\bshut ?down\b'
+    - '\bclose (the )?work order'
+    - '\b(change|raise|lower) (the )?set ?points?\b'
+    - '\bautomatic(ally)?\b'

@@ -348,3 +348,30 @@ Live, in order:
 - Status after start: app running, model deployed, ogx-05 `0 2 * * *`, ogx-08 `30 2 * * *`, NiFi
   9 running / 1 stopped ("Hold failures", by design), CDE schedule active, streaming off.
   `ogx-08` may retrain this window: the drift cooldown ended 10-22.
+
+## 2026-11-02 19:50 - Agentic Integrity Monitor built; CAII endpoint loaded but not routing
+
+- New, separate CAI app "OGX Agentic Integrity Monitor" (`agents/`, `agent_app/`), following the
+  AMP "Agentic Oil and Gas Site and Well Monitor": pre-screen, three chained agents, ticket drafts,
+  LLM guardrails, human review. Not deployed to CAI yet (`ci/setup_cai.py --agent-app`).
+  docs/AGENTIC_MONITOR.md. 58 tests pass. Without an LLM it runs rule-based (verified on live Impala).
+- CAII: compute cluster `rsingh-ogx-compute`, service `rsingh-ogx-inference` (third attempt),
+  GPU group g4dn.2xlarge. g5/g6 do not provision in federal-cdp-env (ap-south-1). Model
+  `Qwen/Qwen2.5-7B-Instruct-AWQ` in the AI Registry, endpoint `ogx-llm`.
+- The endpoint answered once ("OK", 2.1 s), then every path returns an empty HTTP 503 from
+  istio-envoy, with or without a token, although describeEndpoint shows Loaded and 1 ready
+  replica. Deleting the endpoint and deploying it again did not help. The EKS API is not reachable
+  from the laptop and local AWS credentials are invalid, so the pods have not been inspected.
+- Scaling 1 -> 0 -> 1 with updateEndpoint creates new revisions that never get the single GPU node
+  while the old revision holds it; delete and deploy instead.
+- `platform_ctl.py` gains layer `caii` (stop deletes `ogx-llm`, start deploys it).
+
+## 2026-11-02 21:45 - CAII torn down to stop GPU cost
+
+- Deleted endpoint `ogx-llm`, service `rsingh-ogx-inference` and compute cluster
+  `rsingh-ogx-compute` (verified absent). Kept: the two AI Registry models (storage only).
+  `config/inference.json` has no domain or endpoint, so the app runs rule-based and the
+  `platform_ctl.py` `caii` layer reports "none".
+- Next attempt needs, from an AWS admin: which GPU types ap-south-1a/b/c offer to this VPC and the
+  G/VT vCPU quota. Then a CPU-only service, a GPU group of an offered Ampere+ type (L4/A10G), and
+  the unquantised Qwen2.5-7B (docs/AGENTIC_MONITOR.md).

@@ -1,0 +1,25 @@
+{
+  "_comment": "Cloudera AI Inference for the OGX Agentic Integrity Monitor (agents/, agent_app/). The service runs on its own compute cluster in federal-cdp-env; GPU node groups scale from zero, so only a deployed endpoint costs GPU time. OGX_CAII_BASE_URL / OGX_CAII_MODEL override the endpoint below; the token is the CDP JWT (/tmp/jwt inside CAI, OGX_CAII_TOKEN or the cdp CLI elsewhere).",
+  "environment": "federal-cdp-env",
+  "compute_cluster": "rsingh-ogx-compute",
+  "app_name": "rsingh-ogx-inference",
+  "domain": "",
+  "namespace": "serving-default",
+  "registry_model": "ogx-llm-qwen2-5-7b-instruct-awq",
+  "registry_repo": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+  "endpoint": {
+    "name": "ogx-llm",
+    "base_url": "",
+    "model": "",
+    "instance_type": "g4dn.2xlarge",
+    "num_gpus": 1,
+    "req_cpu": 4,
+    "req_memory": "24Gi",
+    "min_replicas": 1,
+    "max_replicas": 1
+  },
+  "chat": {"temperature": 0.3, "max_tokens": 1800, "timeout_s": 120, "retries": 2,
+           "breaker_failures": 3, "breaker_reset_s": 60, "cache_ttl_s": 900},
+  "prescreen": {"window_size": "15 minutes", "rolling_windows": 24, "z_threshold": 3.0, "min_rel_change": 0.10, "top": 15},
+  "scope": {"worklist_top": 15, "doc_chunks_per_asset": 2, "work_order_days": 30}
+}

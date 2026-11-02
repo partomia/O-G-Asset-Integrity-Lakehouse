@@ -26,6 +26,7 @@ come from a CC BY 4.0 corrosion image set (`assets/frames/ATTRIBUTION.md`).
 | Guardrails: frame quality, out of distribution, abstain band, safety floor, no automated action | CAI model + application | `guardrails/`, `config/guardrails.yaml`, [docs/GUARDRAILS.md](docs/GUARDRAILS.md) |
 | MLOps: nightly drift, retrain trigger (drift, engineer labels, age), GitHub push to CAI chain | CAI jobs `ogx-05`, `ogx-08`, GitHub Actions `cai-mlops.yml` | `monitor/drift.py`, `ci/retrain_trigger.py`, [docs/MLOPS.md](docs/MLOPS.md) |
 | Integrity Workbench (worklist, Asset 360 with scored keyframes, sensors, data quality, models & guardrails) | CAI application | `app/` |
+| Agentic Integrity Monitor (pattern of the Cloudera AMP "Agentic Oil and Gas Site and Well Monitor"): pre-screen, three chained agents, ticket drafts with human review, LLM guardrails | CAI application, CAI Inference (when available) | `agents/`, `agent_app/`, [docs/AGENTIC_MONITOR.md](docs/AGENTIC_MONITOR.md) |
 | Classifications, glossary, tag masking | SDX: Atlas, Ranger | `scripts/governance.py`, `config/governance.json` |
 
 Databases: `rsingh_ogx_{bronze,silver,asset,gold,semantic,ref}`. Objects: `s3a://.../rsingh_ogx/`.
@@ -74,6 +75,7 @@ cde job run --name rsingh-ogx-stages --arg=--stages --arg=silver,asset,gold,reco
 python scripts/run_semantic.py --engine impala --steps views,check,adhoc
 python dataviz/build_dashboard.py --import --connection federal-impala-1
 python ci/setup_cai.py --app               # CAI jobs ogx-00..08 and the Workbench application
+python ci/setup_cai.py --agent-app         # the Agentic Integrity Monitor application
 python scripts/governance.py apply
 python nifi/deploy_flow.py deploy           # NiFi alarm router, version 1 in NiFi Registry
 ```
@@ -114,6 +116,9 @@ on a drift alert, on 20 new engineer labels from Asset 360 or when the champion 
   `cde/dags/ogx_dag.py` bounds the window). The continuous streaming jobs stay off while the
   window is open: each nightly run replays the day's stream on the same checkpoints.
   `ci/project_stop.py` (CAI job `stop-ogx-project`) can stop the project on a set date.
+- 2026-11-02: Agentic Integrity Monitor deployed as a second CAI application, running rule-based.
+  Its CAI Inference service was built, then torn down: g5/g6 GPUs did not provision in
+  federal-cdp-env and the T4 endpoint stopped routing after one answer (docs/AGENTIC_MONITOR.md).
 
 ## Enhancements (2026-10-15)
 

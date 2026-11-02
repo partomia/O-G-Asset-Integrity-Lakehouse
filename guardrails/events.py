@@ -17,7 +17,10 @@ LOG = ROOT / "outputs" / "guardrails" / "events.jsonl"
 LAYER = {"frame_size": "input", "brightness": "input", "contrast": "input", "sharpness": "input", "glare": "input",
          "out_of_distribution": "input", "asset_resolved": "input", "sensor_sanity": "input",
          "abstain_band": "output", "safety_floor": "output", "kpi_gate": "process", "feature_hash_lock": "process",
-         "drift_psi": "process", "named_approver": "process"}
+         "drift_psi": "process", "named_approver": "process",
+         "llm_unknown_tag": "output", "llm_ungrounded_number": "output", "llm_citation": "output",
+         "llm_ticket_scope": "output", "llm_ticket_abstained": "output", "llm_forbidden_action": "output",
+         "llm_unavailable": "process"}
 
 
 def rows(events: list[dict], subject: str, model_version: str = "", source: str = "") -> list[dict]:
