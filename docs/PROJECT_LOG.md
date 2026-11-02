@@ -375,3 +375,12 @@ Live, in order:
 - Next attempt needs, from an AWS admin: which GPU types ap-south-1a/b/c offer to this VPC and the
   G/VT vCPU quota. Then a CPU-only service, a GPU group of an offered Ampere+ type (L4/A10G), and
   the unquantised Qwen2.5-7B (docs/AGENTIC_MONITOR.md).
+
+## 2026-11-02 21:55 - Agentic Integrity Monitor deployed to CAI
+
+- Pushed 0c789f6. The push ran `ogx-integrity-mlops`, whose CAI step only prints a notice (no
+  CAI_URL secret), so the code was pulled with a temporary job running `ci/sync_code.py` alone
+  (running ogx-00 would have started the ogx-01..04 chain); the job was deleted after.
+- `ci/setup_cai.py --agent-app`: application "OGX Agentic Integrity Monitor" (51a5-6xvn-amsk-z8rm,
+  subdomain rsingh-ogx-agents, 1 vCPU / 4 GB) RUNNING, Streamlit health ok; rule-based until CAII
+  returns. `platform_ctl.py status`: Workbench stopped, model deployed, ogx-05/ogx-08 scheduled.
