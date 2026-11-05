@@ -16,7 +16,7 @@ come from a CC BY 4.0 corrosion image set (`assets/frames/ATTRIBUTION.md`).
 | Alarm routing: validate on the Schema Registry contract, priority alarms to `ogx.alarm.priority`, raw landing to S3, versioned in NiFi Registry | NiFi Data Hub `federal-nifi` (NiFi 2.6, NiFi Registry bucket `ogx-flows`) | `nifi/deploy_flow.py`, [docs/NIFI.md](docs/NIFI.md) |
 | Streaming bronze (exactly-once foreachBatch) and 1- and 15-minute windows (watermark, MERGE) | CDE Spark 3.5 Structured Streaming | `cde/jobs/stream_telemetry_bronze.py`, `stream_telemetry_agg.py` |
 | Land, bronze, object catalog, quarantine | CDE | `cde/jobs/land_sources.py`, `ingest_bronze.py` |
-| Extraction: PDF text and OCR, drawing tags, SEG-Y and LAS headers, video keyframes | CDE (standard library parsers) | `extract/`, `cde/jobs/extract_unstructured.py` |
+| Extraction: PDF text and OCR, drawing tags, SEG-Y and LAS headers, video keyframes | CDE (standard library parsers) | `extract/`, `cde/jobs/extract_unstructured.py`, drone video: [docs/DRONE_VIDEO_SPARK.md](docs/DRONE_VIDEO_SPARK.md) |
 | Silver, asset master (match rules, golden asset, review queue), gold star schema with SCD2 | CDE + Iceberg | `build_silver.py`, `build_asset_master.py`, `build_gold.py` |
 | Reconciliation at every layer: MATCHED / EXPLAINED / LATE / MISMATCH | CDE | `cde/jobs/reconcile.py` |
 | Certified KPI views, MIS and dashboard views, KPI consistency check | CDW Impala | `sql/semantic/`, `scripts/run_semantic.py` |
