@@ -80,6 +80,12 @@ python scripts/governance.py apply
 python nifi/deploy_flow.py deploy           # NiFi alarm router, version 1 in NiFi Registry
 ```
 
+Spark capability demo: [notebooks/ogx_spark_demo.ipynb](notebooks/ogx_spark_demo.ipynb), in a CAI
+JupyterLab session with the Spark 3.5.4 - CDE 1.25.2 add-on (or locally with
+`OGX_NB_LOCAL_WAREHOUSE=/tmp/ogxw/warehouse`). It reads the production tables, re-runs the extractor,
+shows Iceberg snapshots, time travel and rollback, and scores keyframes with the champion through
+`mapInPandas`; it writes only to a scratch catalog it deletes at the end, and starts no jobs.
+
 The CAI project is created from the public repo URL (no deploy key). Set `OGX_IMPALA_USER` and
 `OGX_IMPALA_PASSWORD` in the project environment **before** starting the application, or restart it
 afterwards; otherwise it shows a fallback page with no tabs.

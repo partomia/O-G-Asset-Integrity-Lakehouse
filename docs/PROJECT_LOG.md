@@ -384,3 +384,15 @@ Live, in order:
 - `ci/setup_cai.py --agent-app`: application "OGX Agentic Integrity Monitor" (51a5-6xvn-amsk-z8rm,
   subdomain rsingh-ogx-agents, 1 vCPU / 4 GB) RUNNING, Streamlit health ok; rule-based until CAII
   returns. `platform_ctl.py status`: Workbench stopped, model deployed, ogx-05/ogx-08 scheduled.
+
+## 2026-11-05 18:15 - Spark capability notebook
+
+- `notebooks/ogx_spark_demo.ipynb`, after the sibling demos' notebooks: lakehouse and audit, one day of
+  drone video bronze to silver, the extractor re-run on the executors (matches silver exactly), the
+  wrong-tag flight by GPS distance join, Iceberg snapshots and time travel on production (read-only),
+  create / schema evolution / MERGE / rollback on a scratch table, and corrosion scoring with the
+  champion and its guardrails through `mapInPandas`.
+- Writes only to the scratch Hadoop catalog `ogx_demo` under `rsingh_ogx/notebook_scratch` (outside
+  the metastore), deleted by the last cell; starts no jobs, so the pipelines are not disturbed.
+- Verified end to end locally (Spark 4.0.1, warehouse of `run_local.py` for 2026-10-04..06, date
+  2026-10-06: 25 keyframes scored, 1 NA, 2 P1). Not yet run in a CAI Spark 3.5.4 session.
