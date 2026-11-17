@@ -86,6 +86,10 @@ Rules for every phase:
   `governance.json`, `guardrails.yaml`, `platform.json`, `ci.yaml` (offline overlay).
 - Credentials only in git-ignored `.env` (taken from siblings' `.env`, re-prefixed); `.env.example`
   has placeholders; gitleaks pre-commit + commit-msg hook (no attribution trailers).
+- Never add an attribution trailer, in this repo or any other. Do not pass `--trailer` to
+  `git commit`, and do not write `Co-authored-by:` or `Generated-with:` into a message.
+  Git applies `--trailer` after the commit-msg hook, so a hook that strips trailers cannot
+  remove it. Before every push, `git log -1 --format=%B` must not contain those lines.
 - Never print environment variables, job `environment` fields or `.env`: filter output.
 - Long live waits: a bounded foreground poll loop (status every 15 s, explicit timeout) is the
   reliable form. Background `nohup` jobs can be killed when the tool call returns or the laptop

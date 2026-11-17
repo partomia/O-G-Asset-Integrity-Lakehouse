@@ -187,6 +187,7 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - Tag masking set-up order: classification typedefs and `cm_tag` mask policies first (they need no tables), column tags per layer as each layer's tables first appear in Atlas (a database with no CDE run yet has no entities), glossary assignments last (they need the semantic views) [EVX].
 
 ## Git/CI/secrets
+- A pushed commit still contains `Co-authored-by` or `Generated-with` although the commit-msg hook strips trailers -> `git commit --trailer` is applied after that hook, so the hook never sees it -> never pass `--trailer` and never write those lines, in any repo; check `git log -1 --format=%B` before pushing [EVX].
 - GitHub-hosted runners fail with `ConnectTimeout` -> the workbench resolves to a private IP -> use a self-hosted runner (`runs-on` from repo variable `CAI_RUNS_ON`), or a publicly reachable workbench (federal works) [CXR, Spend].
 - A workflow skipped the CAI job after the secrets were set -> a run keeps the secrets it started with -> re-run the job [Spend].
 - Workflows go red before secrets exist -> no `CAI_URL` yet -> print a notice and succeed until `CAI_URL` is set [CXR, OGX, Spend].
