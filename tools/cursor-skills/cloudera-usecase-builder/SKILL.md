@@ -127,6 +127,15 @@ Rules for every phase:
 - **Resource rule (14):** add shared capacity before enlarging a single job; never resize a CAI
   instance group while engines run; 2 vCPU / 8 GB jobs queue longer than 1 / 4 on a full quota.
 
+## Companion skills
+
+Read these when the phase is no longer a single agent editing one repo:
+
+- `lakehouse-parallel-phase` — split one milestone across lanes, with one integrator and a contract whose first section wins.
+- `lakehouse-live-session` — run that milestone on the shared cluster: headroom, start/stop, streams, the nightly DAG, and the proof.
+
+Both live next to this skill, in `tools/cursor-skills/`.
+
 ## Additional resources
 
 - Every platform failure seen so far, cause and fix: [reference.md](reference.md)
