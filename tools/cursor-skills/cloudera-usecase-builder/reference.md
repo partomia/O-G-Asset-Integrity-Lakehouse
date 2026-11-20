@@ -148,6 +148,8 @@ error text before debugging from scratch; add a bullet when a new failure is sol
 - Ranger custom mask `TRUNC({col}, 'YYYY')` fails on INT columns (`trunc(INT, STRING)`) -> a tag propagated to a derived INT column -> see SDX (propagate=false) [Churn].
 - Impala cannot address an Iceberg branch by name (`FOR SYSTEM_VERSION AS OF 'b'` is a ParseException, `<table>.branch_b` does not resolve), but reads the branch head by snapshot id (`FOR SYSTEM_VERSION AS OF <id>`) -> log the branch snapshot id when publishing and use it for Impala-side audits [EVX].
 - A laptop `INVALIDATE METADATA` with no table hung the client on the shared warehouse -> it reloads every catalog object -> always scope it (`INVALIDATE METADATA <db>.<table>`) or use `REFRESH <db>.<table>` [EVX].
+- Impala `SELECT 1` works but every table read fails `Failed to connect to Hive Metastore ... Failure to initialize security context` (SASL), `SHOW DATABASES` stale, while the Hive VW on the same DBC and CDE Spark read the same tables -> the Impala VW's own Kerberos login to the Metastore went stale (VW up for months) -> prove it with the Hive VW control query, then (with consent, the VW is shared) `cdp dw suspend-vw` + `start-vw` (~1 min, no restart verb); tables queried while broken keep a cached failed load -> `INVALIDATE METADATA <db>.<table>` for each [EVX].
+- A recon count of identity-review rows drifted for a past date (3 -> 2) -> it counted source~candidate pairs, and a later sale removed one candidate from the free pool -> count distinct source keys, list pairs in detail; Iceberg time travel on the recon table recovers the old row [EVX].
 
 ## Data Visualization
 - API returns 401 with a password -> the instance signs in with SAML -> use a Data Visualization API key [GDL, OGX].
